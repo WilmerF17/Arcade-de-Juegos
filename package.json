@@ -10,7 +10,11 @@
     "build": "npm --prefix client run build",
     "start": "npm run server",
     "abrir": "bash ./arcade",
-    "cerrar": "bash ./arcade --cerrar"
+    "cerrar": "bash ./arcade --cerrar",
+    "dale": "bash ./bin/dale",
+    "duro": "bash ./bin/dale --duro",
+    "tumba": "bash ./bin/dale --tumba",
+    "salud": "bash ./bin/dale --salud"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
