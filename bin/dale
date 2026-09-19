@@ -34,7 +34,7 @@ banner() {
   echo -e "${ROJO}  ██║  ██║██╔══██║${AMARILLO}██║     ██║   ██║${VERDE}██║╚██╔╝██║██║   ██║██║     ██╔══██║██╔══██║██║     ██╔══██║██║   ██║${RESET}"
   echo -e "${ROJO}  ██████╔╝██║  ██║${AMARILLO}███████╗╚██████╔╝${VERDE}██║ ╚═╝ ██║╚██████╔╝╚██████╗██║  ██║██║  ██║╚██████╗██║  ██║╚██████╔╝${RESET}"
   echo -e "${CIAN}  ╚═════╝ ╚═╝  ╚═╝${AMARILLO}╚══════╝ ╚═════╝ ${VERDE}╚═╝     ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ${RESET}"
-  echo -e "${MAGENTA}                    🔥 85 minijuegos · XP · logros · instalable 🔥${RESET}"
+  echo -e "${MAGENTA}                    🔥 225 minijuegos · XP · logros · instalable 🔥${RESET}"
   echo ""
 }
 
@@ -124,13 +124,13 @@ salud() {
   grep -q 'aplm-v' "$DIR/client/public/sw.js" 2>/dev/null && ok "Service worker propio (offline)" || no "Sin service worker"
   grep -q 'shortcuts' "$DIR/$M" 2>/dev/null && ok "Accesos directos PWA (3)" || no "Sin shortcuts"
   grep -q 'BASE_URL}sw.js' "$DIR/client/src/main.jsx" 2>/dev/null && ok "SW se registra en raíz y subruta" || no "Registro SW fijo a /"
-  grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "85 juegos con carga perezosa" || no "Sin code-splitting"
+  grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "225 juegos con carga perezosa" || no "Sin code-splitting"
   echo ""
   echo -e "${BLANCO}[ Buscable en Google ]${RESET}"
   grep -q '<link rel="canonical"' "$DIR/client/index.html" 2>/dev/null && ok "Canonical presente" || no "Sin canonical"
   grep -q 'og:site_name.*ArcadePaLoMuchacho' "$DIR/client/index.html" 2>/dev/null && ok "Open Graph con marca" || no "Sin Open Graph"
   local n; n=$(grep -o '"@type":"VideoGame"' "$DIR/client/index.html" 2>/dev/null | wc -l)
-  [ "$n" -ge 85 ] && ok "JSON-LD con $n juegos" || no "JSON-LD incompleto ($n)"
+  [ "$n" -ge 225 ] && ok "JSON-LD con $n juegos" || no "JSON-LD incompleto ($n)"
   local u; u=$(grep -c '<loc>' "$DIR/client/public/sitemap.xml" 2>/dev/null)
   [ "$u" -ge 79 ] && ok "Sitemap con $u URLs absolutas" || no "Sitemap incompleto ($u)"
   grep -q 'helmet' "$DIR/server/index.js" 2>/dev/null && ok "Servidor endurecido (helmet + rate-limit)" || no "Servidor sin endurecer"

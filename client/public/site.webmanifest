@@ -1,7 +1,7 @@
 {
-  "name": "ArcadePaLoMuchacho · 85 juegos web",
+  "name": "ArcadePaLoMuchacho · 225 juegos web",
   "short_name": "PaLoMuchacho",
-  "description": "ArcadePaLoMuchacho: 85 minijuegos originales en español con XP, niveles, logros y desafío diario. Instalable en móvil y PC, funciona sin conexión.",
+  "description": "ArcadePaLoMuchacho: 225 minijuegos originales en español con XP, niveles, logros y desafío diario. Instalable en móvil y PC, funciona sin conexión.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
@@ -20,7 +20,7 @@
     { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
   ],
   "screenshots": [
-    { "src": "og-image.png", "sizes": "1200x630", "type": "image/png", "label": "ArcadePaLoMuchacho · 85 juegos web" }
+    { "src": "og-image.png", "sizes": "1200x630", "type": "image/png", "label": "ArcadePaLoMuchacho · 225 juegos web" }
   ],
   "shortcuts": [
     { "name": "Pulso Neón", "url": "./#pulso", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },

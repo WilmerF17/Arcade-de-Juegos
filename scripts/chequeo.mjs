@@ -16,7 +16,7 @@ const games = lee("client/src/games/GAMES.js");
 // 1. Registro de juegos: ids, nombres y componentes perezosos
 const entradas = [...games.matchAll(/^  (\w+): \{ nombre: "([^"]+)",.*?Component: (\w+)/gm)];
 no.__n = entradas.length;
-if (entradas.length < 85) no(`Solo ${entradas.length} juegos registrados (esperado 85+)`);
+if (entradas.length < 200) no(`Solo ${entradas.length} juegos registrados (esperado 200+)`);
 else ok(`${entradas.length} juegos registrados`);
 const ids = entradas.map(e => e[1]);
 const nombres = entradas.map(e => e[2]);
@@ -25,14 +25,14 @@ if (new Set(ids).size !== ids.length) no("IDs de juego duplicados");
 else ok("IDs únicos");
 if (new Set(nombres).size !== nombres.length) no("Nombres visibles duplicados");
 else ok("Nombres visibles únicos");
-const lazys = [...games.matchAll(/^const (\w+) = lazy\(\(\) => import\("\.\/(\w+)"\)\);/gm)];
+const lazys = [...games.matchAll(/^const (\w+) = lazy\(\(\) => import\("\.\/([\w/]+)"\)/gm)];
 const mapaLazy = Object.fromEntries(lazys.map(l => [l[1], l[2]]));
 let rotos = 0;
 for (const c of comps) {
   const archivo = mapaLazy[c];
   if (!archivo || !existsSync(join(RAIZ, "client/src/games", archivo + ".jsx"))) { no(`Componente sin archivo: ${c}`); rotos++; }
 }
-if (!rotos) ok("Los 85 componentes perezosos resuelven a su archivo");
+if (!rotos) ok(`Los ${comps.length} componentes perezosos resuelven a su archivo`);
 
 // 2. Categorías: todo juego en ≥1 categoría y sin ids fantasmas
 const cats = [...games.matchAll(/juegos: \[([^\]]*)\]/g)].flatMap(m => m[1].split(",").map(s => s.trim().replace(/["']/g, "")));
