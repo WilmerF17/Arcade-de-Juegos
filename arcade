@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+#
+#  🕹️  ARCADE — abre la web de juegos desde la terminal.
+#
+#  Uso (desde cualquier carpeta):
+#    jugar             → modo desarrollo (API :3001 + web :5173) y abre el navegador
+#    jugar --prod      → modo producción (compila y sirve todo en :3001) y abre el navegador
+#    jugar --cerrar    → detiene los procesos del arcade
+#    jugar --ayuda     → muestra esta ayuda
+#
+set -u
+
+# Resuelve la ruta real del script (funciona aunque se llame vía enlace simbólico)
+FUENTE="${BASH_SOURCE[0]}"
+while [ -L "$FUENTE" ]; do
+  DIR_FUENTE="$(cd "$(dirname "$FUENTE")" && pwd)"
+  FUENTE="$(readlink "$FUENTE")"
+  [[ "$FUENTE" != /* ]] && FUENTE="$DIR_FUENTE/$FUENTE"
+done
+DIR="$(cd "$(dirname "$FUENTE")" && pwd)"
+PIDFILE="/tmp/arcade-web.pids"
+LOG="/tmp/arcade-web.log"
+PUERTO_API=3001
+PUERTO_WEB=5173
+
+ayuda() {
+  sed -n '2,10p' "$0"
+}
+
+abrir_navegador() {
+  local url="$1"
+  if command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "$url" >/dev/null 2>&1 &
+  elif command -v sensible-browser >/dev/null 2>&1; then
+    sensible-browser "$url" >/dev/null 2>&1 &
+  elif command -v gnome-open >/dev/null 2>&1; then
+    gnome-open "$url" >/dev/null 2>&1 &
+  elif command -v wslview >/dev/null 2>&1; then
+    wslview "$url" >/dev/null 2>&1 &
+  elif command -v open >/dev/null 2>&1; then
+    open "$url" >/dev/null 2>&1 &
+  fi
+  echo "👉 Abre esta dirección en tu navegador: $url"
+}
+
+puerto_ocupado() { # puerto_ocupado <puerto> [ruta]
+  curl -sf -m1 "http://localhost:$1${2:-/}" >/dev/null 2>&1
+}
+
+esperar() { # esperar <puerto> <nombre> [ruta]
+  for _ in $(seq 1 30); do
+    puerto_ocupado "$1" "${3:-/}" && return 0
+    sleep 1
+  done
+  echo "⚠️  $2 no respondió en el puerto $1. Revisa el registro con: tail -50 $LOG"
+  return 1
+}
+
+lanzar() { # lanzar <descripción> <comando...>
+  local desc="$1"; shift
+  echo "🚀 Iniciando $desc..."
+  # shellcheck disable=SC2086
+  nohup $1 >>"$LOG" 2>&1 &
+  echo $! >>"$PIDFILE"
+}
+
+cerrar() {
+  if [ ! -f "$PIDFILE" ]; then
+    echo "ℹ️  No hay procesos del arcade en marcha."
+    return 0
+  fi
+  while read -r pid; do kill "$pid" 2>/dev/null; done <"$PIDFILE"
+  rm -f "$PIDFILE"
+  sleep 1
+  # Caza huérfanos (el hijo node/vite a veces sobrevive al envoltorio npm)
+  for p in "$PUERTO_API" "$PUERTO_WEB"; do
+    if command -v fuser >/dev/null 2>&1; then
+      fuser -k "$p/tcp" >/dev/null 2>&1
+    else
+      pkill -f "juegos-web/(server|client)" 2>/dev/null
+    fi
+  done
+  echo "🛑 Arcade detenido."
+}
+
+modo_dev() {
+  : >"$LOG"
+  : >"$PIDFILE"
+  if ! puerto_ocupado "$PUERTO_API" "/api/stats"; then
+    (cd "$DIR" && lanzar "API (puerto $PUERTO_API)" "npm run server")
+  else
+    echo "ℹ️  La API ya está en marcha en el puerto $PUERTO_API."
+  fi
+  if ! puerto_ocupado "$PUERTO_WEB"; then
+    (cd "$DIR" && lanzar "web (puerto $PUERTO_WEB)" "npm run client")
+  else
+    echo "ℹ️  La web ya está en marcha en el puerto $PUERTO_WEB."
+  fi
+  esperar "$PUERTO_WEB" "La web" || esperar "$PUERTO_API" "La API" "/api/stats" || true
+  echo ""
+  echo "✅ Arcade en marcha:"
+  echo "   🎮 Juego → http://localhost:$PUERTO_WEB"
+  echo "   🔌 API   → http://localhost:$PUERTO_API/api/stats"
+  echo "   📄 Registro → $LOG"
+  echo "   🛑 Para detener → jugar --cerrar"
+  abrir_navegador "http://localhost:$PUERTO_WEB"
+}
+
+modo_prod() {
+  echo "📦 Compilando la web..."
+  (cd "$DIR" && npm run build) || { echo "❌ Falló la compilación."; exit 1; }
+  : >"$LOG"
+  : >"$PIDFILE"
+  if ! puerto_ocupado "$PUERTO_API" "/api/stats"; then
+    (cd "$DIR" && lanzar "servidor de producción (puerto $PUERTO_API)" "npm start")
+  else
+    echo "ℹ️  Ya hay algo en el puerto $PUERTO_API."
+  fi
+  esperar "$PUERTO_API" "El servidor" "/api/stats" || true
+  echo ""
+  echo "✅ Arcade en marcha (producción):"
+  echo "   🎮 Juego + API → http://localhost:$PUERTO_API"
+  echo "   🛑 Para detener → jugar --cerrar"
+  abrir_navegador "http://localhost:$PUERTO_API"
+}
+
+case "${1:-}" in
+  --ayuda|-h|help) ayuda ;;
+  --cerrar|stop) cerrar ;;
+  --prod|prod) modo_prod ;;
+  ""|--dev|dev) modo_dev ;;
+  *) echo "❌ Opción desconocida: $1"; ayuda; exit 1 ;;
+esac

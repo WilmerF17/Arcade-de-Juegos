@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: arcade-juegos
+    runtime: node
+    buildCommand: npm run install-all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
