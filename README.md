@@ -3,7 +3,7 @@ title: Arcade De Juegos
 emoji: 🐨
 colorFrom: red
 colorTo: indigo
-sdk: static
+sdk: docker
 pinned: false
 short_description: Arcade para el aburrimiento.
 ---
