@@ -45,3 +45,8 @@ export const sfx = {
   moneda() { tono(988, 0, 0.08); tono(1319, 0.07, 0.2); },
   salto() { tono(400, 0, 0.08, "sine", 0.08); },
 };
+
+/** Toca una nota libre (para juegos de oído). Respeta el interruptor de sonido. */
+export function nota(freq, dur = 0.4) {
+  tono(freq, 0, dur, "sine", 0.09);
+}

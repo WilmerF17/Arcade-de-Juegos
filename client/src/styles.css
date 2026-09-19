@@ -26,6 +26,21 @@ body[data-tema="claro"] {
   --border: #d6dae8; --texto: #1b2033; --texto-suave: #5b6378;
   --sombra: 0 10px 30px rgba(80, 90, 140, 0.15);
 }
+body[data-tema="playa"] {
+  --bg: #fff6e8; --bg-soft: #fffdf6; --bg-card: #ffffff; --bg-hover: #ffe9c9;
+  --border: #f0d9ae; --texto: #3a2410; --texto-suave: #8a6a45;
+  --principal: #ff3d5a; --principal-2: #0ea5e9;
+  --exito: #16a34a; --aviso: #d97706;
+  --sombra: 0 10px 30px rgba(255, 120, 60, 0.20);
+}
+body[data-tema="playa"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(14,165,233,.18), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(255,61,90,.14), transparent 60%), var(--bg); }
+
+/* Accesibilidad: respeta movimiento reducido y foco visible */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .aurora, .confeti { display: none !important; }
+}
+:focus-visible { outline: 3px solid var(--principal-2); outline-offset: 2px; }
 
 * { box-sizing: border-box; }
 

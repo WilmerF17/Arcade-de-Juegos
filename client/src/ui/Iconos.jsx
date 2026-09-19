@@ -97,6 +97,13 @@ export function Icono({ n, size = 22 }) {
     case "labciego": return <S size={size}><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M8 8h8v8H8z" /><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" /><path d="M12 3v2M12 19v2M3 12h2M19 12h2" opacity=".6" /></S>;
     case "sprint": return <S size={size}><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-4.5a1.5 1.5 0 0 1 3 0V10m0-3a1.5 1.5 0 0 1 3 0v6c0 3-2 6-5.5 6S7 17 6 14.5L4.5 11c-.5-1.2 1-2.2 2-1.4L9 11z" /></S>;
     case "ordena": return <S size={size}><path d="M7 4v13M7 17l-2.5-2.5M7 17l2.5-2.5" /><path d="M17 20V7M17 7l-2.5 2.5M17 7l2.5 2.5" opacity=".6" /><T x={12} y={14} size={7}>5</T></S>;
+    case "destello": return <S size={size}><path d="M13 2 5 14h6l-1 8 8-12h-6z" /><circle cx="18" cy="18" r="3" opacity=".6" /></S>;
+    case "sombras": return <S size={size}><rect x="2.5" y="5" width="8" height="8" rx="2" /><rect x="13.5" y="5" width="8" height="8" rx="2" /><rect x="2.5" y="15" width="8" height="8" rx="2" /><circle cx="17.5" cy="19" r="4" fill="currentColor" stroke="none" opacity=".85" /></S>;
+    case "ruta": return <S size={size}><path d="M4 18L9 13M9 13l-3-3M9 13H4" /><path d="M12 17V6M12 6L9 9M12 6l3 3" /><path d="M20 18l-2-2M20 18l-2 2" opacity=".55" /></S>;
+    case "escalera": return <S size={size}><path d="M3 20h4v-4h4v-4h4V8h4V4" /><rect x="15" y="15" width="6" height="6" rx="1.5" fill="currentColor" stroke="none" /></S>;
+    case "oidofino": return <S size={size}><path d="M6 10v4h3l4 3.5v-11L9 10z" /><path d="M16 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" /></S>;
+    case "atajada": return <S size={size}><circle cx="12" cy="12" r="8.5" /><path d="M7 14c1-3 3-4 5-4s4 1 5 4" /><circle cx="10" cy="11" r="1" fill="currentColor" stroke="none" /><circle cx="14" cy="11" r="1" fill="currentColor" stroke="none" /></S>;
+    case "oca": return <S size={size}><circle cx="7" cy="15" r="3.5" /><circle cx="15" cy="9" r="3.5" opacity=".55" /><path d="M7 15l8-6" /><path d="M17 17l4-1-1 4" /></S>;
     case "marcador": return <S size={size}><path d="M8 4h8v5a4 4 0 0 1-8 0z" /><path d="M8 5H4.5A3.5 3.5 0 0 0 8 12M16 5h3.5A3.5 3.5 0 0 1 16 12" /><path d="M12 13v4M8.5 20.5h7M10 17h4" /></S>;
     case "inicio": return <S size={size}><path d="M3.5 11.5 12 3.5l8.5 8" /><path d="M6 10v10h12V10" /><rect x="10.5" y="14" width="3" height="6" /></S>;
     case "buscar": return <S size={size}><circle cx="11" cy="11" r="6.5" /><path d="M15.8 15.8 20.5 20.5" /></S>;
@@ -105,6 +112,7 @@ export function Icono({ n, size = 22 }) {
     case "aleatorio": return <S size={size}><rect x="4" y="7" width="11" height="11" rx="2.5" /><circle cx="9.5" cy="12.5" r="1.3" fill="currentColor" stroke="none" /><path d="M15 4.5h4.5V9M19.5 4.5 13 11" /></S>;
     case "desafio": return <S size={size}><circle cx="11" cy="12" r="7" /><circle cx="11" cy="12" r="3.4" /><path d="m13.5 9.5 4.5 4.5 3-3" /></S>;
     case "sol": return <S size={size}><circle cx="12" cy="12" r="4.5" /><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2 19 19M19 5l-1.8 1.8M6.8 17.2 5 19" /></S>;
+    case "playa": return <S size={size}><circle cx="17" cy="7" r="3" /><path d="M3 18c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0" /><path d="M7 14c0-3 2-5 5-5 0 2-1 3-2 4" /></S>;
     case "luna": return <S size={size}><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" /></S>;
     case "retro": return <S size={size}><rect x="3" y="7" width="18" height="12" rx="2.5" /><path d="M8 21h8M9 7l3-3 3 3" /><path d="M7 11.5h.5M10.5 11.5h.5" /></S>;
     case "sonido": return <S size={size}><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" /><path d="M15 9a4.5 4.5 0 0 1 0 6M17.5 6.8a8 8 0 0 1 0 10.4" /></S>;
@@ -120,6 +128,7 @@ export function Icono({ n, size = 22 }) {
     case "mando": return <S size={size}><path d="M7 8h10a5 5 0 0 1 5 5c0 2.5-1.5 5.5-3.5 5.5-1.5 0-2-1.5-2.7-3H8.2c-.7 1.5-1.2 3-2.7 3C3.5 18.5 2 15.5 2 13a5 5 0 0 1 5-5z" /><path d="M7.5 11v3M6 12.5h3" /><circle cx="15.5" cy="11.8" r="1" fill="currentColor" stroke="none" /><circle cx="17.5" cy="14" r="1" fill="currentColor" stroke="none" /></S>;
     case "cerrar": return <S size={size}><path d="m6 6 12 12M18 6 6 18" /></S>;
     case "descargar": return <S size={size}><path d="M12 3.5V15M7.5 10.5 12 15l4.5-4.5" /><path d="M4.5 17.5v2h15v-2" /></S>;
+    case "compartir": return <S size={size}><circle cx="6" cy="12" r="2.5" /><circle cx="17" cy="5.5" r="2.5" /><circle cx="17" cy="18.5" r="2.5" /><path d="M8.2 10.8l6.6-4M8.2 13.2l6.6 4" /></S>;
     default: {
       const letra = String(n || "?").charAt(0).toUpperCase();
       return <S size={size}><T x={12} y={16} size={13}>{letra}</T></S>;
@@ -161,6 +170,9 @@ const TITULO_A_ICONO = {
   "Pulso Neón": "pulso", "Secuencia Inversa": "inversa",
   "Par o Impar Relámpago": "parimpar", "Laberinto Ciego": "labciego",
   "Sprint de Clics": "sprint", "Ordena Números": "ordena",
+  "Destello": "destello", "Sombras Gemelas": "sombras", "Ruta Exprés": "ruta",
+  "Escalera de Dados": "escalera", "Oído Fino": "oidofino",
+  "Atajada": "atajada", "La Oca Veloz": "oca",
 };
 
 export function iconoDeTitulo(titulo) {

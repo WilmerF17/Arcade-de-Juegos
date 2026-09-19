@@ -14,7 +14,8 @@
     "dale": "bash ./bin/dale",
     "duro": "bash ./bin/dale --duro",
     "tumba": "bash ./bin/dale --tumba",
-    "salud": "bash ./bin/dale --salud"
+    "salud": "bash ./bin/dale --salud",
+    "test": "node scripts/chequeo.mjs"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

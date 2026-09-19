@@ -5,6 +5,7 @@ import { getStats } from "./api";
 import { cargarProgreso, guardarProgreso, nivelDe, desafioDelDia, LOGROS } from "./suite/progreso";
 import { sonidoActivado, cambiarSonido, sfx } from "./suite/sonido";
 import { Icono, IconoJuego, LogoArcade } from "./ui/Iconos";
+import BotonesCompartir from "./ui/Compartir";
 
 function leerFavs() {
   try { return JSON.parse(localStorage.getItem("arcade-favs") || "[]"); } catch { return []; }
@@ -249,7 +250,7 @@ export default function App() {
         <div className="tema-box">
           <p className="cat">Tema visual</p>
           <div className="tema-btns">
-            {[["neon", "luna", "Neón"], ["retro", "retro", "Retro"], ["claro", "sol", "Claro"]].map(([id, icon, nombre]) => (
+            {[["neon", "luna", "Neón"], ["retro", "retro", "Retro"], ["claro", "sol", "Claro"], ["playa", "playa", "Playa"]].map(([id, icon, nombre]) => (
               <button key={id} title={nombre}
                 className={tema === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setTema(id); sfx.clic(); }}><Icono n={icon} size={20} /></button>
@@ -281,6 +282,7 @@ export default function App() {
                     <button className="btn-exito" onClick={() => ir(prog.desafio.juego)}><Icono n="desafio" size={15} /> Desafío: {desafioJuego?.nombre}</button>
                   )}
                   <button className="btn-suave" onClick={() => ir("marcador")}><Icono n="marcador" size={15} /> Ver marcador</button>
+                  <BotonesCompartir texto={`🕹️ Juego ${totalJuegos} minijuegos gratis en ArcadePaLoMuchacho: XP, logros y desafío diario. ¡Supérame!`} />
                   {instalable && !instalada && (
                     <button className="btn-exito" onClick={instalar}><Icono n="descargar" size={15} /> Instalar app</button>
                   )}

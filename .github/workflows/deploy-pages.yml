@@ -25,6 +25,7 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
       - run: npm --prefix client install
+      - run: node scripts/chequeo.mjs
       - run: npm --prefix client run build
       - uses: actions/upload-pages-artifact@v3
         with:

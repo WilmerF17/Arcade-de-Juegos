@@ -1,5 +1,13 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.1.0 (2026-09-19) — Pack completo
+- 85 juegos (+7: Destello, Sombras Gemelas, Ruta Exprés, Escalera de Dados,
+  Oído Fino, Atajada, La Oca Veloz).
+- Compartir: Web Share API + WhatsApp/X/Telegram en portada y podio.
+- Tests `npm run test` (17 chequeos, también en CI de Pages).
+- Accesibilidad: movimiento reducido + foco visible. Nuevo tema Playa 🏝️.
+- SEO/PWA actualizados a 85 (JSON-LD, sitemap 86 URLs, manifest, SW aplm-v4).
+
 ## v2.0.0 (2026-09-19) — La obra mayor
 - Marca única **ArcadePaLoMuchacho**: paleta coral/naranja, emblema del rayo,
   iconos PWA y og-image generados propios, favicon vectorial.

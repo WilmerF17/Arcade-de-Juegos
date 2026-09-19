@@ -1,4 +1,11 @@
 import { lazy } from "react";
+const Destello = lazy(() => import("./Destello"));
+const Sombras = lazy(() => import("./Sombras"));
+const Ruta = lazy(() => import("./Ruta"));
+const Escalera = lazy(() => import("./Escalera"));
+const OidoFino = lazy(() => import("./OidoFino"));
+const Atajada = lazy(() => import("./Atajada"));
+const Oca = lazy(() => import("./Oca"));
 const AdivinaNumero = lazy(() => import("./AdivinaNumero"));
 const CazaTesoro = lazy(() => import("./CazaTesoro"));
 const Ahorcado = lazy(() => import("./Ahorcado"));
@@ -109,7 +116,7 @@ export const JUEGOS = {
   sudoku: { nombre: "Sudoku", emoji: "🔢", descripcion: "9×9 clásico con 2 puzzles y cursor de teclado.", Component: Sudoku, tema: "numeros", grad: "linear-gradient(135deg,#38bdf8,#6366f1)", tag: "Lógica" },
   hanoi: { nombre: "Torres de Hanói", emoji: "🗼", descripcion: "Mueve la torre con movimientos óptimos.", Component: Hanoi, tema: "templo", grad: "linear-gradient(135deg,#f59e0b,#8b5cf6)", tag: "Lógica" },
   luces: { nombre: "Lights Out", emoji: "💡", descripcion: "Apaga las 25 luces · puzzle 5×5.", Component: Luces, tema: "luces", grad: "linear-gradient(135deg,#facc15,#f97316)", tag: "Puzzle" },
-  othello: { nombre: "Reversi", emoji: "⚫", descripcion: "Othello 8×8 contra IA glotona.", Component: Othello, tema: "tablero", grad: "linear-gradient(135deg,#15803d,#052e16)", tag: "Tablero" },
+  othello: { nombre: "Reversi", emoji: "⚫", descripcion: "Reversi 8×8 contra IA glotona.", Component: Othello, tema: "tablero", grad: "linear-gradient(135deg,#15803d,#052e16)", tag: "Tablero" },
   damas: { nombre: "Damas", emoji: "♟️", descripcion: "Damas 8×8 contra IA · captura todo.", Component: Damas, tema: "clasico", grad: "linear-gradient(135deg,#b45309,#451a03)", tag: "Tablero" },
   gomoku: { nombre: "Gomoku", emoji: "⚪", descripcion: "5 en línea en 9×9 antes que la IA.", Component: Gomoku, tema: "zen", grad: "linear-gradient(135deg,#eab308,#a16207)", tag: "Tablero" },
   mecanografia: { nombre: "Mecanografía", emoji: "⌨️", descripcion: "Test 60s de velocidad y precisión.", Component: Mecanografia, tema: "oficina", grad: "linear-gradient(135deg,#64748b,#0ea5e9)", tag: "Palabras" },
@@ -157,15 +164,22 @@ export const JUEGOS = {
   labciego: { nombre: "Laberinto Ciego", emoji: "🙈", descripcion: "Memoriza el camino y crúzalo a ciegas.", Component: LabCiego, tema: "aventura", grad: "linear-gradient(135deg,#57534e,#ff9a3d)", tag: "Puzzle" },
   sprint: { nombre: "Sprint de Clics", emoji: "👆", descripcion: "¿Cuántos toques en 10 segundos?", Component: Sprint, tema: "punteria", grad: "linear-gradient(135deg,#22d3ee,#ff3d5a)", tag: "Reflejos" },
   ordena: { nombre: "Ordena Números", emoji: "🔢", descripcion: "Toca del menor al mayor · 8 rondas.", Component: Ordena, tema: "numeros", grad: "linear-gradient(135deg,#38bdf8,#a855f7)", tag: "Lógica" },
+  destello: { nombre: "Destello", emoji: "✨", descripcion: "Toca la celda dorada antes de que se apague.", Component: Destello, tema: "luces", grad: "linear-gradient(135deg,#facc15,#ff9a3d)", tag: "Reflejos" },
+  sombras: { nombre: "Sombras Gemelas", emoji: "👯", descripcion: "Encuentra el emoji que cambió · 10 rondas.", Component: Sombras, tema: "mente", grad: "linear-gradient(135deg,#a855f7,#22d3ee)", tag: "Mente" },
+  ruta: { nombre: "Ruta Exprés", emoji: "🧭", descripcion: "Memoriza flechas y repítelas · 3 vidas.", Component: Ruta, tema: "aventura", grad: "linear-gradient(135deg,#22d3ee,#22c55e)", tag: "Mente" },
+  escalera: { nombre: "Escalera de Dados", emoji: "🎲", descripcion: "Supera tu tiro para subir 6 peldaños.", Component: Escalera, tema: "dados", grad: "linear-gradient(135deg,#a855f7,#ff9a3d)", tag: "Azar" },
+  oidofino: { nombre: "Oído Fino", emoji: "👂", descripcion: "¿El tono es grave, medio o agudo? · 12 rondas.", Component: OidoFino, tema: "musica", grad: "linear-gradient(135deg,#38bdf8,#a855f7)", tag: "Ritmo" },
+  atajada: { nombre: "Atajada", emoji: "🧤", descripcion: "Portero: adivina 5 penaltis y ataja.", Component: Atajada, tema: "estadio", grad: "linear-gradient(135deg,#22c55e,#0ea5e9)", tag: "Deporte" },
+  oca: { nombre: "La Oca Veloz", emoji: "🪿", descripcion: "Carrera de dados vs IA · clava el 24.", Component: Oca, tema: "taberna", grad: "linear-gradient(135deg,#22c55e,#eab308)", tag: "Tablero" },
 };
 
 export const CATEGORIAS = [
   { id: "palabras", nombre: "Palabras", icono: "sopa", juegos: ["ahorcado", "wordle", "sopa", "anagramas", "mecanografia", "crucigrama", "cascada", "capitales", "memorianum", "cazapalabra"] },
-  { id: "logica", nombre: "Lógica y puzzle", icono: "puzzle15", juegos: ["mastermind", "puzzle15", "juego2048", "mathblitz", "caza", "sudoku", "hanoi", "luces", "picross", "laberinto", "stack", "mate1", "bolalab", "labciego", "ordena", "inversa"] },
-  { id: "azar", nombre: "Azar y casino", icono: "dados", juegos: ["adivina", "rps", "dados", "blackjack", "tragaperras", "ruleta", "yahtzee", "guerra", "poker", "bingo", "sietemedio"] },
-  { id: "tablero", nombre: "Tablero y estrategia", icono: "treslinea", juegos: ["treslinea", "c4", "buscaminas", "flota", "othello", "damas", "gomoku"] },
-  { id: "arcade", nombre: "Arcade y acción", icono: "mando", juegos: ["snake", "pong", "pong2p", "breakout", "simon", "flappy", "reflejos", "tetris", "topo", "atrapar", "esquiva", "dino", "naves", "pacman", "piano", "aim", "frogger", "tron", "carrera", "saltarin", "burbujas", "malabares", "ddr", "pesca", "zombies", "equilibrio", "sprint", "pulso"] },
-  { id: "cultura", nombre: "Cultura, mente y deporte", icono: "capitales", juegos: ["trivia", "memoria", "stroop", "penaltis", "bowling", "parimpar"] },
+  { id: "logica", nombre: "Lógica y puzzle", icono: "puzzle15", juegos: ["mastermind", "puzzle15", "juego2048", "mathblitz", "caza", "sudoku", "hanoi", "luces", "picross", "laberinto", "stack", "mate1", "bolalab", "labciego", "ordena", "inversa", "sombras", "ruta"] },
+  { id: "azar", nombre: "Azar y casino", icono: "dados", juegos: ["adivina", "rps", "dados", "blackjack", "tragaperras", "ruleta", "yahtzee", "guerra", "poker", "bingo", "sietemedio", "escalera"] },
+  { id: "tablero", nombre: "Tablero y estrategia", icono: "treslinea", juegos: ["treslinea", "c4", "buscaminas", "flota", "othello", "damas", "gomoku", "oca"] },
+  { id: "arcade", nombre: "Arcade y acción", icono: "mando", juegos: ["snake", "pong", "pong2p", "breakout", "simon", "flappy", "reflejos", "tetris", "topo", "atrapar", "esquiva", "dino", "naves", "pacman", "piano", "aim", "frogger", "tron", "carrera", "saltarin", "burbujas", "malabares", "ddr", "pesca", "zombies", "equilibrio", "sprint", "pulso", "destello"] },
+  { id: "cultura", nombre: "Cultura, mente y deporte", icono: "capitales", juegos: ["trivia", "memoria", "stroop", "penaltis", "bowling", "parimpar", "atajada", "oidofino"] },
 ];
 
 export const TEMAS = [

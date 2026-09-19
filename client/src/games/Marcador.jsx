@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import GameShell from "../ui/GameShell";
 import { Icono } from "../ui/Iconos";
+import BotonesCompartir from "../ui/Compartir";
 import { getStats } from "../api";
 
 export default function Marcador() {
@@ -43,6 +44,9 @@ export default function Marcador() {
         <span className="chip"><Icono n="mando" size={13} /> Partidas: <b>{totalJugadas}</b></span>
         <span className="chip"><Icono n="desafio" size={13} /> Victorias: <b>{totalVictorias}</b></span>
         <span className="chip"><Icono n="nivel" size={13} /> Winrate: <b>{totalJugadas ? Math.round(totalVictorias / totalJugadas * 100) : 0}%</b></span>
+        {podio.length > 0 && (
+          <BotonesCompartir compacto texto={`🏆 Mi podio en ArcadePaLoMuchacho: ${podio.map(f => `${f.juego} (${f.mejor})`).join(", ")} · ${totalJugadas} partidas. ¿Me superas?`} />
+        )}
       </div>
       {error && <p className="aviso info">{error}</p>}
       {!stats && !error && <p className="aviso info">Cargando estadísticas...</p>}
