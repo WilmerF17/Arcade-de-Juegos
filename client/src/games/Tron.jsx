@@ -5,7 +5,7 @@ import { sfx } from "../suite/sonido";
 
 const N = 16;
 export default function Tron() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Tron Neón");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Moto Neón");
   const [jug, setJug] = useState([[12, 4]]);
   const [ia, setIa] = useState([[3, 11]]);
   const [jugando, setJugando] = useState(false);
@@ -79,7 +79,7 @@ export default function Tron() {
 
   const setM = new Set([...jug.map(p => `${p}-j`), ...ia.map(p => `${p}-i`)]);
   return (
-    <GameShell titulo="Tron Neón" emoji="🏍️" descripcion="Flechas/WASD · no choques · la IA falla primero.">
+    <GameShell titulo="Moto Neón" emoji="🏍️" descripcion="Flechas/WASD · no choques · la IA falla primero.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Supervivencia <b>{puntos}</b></span>

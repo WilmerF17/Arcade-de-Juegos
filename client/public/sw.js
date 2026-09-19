@@ -1,9 +1,9 @@
-/* ARCADE service worker: app instalable + juego offline.
+/* ArcadePaLoMuchacho service worker: app instalable + juego offline.
    - Navegaciones: network-first con fallback a la portada cacheada.
    - Assets propios (JS/CSS/imgs): stale-while-revalidate.
    - /api: solo red (las puntuaciones nunca se cachean). */
-const VERSION = "arcade-v1";
-const SHELL = ["/", "/index.html", "/favicon.svg", "/icon-192.png", "/site.webmanifest"];
+const VERSION = "aplm-v2";
+const SHELL = ["./", "./index.html", "./favicon.svg", "./icon-192.png", "./icon-512.png", "./maskable-512.png", "./site.webmanifest"];
 
 self.addEventListener("install", e => {
   e.waitUntil(
@@ -28,18 +28,18 @@ self.addEventListener("fetch", e => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith("/api/")) return; // puntuaciones: siempre red
+  if (url.pathname.includes("/api/")) return; // puntuaciones: siempre red
 
-  // Navegaciones (/, /#juego): red primero, portada cacheada sin conexión
+  // Navegaciones: red primero, portada cacheada sin conexión
   if (request.mode === "navigate") {
     e.respondWith(
       fetch(request)
         .then(r => {
           const copia = r.clone();
-          caches.open(VERSION).then(c => c.put("/index.html", copia));
+          caches.open(VERSION).then(c => c.put("./index.html", copia));
           return r;
         })
-        .catch(() => caches.match("/index.html").then(r => r || caches.match("/")))
+        .catch(() => caches.match("./index.html").then(r => r || caches.match("./")))
     );
     return;
   }

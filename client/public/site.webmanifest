@@ -1,14 +1,15 @@
 {
-  "name": "ARCADE · 70 juegos web",
-  "short_name": "ARCADE",
-  "description": "70 juegos web gratis: arcade, casino, tableros, palabras y mente. Con XP, niveles, logros y desafío diario.",
-  "id": "/",
-  "start_url": "/",
-  "scope": "/",
+  "name": "ArcadePaLoMuchacho · 78 juegos web",
+  "short_name": "PaLoMuchacho",
+  "description": "ArcadePaLoMuchacho: 78 minijuegos originales en español con XP, niveles, logros y desafío diario. Instalable en móvil y PC, funciona sin conexión.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "any",
-  "background_color": "#0f1017",
-  "theme_color": "#6366f1",
+  "background_color": "#12060f",
+  "theme_color": "#ff3d5a",
   "categories": ["games", "entertainment"],
   "lang": "es",
   "icons": [
@@ -19,6 +20,6 @@
     { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
   ],
   "screenshots": [
-    { "src": "og-image.png", "sizes": "1200x630", "type": "image/png", "label": "ARCADE · 70 juegos web" }
+    { "src": "og-image.png", "sizes": "1200x630", "type": "image/png", "label": "ArcadePaLoMuchacho · 78 juegos web" }
   ]
 }

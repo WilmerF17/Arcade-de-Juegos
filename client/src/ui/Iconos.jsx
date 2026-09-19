@@ -89,6 +89,14 @@ export function Icono({ n, size = 22 }) {
     case "bolalab": return <S size={size}><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M8 3v7H3" opacity=".6" /><circle cx="15" cy="15" r="3" fill="currentColor" stroke="none" /></S>;
     case "pesca": return <S size={size}><path d="M12 2v8" /><path d="M12 10a4.5 4.5 0 0 1-9 0" /><path d="M3 10l-1.5 2.5L3 15" /><path d="M15 15c1.5-1 3-1 4.5 0-1.5 1-3 1-4.5 0zM15 15l-1 2" opacity=".7" /></S>;
     case "zombies": return <S size={size}><circle cx="12" cy="10" r="7" /><path d="M9 15v3.5h6V15" /><circle cx="9.5" cy="10" r="1.4" fill="currentColor" stroke="none" /><circle cx="14.5" cy="10" r="1.4" fill="currentColor" stroke="none" /><path d="M11 15.5v1.5M13 15.5v1.5" /></S>;
+    case "equilibrio": return <S size={size}><rect x="7" y="3.5" width="10" height="3.5" rx="1.5" /><rect x="5" y="9" width="14" height="3.5" rx="1.5" fill="currentColor" stroke="none" opacity=".75" /><rect x="7" y="14.5" width="10" height="3.5" rx="1.5" opacity=".5" /><path d="M4 21h16" /></S>;
+    case "cazapalabra": return <S size={size}><circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5" /><T x={10.5} y={14} size={7}>ñ</T></S>;
+    case "pulso": return <S size={size}><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" /><path d="M12 4v3M12 17v3M4 12h3M17 12h3" /></S>;
+    case "inversa": return <S size={size}><path d="M4 8h13l-3-3M20 16H7l3 3" /><T x={12} y={14} size={7}>21</T></S>;
+    case "parimpar": return <S size={size}><T x={7.5} y={15} size={10}>2</T><T x={16.5} y={15} size={10}>3</T><path d="M12 4v16" opacity=".5" /></S>;
+    case "labciego": return <S size={size}><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M8 8h8v8H8z" /><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" /><path d="M12 3v2M12 19v2M3 12h2M19 12h2" opacity=".6" /></S>;
+    case "sprint": return <S size={size}><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-4.5a1.5 1.5 0 0 1 3 0V10m0-3a1.5 1.5 0 0 1 3 0v6c0 3-2 6-5.5 6S7 17 6 14.5L4.5 11c-.5-1.2 1-2.2 2-1.4L9 11z" /></S>;
+    case "ordena": return <S size={size}><path d="M7 4v13M7 17l-2.5-2.5M7 17l2.5-2.5" /><path d="M17 20V7M17 7l-2.5 2.5M17 7l2.5 2.5" opacity=".6" /><T x={12} y={14} size={7}>5</T></S>;
     case "marcador": return <S size={size}><path d="M8 4h8v5a4 4 0 0 1-8 0z" /><path d="M8 5H4.5A3.5 3.5 0 0 0 8 12M16 5h3.5A3.5 3.5 0 0 1 16 12" /><path d="M12 13v4M8.5 20.5h7M10 17h4" /></S>;
     case "inicio": return <S size={size}><path d="M3.5 11.5 12 3.5l8.5 8" /><path d="M6 10v10h12V10" /><rect x="10.5" y="14" width="3" height="6" /></S>;
     case "buscar": return <S size={size}><circle cx="11" cy="11" r="6.5" /><path d="M15.8 15.8 20.5 20.5" /></S>;
@@ -125,30 +133,34 @@ export function IconoJuego({ id, size = 22 }) {
 
 const TITULO_A_ICONO = {
   "Adivina el número": "adivina", "Caza del tesoro": "caza", "Ahorcado": "ahorcado",
-  "Wordle": "wordle", "Piedra, papel o tijeras": "rps", "Memoria": "memoria",
+  "Palabra 5": "wordle", "Wordle": "wordle", "Piedra, papel o tijeras": "rps", "Memoria": "memoria",
   "Trivia": "trivia", "Blackjack": "blackjack", "Dados": "dados",
   "Tic-Tac-Toe": "treslinea", "Buscaminas": "buscaminas", "Conecta 4": "c4",
-  "2048": "juego2048", "Simón dice": "simon", "Mastermind": "mastermind",
+  "Fusión 2048": "juego2048", "2048": "juego2048", "Secuencia Neón": "simon", "Simón dice": "simon", "Mastermind": "mastermind",
   "Serpiente (Snake)": "snake", "Serpiente": "snake", "Hundir la flota": "flota",
-  "Puzzle 15": "puzzle15", "Pong neón": "pong", "Pong 2 Jugadores": "pong2p",
+  "Puzzle 15": "puzzle15",   "Pong neón": "pong", "Pong 2 Jugadores": "pong2p", "Rebote Neón": "pong", "Rebote 2 Jugadores": "pong2p",
   "Rompebloques": "breakout", "Tragaperras": "tragaperras", "Reflejos": "reflejos",
-  "Math Blitz": "mathblitz", "Flappy neón": "flappy", "Tetris neón": "tetris",
+  "Math Blitz": "mathblitz", "Vuelo Neón": "flappy", "Flappy neón": "flappy", "Bloques Neón": "tetris", "Tetris neón": "tetris",
   "Toca al Topo": "topo", "Laberinto": "laberinto", "Sudoku": "sudoku",
   "Torres de Hanói": "hanoi", "Lights Out": "luces", "Reversi (Othello)": "othello",
   "Reversi": "othello", "Damas": "damas", "Gomoku": "gomoku",
-  "Mecanografía": "mecanografia", "Piano Tiles": "piano", "Atrapa la Fruta": "atrapar",
+  "Mecanografía": "mecanografia", "Piano Tiles": "piano", "Teclas Ritmo": "piano", "Atrapa la Fruta": "atrapar",
   "Esquiva Meteoros": "esquiva", "Dino Salto": "dino", "Invasores Neón": "naves",
-  "Comepuntos": "pacman", "Ruleta": "ruleta", "Yahtzee": "yahtzee",
+  "Comepuntos": "pacman", "Ruleta": "ruleta", "Yahtzee": "yahtzee", "Dados Cinco": "yahtzee",
   "Sopa de Letras": "sopa", "Anagramas": "anagramas", "Stroop Colores": "stroop",
   "Aim Trainer": "aim", "Penaltis": "penaltis", "Bolos Neón": "bowling",
   "Nonogram": "picross", "Torre Stack": "stack", "Rana Crossing": "frogger",
-  "Tron Neón": "tron", "Carrera Neón": "carrera", "Saltarín Vertical": "saltarin",
+  "Tron Neón": "tron", "Moto Neón": "tron", "Carrera Neón": "carrera", "Saltarín Vertical": "saltarin",
   "Cazaburbujas": "burbujas", "Malabares": "malabares", "Guerra de Cartas": "guerra",
   "Video Poker": "poker", "Bingo": "bingo", "Siete y Medio": "sietemedio",
   "Mate en 1": "mate1", "Memoria Numérica": "memorianum", "Dance Flechas": "ddr",
   "Capitales del Mundo": "capitales", "Crucigrama Mini": "crucigrama",
   "Cascada de Letras": "cascada", "Bola Laberinto": "bolalab", "Pesca": "pesca",
   "Defensa Zombie": "zombies", "Marcador": "marcador",
+  "Torre Equilibrio": "equilibrio", "Caza Palabra": "cazapalabra",
+  "Pulso Neón": "pulso", "Secuencia Inversa": "inversa",
+  "Par o Impar Relámpago": "parimpar", "Laberinto Ciego": "labciego",
+  "Sprint de Clics": "sprint", "Ordena Números": "ordena",
 };
 
 export function iconoDeTitulo(titulo) {

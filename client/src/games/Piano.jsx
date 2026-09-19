@@ -6,7 +6,7 @@ import { sfx } from "../suite/sonido";
 const TECLAS = ["d", "f", "j", "k"];
 const COLORES = ["#ef4444", "#facc15", "#22c55e", "#38bdf8"];
 export default function Piano() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Piano Tiles");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Teclas Ritmo");
   const [notas, setNotas] = useState([]);
   const [puntos, setPuntos] = useState(0);
   const [fallos, setFallos] = useState(0);
@@ -85,7 +85,7 @@ export default function Piano() {
   }, []);
 
   return (
-    <GameShell titulo="Piano Tiles" emoji="🎹" descripcion="D F J K (o 1-4 / flechas) · toca las fichas al llegar abajo · 30s.">
+    <GameShell titulo="Teclas Ritmo" emoji="🎹" descripcion="D F J K (o 1-4 / flechas) · toca las fichas al llegar abajo · 30s.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

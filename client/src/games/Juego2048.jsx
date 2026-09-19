@@ -51,7 +51,7 @@ function sinMovimientos(g) {
 }
 
 export default function Juego2048() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("2048");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Fusión 2048");
   const [tabla, setTabla] = useState(filaVacia().map(() => filaVacia()));
   const [puntos, setPuntos] = useState(0);
   const [sobre, setSobre] = useState(false);
@@ -130,7 +130,7 @@ export default function Juego2048() {
   }, [gano, sobre]);
 
   return (
-    <GameShell titulo="2048" emoji="🃃"
+    <GameShell titulo="Fusión 2048" emoji="🃃"
       descripcion="Flechas o WASD para fusionar · R reinicia · llega a 2048.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-exito" onClick={empezar}>{tabla[0][0] === 0 && !puntos ? "Empezar" : "Nueva partida"}</button>

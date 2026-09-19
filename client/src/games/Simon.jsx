@@ -14,7 +14,7 @@ const TECLA_COLOR = {
 };
 
 export default function Simon() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Simón dice");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Secuencia Neón");
   const [secuencia, setSecuencia] = useState([]);
   const [jugando, setJugando] = useState(false); // true = mostrando secuencia (bloquea input)
   const [mostrando, setMostrando] = useState(-1);
@@ -117,7 +117,7 @@ export default function Simon() {
   }, [nivel, fin]);
 
   return (
-    <GameShell titulo="Simón dice" emoji="🔵"
+    <GameShell titulo="Secuencia Neón" emoji="🔵"
       descripcion="Clic o teclado (1-4, flechas o WASD). Supera el nivel 5.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         {(!secuencia.length) && (

@@ -21,10 +21,10 @@ function puntuar(d, cat) {
   if (cat === "chance") return suma;
   return 0;
 }
-const CATS = [[1, "Unos"], [2, "Doses"], [3, "Treses"], [4, "Cuatros"], [5, "Cincos"], [6, "Seises"], ["trio", "Trío"], ["poker", "Póker"], ["full", "Full (25)"], ["esc", "Escalera (30)"], ["yahtzee", "Yahtzee (50)"], ["chance", "Chance"]];
+const CATS = [[1, "Unos"], [2, "Doses"], [3, "Treses"], [4, "Cuatros"], [5, "Cincos"], [6, "Seises"], ["trio", "Trío"], ["poker", "Póker"], ["full", "Full (25)"], ["esc", "Escalera (30)"], ["yahtzee", "Cinco iguales (50)"], ["chance", "Chance"]];
 
 export default function Yahtzee() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Yahtzee");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Dados Cinco");
   const [dados, setDados] = useState([1, 2, 3, 4, 5]);
   const [bloq, setBloq] = useState([false, false, false, false, false]);
   const [tiradas, setTiradas] = useState(0);
@@ -68,7 +68,7 @@ export default function Yahtzee() {
 
   const total = Object.values(usadas).reduce((a, b) => a + b, 0);
   return (
-    <GameShell titulo="Yahtzee" emoji="🎲" descripcion="ENTER lanzar (3/turno) · 1-5 bloquear · elige categoría.">
+    <GameShell titulo="Dados Cinco" emoji="🎲" descripcion="ENTER lanzar (3/turno) · 1-5 bloquear · elige categoría.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-principal" onClick={lanzar} disabled={fin || tiradas >= 3}>🎲 Lanzar ({tiradas}/3)</button>
         <span className="chip">Total <b>{total}</b></span>

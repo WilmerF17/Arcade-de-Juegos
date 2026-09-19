@@ -92,7 +92,7 @@ export default function Othello() {
   const n1 = tab.flat().filter(v => v === 1).length, n2 = tab.flat().filter(v => v === 2).length;
   const movs = validos(tab, 1);
   return (
-    <GameShell titulo="Reversi (Othello)" emoji="⚫" descripcion="Flechas/WASD + ENTER · encierra fichas vs IA.">
+    <GameShell titulo="Reversi" emoji="⚫" descripcion="Flechas/WASD + ENTER · encierra fichas vs IA.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-exito" onClick={() => { const t = inicial(); st.current = { tab: t, turno: 1, fin: null }; setTab(t); setFin(null); }}>Nueva partida</button>
         <span className="chip">⚫ Tú <b>{n1}</b></span>

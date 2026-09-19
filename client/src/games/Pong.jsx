@@ -5,7 +5,7 @@ import { escribiendo } from "../suite/teclado";
 const W = 520, H = 340;
 
 export default function Pong() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Pong neón");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Rebote Neón");
   const canvasRef = useRef(null);
   const [puntos, setPuntos] = useState({ j: 0, ia: 0 });
   const [jugando, setJugando] = useState(false);
@@ -162,7 +162,7 @@ export default function Pong() {
   }, []);
 
   return (
-    <GameShell titulo="Pong neón" emoji="🏓"
+    <GameShell titulo="Rebote Neón" emoji="🏓"
       descripción="Ratón, dedo o teclado (W/S y ↑/↓). Gana quien llegue a 5."
       tira="linear-gradient(90deg,#22d3ee,#e879f9,#6366f1)" iconoFondo="linear-gradient(135deg,#22d3ee,#e879f9)">
       <div className="fila-botones" style={{ marginTop: 0 }}>

@@ -176,7 +176,7 @@ export default function App() {
       <aside className="lateral">
         <div className="logo" onClick={() => ir("inicio")} style={{ cursor: "pointer" }}>
           <div className="logo-orb"><LogoArcade size={34} /></div>
-          <h1>ARCADE</h1>
+          <h1>PaLoMuchacho</h1>
           <p>{totalJuegos} juegos · {totalPartidas} partidas</p>
         </div>
 
@@ -273,7 +273,7 @@ export default function App() {
               <div className="hero-fondo" />
               <div className="hero-txt">
                 <span className="pill"><Icono n="mando" size={13} /> {totalJuegos} juegos · modo RGB · XP y niveles · sonidos</span>
-                <h2>Tu arcade, <em>modo turbo</em></h2>
+                <h2>Tu arcade pa' lo muchacho, <em>modo turbo</em></h2>
                 <p>{totalJuegos} juegos: clásicos, casino, tableros, arcade puro y mente. Luces RGB, progresión con XP, rachas, logros y desafío diario con doble XP. Todo con teclado (flechas/WASD) + ratón + táctil. Atajos: <b>/</b> buscar · <b>Esc</b> inicio · <b>G</b> aleatorio.</p>
                 <div className="hero-btns">
                   <button className="btn-principal" onClick={aleatorio}><Icono n="aleatorio" size={15} /> Juego aleatorio (G)</button>
@@ -287,6 +287,16 @@ export default function App() {
                 </div>
                 {esIOS && !instalada && !instalable && (
                   <p className="aviso info" style={{ margin: "10px 0 0" }}>En iPhone/iPad: Compartir → «Añadir a pantalla de inicio» para instalarla.</p>
+                )}
+                {!instalada && !instalable && !esIOS && (
+                  <details className="aviso info" style={{ margin: "10px 0 0" }}>
+                    <summary>📲 ¿Cómo instalo ArcadePaLoMuchacho?</summary>
+                    <p style={{ margin: "8px 0 0" }}>
+                      <b>Android (Chrome):</b> menú ⋮ → «Instalar app» o «Añadir a pantalla de inicio».
+                      <br /><b>PC (Chrome/Edge):</b> icono de instalación en la barra de direcciones o menú → «Instalar».
+                      <br /><b>iPhone/iPad:</b> Compartir → «Añadir a pantalla de inicio».
+                    </p>
+                  </details>
                 )}
                 <div className="hero-stats">
                   <div><b>{totalJuegos}</b><span>juegos</span></div>

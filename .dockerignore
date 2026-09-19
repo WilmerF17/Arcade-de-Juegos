@@ -1,3 +1,9 @@
 node_modules/
 client/dist/
 .git/
+server/data/*.json
+server/data/*.tmp
+.env
+*.log
+npm-debug.log*
+.DS_Store

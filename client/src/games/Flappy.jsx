@@ -12,7 +12,7 @@ function tuboDibujo(ctx, x, y, w, h, r) {
 }
 
 export default function Flappy() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Flappy neón");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Vuelo Neón");
   const canvasRef = useRef(null);
   const [puntos, setPuntos] = useState(0);
   const [mejor, setMejor] = useState(() => Number(localStorage.getItem("arcade-flappy-mejor") || 0));
@@ -184,7 +184,7 @@ export default function Flappy() {
   }, []);
 
   return (
-    <GameShell titulo="Flappy neón" emoji="🐤"
+    <GameShell titulo="Vuelo Neón" emoji="🐤"
       descripcion="ESPACIO, W, ↑, clic o toque para volar. Esquiva los tubos."
       tira="linear-gradient(90deg,#22c55e,#facc15,#38bdf8)" iconoFondo="linear-gradient(135deg,#22c55e,#facc15)">
       <div className="fila-botones" style={{ marginTop: 0 }}>

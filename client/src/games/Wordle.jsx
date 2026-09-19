@@ -12,8 +12,8 @@ const PALABRAS = [
 
 const FILAS = 6, LARGO = 5;
 
-export default function Wordle() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Wordle");
+export default function Palabra5() {
+  const { mensaje, tipo, registrarPunt } = useRegistro("Palabra 5");
   const [intentos, setIntentos] = useState([]);
   const [secreto, setSecreto] = useState(null);
   const [entrada, setEntrada] = useState("");
@@ -125,7 +125,7 @@ export default function Wordle() {
   const letrasActuales = entrada.split("");
 
   return (
-    <GameShell titulo="Wordle" emoji="🟩"
+    <GameShell titulo="Palabra 5" emoji="🟩"
       descripcion="Teclado físico o en pantalla · 5 letras en 6 intentos.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-exito" onClick={empezar}>{secreto ? "Reiniciar" : "Empezar"}</button>

@@ -5,7 +5,7 @@ import { sfx } from "../suite/sonido";
 
 const W = 520, H = 340;
 export default function Pong2P() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Pong 2 Jugadores");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Rebote 2 Jugadores");
   const canvasRef = useRef(null);
   const [puntos, setPuntos] = useState({ a: 0, b: 0 });
   const [jugando, setJugando] = useState(false);
@@ -90,7 +90,7 @@ export default function Pong2P() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <GameShell titulo="Pong 2 Jugadores" emoji="🏓" descripcion="Local: J1 W/S · J2 ↑/↓ · primero a 5.">
+    <GameShell titulo="Rebote 2 Jugadores" emoji="🏓" descripcion="Local: J1 W/S · J2 ↑/↓ · primero a 5.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">J1 <b>{puntos.a}</b> — J2 <b>{puntos.b}</b></span>

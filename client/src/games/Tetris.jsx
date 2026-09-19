@@ -32,7 +32,7 @@ function choca(tab, m, px, py) {
 }
 
 export default function Tetris() {
-  const { mensaje, tipo, registrarPunt } = useRegistro("Tetris neón");
+  const { mensaje, tipo, registrarPunt } = useRegistro("Bloques Neón");
   const [tab, setTab] = useState(tableroVacio);
   const [pieza, setPieza] = useState(nuevaPieza);
   const [sig, setSig] = useState(nuevaPieza);
@@ -130,7 +130,7 @@ export default function Tetris() {
   }));
 
   return (
-    <GameShell titulo="Tetris neón" emoji="🧱" descripcion="Flechas o WASD mover · ↑/W girar · ESPACIO bajar · P pausa.">
+    <GameShell titulo="Bloques Neón" emoji="🧱" descripcion="Flechas o WASD mover · ↑/W girar · ESPACIO bajar · P pausa.">
       <div className="fila-botones" style={{ marginTop: 0 }}>
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : fin ? "↻ Reintentar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
