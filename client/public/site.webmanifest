@@ -1,0 +1,24 @@
+{
+  "name": "ARCADE · 70 juegos web",
+  "short_name": "ARCADE",
+  "description": "70 juegos web gratis: arcade, casino, tableros, palabras y mente. Con XP, niveles, logros y desafío diario.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f1017",
+  "theme_color": "#6366f1",
+  "categories": ["games", "entertainment"],
+  "lang": "es",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "screenshots": [
+    { "src": "og-image.png", "sizes": "1200x630", "type": "image/png", "label": "ARCADE · 70 juegos web" }
+  ]
+}
