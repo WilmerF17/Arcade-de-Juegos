@@ -18,8 +18,9 @@ while [ -L "$FUENTE" ]; do
   [[ "$FUENTE" != /* ]] && FUENTE="$DIR_FUENTE/$FUENTE"
 done
 DIR="$(cd "$(dirname "$FUENTE")/.." && pwd)"
-PIDFILE="/tmp/aplm.pids"
-LOG="/tmp/aplm.log"
+# Mismos archivos que el script clásico ./arcade: ambos comandos interoperan.
+PIDFILE="/tmp/arcade-web.pids"
+LOG="/tmp/arcade-web.log"
 PUERTO_API=3001
 PUERTO_WEB=5173
 
@@ -121,7 +122,9 @@ salud() {
     [ -f "$DIR/client/public/$i" ] && ok "Icono $i" || no "Falta icono $i"
   done
   grep -q 'aplm-v' "$DIR/client/public/sw.js" 2>/dev/null && ok "Service worker propio (offline)" || no "Sin service worker"
+  grep -q 'shortcuts' "$DIR/$M" 2>/dev/null && ok "Accesos directos PWA (3)" || no "Sin shortcuts"
   grep -q 'BASE_URL}sw.js' "$DIR/client/src/main.jsx" 2>/dev/null && ok "SW se registra en raíz y subruta" || no "Registro SW fijo a /"
+  grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "78 juegos con carga perezosa" || no "Sin code-splitting"
   echo ""
   echo -e "${BLANCO}[ Buscable en Google ]${RESET}"
   grep -q '<link rel="canonical"' "$DIR/client/index.html" 2>/dev/null && ok "Canonical presente" || no "Sin canonical"

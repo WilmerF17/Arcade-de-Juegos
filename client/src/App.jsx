@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { JUEGOS, CATEGORIAS, TEMAS } from "./games/GAMES";
 import Marcador from "./games/Marcador";
 import { getStats } from "./api";
@@ -350,8 +350,23 @@ export default function App() {
           </div>
         )}
         {activo === "marcador" ? <Marcador /> : activo !== "inicio" && (() => {
+          if (!juego) {
+            return (
+              <div className="gameshell">
+                <div className="shell-head">
+                  <div className="shell-icono">❓</div>
+                  <div><h2>Juego no encontrado</h2><p className="sub">Ese enlace no existe en ArcadePaLoMuchacho.</p></div>
+                </div>
+                <div className="fila-botones"><button className="btn-principal" onClick={() => ir("inicio")}>← Volver al inicio</button></div>
+              </div>
+            );
+          }
           const C = juego.Component;
-          return <C key={activo} />;
+          return (
+            <Suspense fallback={<div className="gameshell"><p className="sub">⚡ Cargando juego…</p></div>}>
+              <C key={activo} />
+            </Suspense>
+          );
         })()}
       </main>
       {toast && <div className="toast-logro"><Icono n="estrella-llena" size={15} /> {toast}</div>}
