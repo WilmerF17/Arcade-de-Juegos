@@ -1,4 +1,6 @@
-/* GET /api/health: db configurado, ping, y prueba real de escritura/lectura. */
+/* GET /api/health: db configurado + prueba real de escritura/lectura vía _store. */
+const { leer, guardar } = require("./_store");
+
 module.exports = async (_req, res) => {
   const url = (process.env.UPSTASH_REDIS_REST_URL || "").replace(/\/$/, "");
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || "";
@@ -15,16 +17,13 @@ module.exports = async (_req, res) => {
     return res.status(200).json(info);
   }
   try {
-    const val = "sonda-" + Date.now();
-    const w = await fetch(`${url}/set/aplm_sonda/${encodeURIComponent(val)}`, { method: "POST", headers: H });
-    const wt = await w.text();
-    info.escritura = w.ok ? "ok" : `HTTP ${w.status}: ${wt.slice(0, 100)}`;
-    if (w.ok) {
-      const g = await fetch(url + "/get/aplm_sonda", { headers: H });
-      const gj = await g.json().catch(() => ({}));
-      info.lectura = gj.result === val ? "ok" : `distinto: ${JSON.stringify(gj).slice(0, 100)}`;
-      await fetch(`${url}/del/aplm_sonda`, { method: "POST", headers: H }).catch(() => {});
-    }
+    const sonda = { ping: 1, cuando: Date.now() };
+    const antes = await leer();
+    await guardar({ ...antes, aplm_sonda: sonda });
+    const despues = await leer();
+    info.escritura = despues && despues.aplm_sonda && despues.aplm_sonda.cuando === sonda.cuando ? "ok" : "no persiste";
+    info.lectura = info.escritura;
+    await guardar(antes); // limpia la sonda, deja los datos intactos
   } catch (e) {
     info.escritura = "red: " + String((e && e.message) || e).slice(0, 80);
   }
