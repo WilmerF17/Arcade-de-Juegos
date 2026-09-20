@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Icono } from "./Iconos";
 
-const URL_APP = "https://arcadepalomuchacho.vercel.app/";
+const URL_APP = "https://arcade-de-juegos.vercel.app/";
 
 /** Comparte con Web Share API y, si no existe, copia al portapapeles. */
 export async function compartir({ titulo, texto, url = URL_APP }) {

@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, "data");
 const SCORES_FILE = path.join(DATA_DIR, "scores.json");
 const PORT = Number.parseInt(process.env.PORT || "3001", 10) || 3001;
-// URL pública del frontend (para CORS estricto y canonical). Ej: https://arcadepalomuchacho.vercel.app
+// URL pública del frontend (para CORS estricto y canonical). Ej: https://arcade-de-juegos.vercel.app
 const FRONTEND_URLS = (process.env.FRONTEND_URL || "")
   .split(",")
   .map(s => s.trim())

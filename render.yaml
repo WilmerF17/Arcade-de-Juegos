@@ -9,4 +9,4 @@ services:
       - key: NODE_VERSION
         value: 20.19.0
       - key: FRONTEND_URL
-        value: https://wilmerf17.github.io,https://arcadepalomuchacho.vercel.app
+        value: https://wilmerf17.github.io,https://arcade-de-juegos.vercel.app
