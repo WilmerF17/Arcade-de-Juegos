@@ -16,3 +16,5 @@ Instalable en móvil y PC (PWA), funciona sin conexión.
 - Juega: despliegue Docker (este Space) o frontend estático en Vercel/GitHub Pages.
 - API opcional de puntuaciones (misma imagen Docker o Render).
 - Todo el código, iconos y sonidos son propios (SVG + WebAudio generados, sin assets de terceros).
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/WilmerF17/Arcade-de-Juegos)
