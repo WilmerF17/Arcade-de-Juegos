@@ -17,13 +17,18 @@ module.exports = async (_req, res) => {
     return res.status(200).json(info);
   }
   try {
-    const sonda = { ping: 1, cuando: Date.now() };
-    const antes = await leer();
-    await guardar({ ...antes, aplm_sonda: sonda });
-    const despues = await leer();
-    info.escritura = despues && despues.aplm_sonda && despues.aplm_sonda.cuando === sonda.cuando ? "ok" : "no persiste";
-    info.lectura = info.escritura;
-    await guardar(antes); // limpia la sonda, deja los datos intactos
+    // Prueba honesta: JSON con la forma real de puntuaciones, sin pasar por la caché.
+    const H2 = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+    const muestra = JSON.stringify({ keno: { mejor: 1, historial: [{ puntos: 1, fecha: "2026-01-01T00:00:00.000Z", victoria: true }] } });
+    const w = await fetch(url, { method: "POST", headers: H2, body: JSON.stringify(["SET", "aplm_p", muestra]) });
+    const wt = await w.text();
+    info.escritura = w.ok ? "http-ok" : `HTTP ${w.status}: ${wt.slice(0, 120)}`;
+    if (w.ok) {
+      const g = await fetch(url, { method: "POST", headers: H2, body: JSON.stringify(["GET", "aplm_p"]) });
+      const gj = await g.json().catch(() => ({}));
+      info.lectura = gj.result === muestra ? "ok" : `distinto: ${JSON.stringify(gj).slice(0, 120)}`;
+      await fetch(url, { method: "POST", headers: H2, body: JSON.stringify(["DEL", "aplm_p"]) }).catch(() => {});
+    }
   } catch (e) {
     info.escritura = "red: " + String((e && e.message) || e).slice(0, 80);
   }
