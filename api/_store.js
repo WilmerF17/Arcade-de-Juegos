@@ -10,6 +10,16 @@ function env() {
   };
 }
 
+/* Desanida JSON multi-escapado (se autocura de escrituras viejas corruptas). */
+function desanidar(v) {
+  let n = 0;
+  while (typeof v === "string" && n < 6) {
+    try { v = JSON.parse(v); } catch { break; }
+    n++;
+  }
+  return v && typeof v === "object" ? v : {};
+}
+
 async function leer() {
   const { url, token } = env();
   if (!url || !token) return mem.scores;
@@ -17,7 +27,7 @@ async function leer() {
     const r = await fetch(`${url}/get/aplm_scores`, { headers: { Authorization: `Bearer ${token}` } });
     if (!r.ok) throw new Error("Upstash " + r.status);
     const d = await r.json();
-    if (d && typeof d.result === "string" && d.result) return JSON.parse(d.result);
+    if (d && typeof d.result === "string" && d.result) return desanidar(d.result);
   } catch { /* cae a memoria */ }
   return mem.scores;
 }
