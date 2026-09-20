@@ -3,6 +3,7 @@ import { JUEGOS, CATEGORIAS, TEMAS } from "./games/GAMES";
 import Marcador from "./games/Marcador";
 import { getStats } from "./api";
 import { cargarProgreso, guardarProgreso, nivelDe, desafioDelDia, LOGROS } from "./suite/progreso";
+import { cargarBilletera, bonusDiario, bonusDisponible, rescate, MONEDA } from "./suite/billetera";
 import { sonidoActivado, cambiarSonido, sfx } from "./suite/sonido";
 import { Icono, IconoJuego, LogoArcade } from "./ui/Iconos";
 import BotonesCompartir from "./ui/Compartir";
@@ -23,6 +24,7 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [favs, setFavs] = useState(leerFavs);
   const [instalable, setInstalable] = useState(false);
+  const [billetera, setBilletera] = useState(() => cargarBilletera());
   const [instalada, setInstalada] = useState(() =>
     window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone === true
   );
@@ -66,7 +68,12 @@ export default function App() {
       }
     };
     window.addEventListener("arcade-progreso", fn);
-    return () => window.removeEventListener("arcade-progreso", fn);
+    const fb = e => setBilletera(e.detail);
+    window.addEventListener("aplm-billetera", fb);
+    return () => {
+      window.removeEventListener("arcade-progreso", fn);
+      window.removeEventListener("aplm-billetera", fb);
+    };
   }, []);
 
   useEffect(() => {
@@ -199,6 +206,24 @@ export default function App() {
               </span>
             ))}
           </div>
+        </div>
+
+        <div className="billetera-box">
+          <span className="nivel">{MONEDA} {billetera.saldo}</span>
+          <span style={{ color: "var(--texto-suave)", fontSize: ".78rem" }}> fichas</span>
+          <div className="interruptores" style={{ marginTop: 6 }}>
+            {bonusDisponible() ? (
+              <button className="switch on" onClick={() => {
+                const c = bonusDiario() || rescate();
+                if (c > 0) { setToast(`🎁 +${c} fichas en tu billetera`); setTimeout(() => setToast(""), 3000); sfx.clic(); }
+              }}>
+                🎁 Bonus +500
+              </button>
+            ) : (
+              <button className="switch" disabled title="Vuelve mañana por más">🎁 Bonus reclamado</button>
+            )}
+          </div>
+          <small style={{ color: "var(--texto-suave)" }}>Fichas virtuales · solo por diversión</small>
         </div>
 
         <div className="buscador">

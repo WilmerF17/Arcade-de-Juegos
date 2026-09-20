@@ -1,4 +1,11 @@
 import { lazy } from "react";
+const SieteAlto = lazy(() => import("./SieteAlto"));
+const MonedaRacha = lazy(() => import("./MonedaRacha"));
+const Hipica = lazy(() => import("./Hipica"));
+const ChuckSuerte = lazy(() => import("./ChuckSuerte"));
+const PuntoBanco = lazy(() => import("./PuntoBanco"));
+const KenoVeloz = lazy(() => import("./KenoVeloz"));
+const RascaGana = lazy(() => import("./RascaGana"));
 const QuizHistoria = lazy(() => import("./QuizTema").then(m => ({ default: m.QuizHistoria })));
 const QuizCiencia = lazy(() => import("./QuizTema").then(m => ({ default: m.QuizCiencia })));
 const QuizGeografia = lazy(() => import("./QuizTema").then(m => ({ default: m.QuizGeografia })));
@@ -451,6 +458,13 @@ export const JUEGOS = {
   tocadecena: { nombre: "Toca la Decena", emoji: "🔟", descripcion: "La decena exacta", Component: TocaDecena, tema: "aplm", grad: "linear-gradient(135deg,#facc15,#22c55e)", tag: "Reflejos" },
   saltolargo: { nombre: "Salto Largo", emoji: "🦘", descripcion: "Carga y suelta en verde", Component: SaltoLargo, tema: "aplm", grad: "linear-gradient(135deg,#22d3ee,#7c3aed)", tag: "Arcade" },
   oidoveloz: { nombre: "Oído Veloz", emoji: "👂", descripcion: "Toca al oír el pitido", Component: OidoVeloz, tema: "aplm", grad: "linear-gradient(135deg,#ec4899,#7c3aed)", tag: "Ritmo" },
+  sietealto: { nombre: "Siete Alto", emoji: "🎲", descripcion: "Apuesta Alto/Bajo ×2 · Siete ×5.", Component: SieteAlto, tema: "dados", grad: "linear-gradient(135deg,#eab308,#dc2626)", tag: "Azar" },
+  monedaracha: { nombre: "Moneda Racha", emoji: "🪙", descripcion: "Cara o cruz ×2 · planta o arriesga.", Component: MonedaRacha, tema: "moneda", grad: "linear-gradient(135deg,#facc15,#eab308)", tag: "Azar" },
+  hipica: { nombre: "Hípica", emoji: "🐎", descripcion: "Apuesta al corredor con su cuota.", Component: Hipica, tema: "hipodromo", grad: "linear-gradient(135deg,#16a34a,#eab308)", tag: "Azar" },
+  chuck: { nombre: "Chuck de la Suerte", emoji: "🍀", descripcion: "3 dados · 1×2, 2×3, 3×5.", Component: ChuckSuerte, tema: "dados", grad: "linear-gradient(135deg,#16a34a,#22c55e)", tag: "Azar" },
+  puntobanco: { nombre: "Punto Banco", emoji: "🃏", descripcion: "Jugador ×2 · Banca ×2 · Empate ×9.", Component: PuntoBanco, tema: "casino", grad: "linear-gradient(135deg,#052e16,#22c55e)", tag: "Casino" },
+  keno: { nombre: "Keno Veloz", emoji: "🎱", descripcion: "Elige 5 · 3×2, 4×5, 5×20.", Component: KenoVeloz, tema: "bolas", grad: "linear-gradient(135deg,#0f172a,#7c3aed)", tag: "Azar" },
+  rasca: { nombre: "Rasca y Gana", emoji: "🎫", descripcion: "Revela 3 · trío ×10.", Component: RascaGana, tema: "suerte", grad: "linear-gradient(135deg,#f59e0b,#ec4899)", tag: "Azar" },
 };
 
 export const CATEGORIAS = [
@@ -458,7 +472,7 @@ export const CATEGORIAS = [
   { id: "fiesta", nombre: "Fiesta y 2 jugadores", icono: "tragaperras", juegos: ["mimica", "mimicapelis", "verdad", "verdadkids", "telroto", "telfrases", "duelmanos", "duelopro", "dados2p", "dados2plargo", "dueloreflejos", "duelolargo", "copa", "loteria", "donde", "dondepro", "basta", "bastajunior", "duelotrivia", "duelocultura"] },
   { id: "palabras", nombre: "Palabras", icono: "sopa", juegos: ["ahorcado", "wordle", "sopa", "anagramas", "mecanografia", "crucigrama", "cascada", "capitales", "memorianum", "cazapalabra", "pistaanimales", "pistapaises", "pistacomidas", "pistaoficios", "pistadeportes", "pistainstrumentos", "pistaflores", "pistavehiculos", "pistafrutas", "pistaropa", "pistamuebles", "pistacolores", "refranes", "dichos", "fraserefranes", "frasehechos", "fraseanimales", "fraseviajes", "palabradiaria", "palabra6", "palabra4", "ahoranimales", "ahorcomidas", "ahorpaises", "ahoroficios", "ahordeportes", "emojianimales", "emojicomida", "emojideportes", "emojiobjetos", "emojinatura", "emojiviajes"] },
   { id: "logica", nombre: "Lógica y puzzle", icono: "puzzle15", juegos: ["mastermind", "puzzle15", "juego2048", "mathblitz", "caza", "sudoku", "hanoi", "luces", "picross", "laberinto", "stack", "mate1", "bolalab", "labciego", "ordena", "inversa", "sombras", "ruta", "ordenainverso", "ordenaletras", "ordenapares", "sumas", "restas", "tablas", "divisiones", "dobles", "mezcla", "intrusoanimales", "intrusofrutas", "intrusopaises", "intrusocolores", "intrusodeportes", "intrusooficios", "intrusomusica", "intrusocomidas", "intrusoropa", "intrusocasa", "parejasnumeros", "parejasletras", "parejasbanderas", "parejasanimales", "parejasfrutas", "parejasdeportes", "parejasformas", "parejascomida", "parejasplanetas", "parejasmusica", "puzzle9"] },
-  { id: "azar", nombre: "Azar y casino", icono: "dados", juegos: ["adivina", "rps", "dados", "blackjack", "tragaperras", "ruleta", "yahtzee", "guerra", "poker", "bingo", "sietemedio", "escalera", "adivina50", "adivina1000", "adivinaexpres", "maquina", "mayormenor", "escoba", "brisca"] },
+  { id: "azar", nombre: "Azar y casino", icono: "dados", juegos: ["adivina", "rps", "dados", "blackjack", "tragaperras", "ruleta", "yahtzee", "guerra", "poker", "bingo", "sietemedio", "escalera", "adivina50", "adivina1000", "adivinaexpres", "maquina", "mayormenor", "escoba", "brisca", "sietealto", "monedaracha", "hipica", "chuck", "puntobanco", "keno", "rasca"] },
   { id: "tablero", nombre: "Tablero y estrategia", icono: "treslinea", juegos: ["treslinea", "c4", "buscaminas", "flota", "othello", "damas", "gomoku", "oca", "parchis", "parchisduelo", "serpientes", "serpientesduelo", "raya4", "raya5", "sudoku4", "buscachico", "buscagrande"] },
   { id: "arcade", nombre: "Arcade y acción", icono: "mando", juegos: ["snake", "pong", "pong2p", "breakout", "simon", "flappy", "reflejos", "tetris", "topo", "atrapar", "esquiva", "dino", "naves", "pacman", "piano", "aim", "frogger", "tron", "carrera", "saltarin", "burbujas", "malabares", "ddr", "pesca", "zombies", "equilibrio", "sprint", "pulso", "destello", "tocamayor", "tocamenor", "tocapar", "tocaimpar", "tocaprimo", "tocamult5", "tocadecena", "saltolargo", "oidoveloz"] },
   { id: "cultura", nombre: "Cultura, mente y deporte", icono: "capitales", juegos: ["trivia", "memoria", "stroop", "penaltis", "bowling", "parimpar", "atajada", "oidofino"] },

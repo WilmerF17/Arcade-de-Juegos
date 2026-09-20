@@ -1,5 +1,12 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.3.0 (2026-09-20) — Casino y billetera
+- Billetera virtual 🪙: saldo inicial 1000, bonus diario +500, rescate,
+  widget en el lateral (fichas de juego, sin dinero real).
+- +7 juegos de apuestas: Siete Alto, Moneda Racha, Hípica, Chuck de la
+  Suerte, Punto Banco, Keno Veloz y Rasca y Gana (total 232).
+- SEO/PWA a 232 (JSON-LD, sitemap 233 URLs, manifest, SW aplm-v6).
+
 ## v2.2.0 (2026-09-20) — Punto máximo: 225 juegos
 - +140 juegos en 37 motores nuevos: 15 quizzes, 12 ¿qué es?, 10 memorias,
   7 toca-el-número, 6 cálculos, 10 intrusos, 8 verdadero/falso, refranes,
