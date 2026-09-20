@@ -2,10 +2,10 @@
 title: ArcadePaLoMuchacho
 emoji: 🕹️
 colorFrom: red
-colorTo: orange
+colorTo: yellow
 sdk: docker
 pinned: false
-short_description: 232 minijuegos originales en español, instalable en móvil y PC.
+short_description: 232 minijuegos gratis
 ---
 
 # ArcadePaLoMuchacho
