@@ -10,13 +10,20 @@ function env() {
   };
 }
 
-async function upstash(path, body) {
+async function upstashGet(path) {
   const { url, token } = env();
   if (!url || !token) return null;
-  const r = await fetch(url + path, {
-    method: body === undefined ? "GET" : "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body),
+  const r = await fetch(url + path, { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new Error("Upstash " + r.status);
+  return r.json();
+}
+
+async function upstashSet(key, value) {
+  const { url, token } = env();
+  if (!url || !token) return null;
+  const r = await fetch(`${url}/set/${key}/${encodeURIComponent(value)}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
   });
   if (!r.ok) throw new Error("Upstash " + r.status);
   return r.json();
@@ -24,7 +31,7 @@ async function upstash(path, body) {
 
 async function leer() {
   try {
-    const d = await upstash("/get/aplm_scores");
+    const d = await upstashGet("/get/aplm_scores");
     if (d && d.result) return JSON.parse(d.result);
   } catch { /* cae a memoria */ }
   return mem.scores;
@@ -33,7 +40,7 @@ async function leer() {
 async function guardar(scores) {
   mem.scores = scores;
   try {
-    await upstash("/set/aplm_scores", JSON.stringify(scores));
+    await upstashSet("aplm_scores", JSON.stringify(scores));
   } catch { /* queda en memoria */ }
 }
 
