@@ -5,7 +5,7 @@ module.exports = async (_req, res) => {
   const url = (process.env.UPSTASH_REDIS_REST_URL || "").replace(/\/$/, "");
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || "";
   const db = Boolean(url && token);
-  const info = { ok: true, app: "arcadepalomuchacho", db, tiempo: new Date().toISOString() };
+  const info = { ok: true, app: "arcadepalomuchacho", v: 4, db, tiempo: new Date().toISOString() };
   if (!db) return res.status(200).json(info);
   const H = { Authorization: `Bearer ${token}` };
   try {
