@@ -1,0 +1,11 @@
+run = "npm run install-all && npm run build && npm start"
+entrypoint = "package.json"
+
+[deployment]
+run = ["sh", "-c", "npm run install-all && npm run build && npm start"]
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+PORT = "3001"
