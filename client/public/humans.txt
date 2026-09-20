@@ -1,0 +1,6 @@
+/* el equipo */
+ArcadePaLoMuchacho — 232 minijuegos originales en español.
+Código, iconos y sonidos 100% propios (SVG + WebAudio generados).
+Repo: https://github.com/WilmerF17/Arcade-de-Juegos
+
+/* gracias por jugar */

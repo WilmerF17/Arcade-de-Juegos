@@ -157,7 +157,7 @@ const clientDist = path.join(__dirname, "..", "client", "dist");
 if (fs.existsSync(clientDist)) {
   // Assets con hash: inmutables, caché larga
   app.use("/assets", express.static(path.join(clientDist, "assets"), { maxAge: "1y", immutable: true }));
-  app.use(express.static(clientDist));
+  app.use(express.static(clientDist, { dotfiles: "allow" }));
   app.get(/^(?!\/api).*/, (_req, res) => {
     res.set("Cache-Control", "no-cache");
     res.sendFile(path.join(clientDist, "index.html"));
