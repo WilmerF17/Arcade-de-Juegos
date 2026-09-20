@@ -1,4 +1,4 @@
-/* Almacén de puntuaciones: Upstash Redis (REST, formato documentado) con respaldo en memoria.
+/* Almacén de puntuaciones: Upstash Redis (REST estilo path, probado) + memoria.
    - En Vercel define UPSTASH_REDIS_REST_URL y UPSTASH_REDIS_REST_TOKEN.
    - Sin esas variables funciona en memoria (se reinicia en frío, pero no falla). */
 const mem = { scores: {} };
@@ -10,31 +10,28 @@ function env() {
   };
 }
 
-/* Llamada REST documentada: POST / con ["COMANDO", ...args] */
-async function cmd(...args) {
-  const { url, token } = env();
-  if (!url || !token) return null;
-  const r = await fetch(url, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify(args),
-  });
-  if (!r.ok) throw new Error("Upstash " + r.status);
-  return r.json();
-}
-
 async function leer() {
+  const { url, token } = env();
+  if (!url || !token) return mem.scores;
   try {
-    const d = await cmd("GET", "aplm_scores");
-    if (d && d.result) return JSON.parse(d.result);
+    const r = await fetch(`${url}/get/aplm_scores`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!r.ok) throw new Error("Upstash " + r.status);
+    const d = await r.json();
+    if (d && typeof d.result === "string" && d.result) return JSON.parse(d.result);
   } catch { /* cae a memoria */ }
   return mem.scores;
 }
 
 async function guardar(scores) {
   mem.scores = scores;
+  const { url, token } = env();
+  if (!url || !token) return;
   try {
-    await cmd("SET", "aplm_scores", JSON.stringify(scores));
+    const r = await fetch(`${url}/set/aplm_scores/${encodeURIComponent(JSON.stringify(scores))}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!r.ok) throw new Error("Upstash " + r.status);
   } catch { /* queda en memoria */ }
 }
 
