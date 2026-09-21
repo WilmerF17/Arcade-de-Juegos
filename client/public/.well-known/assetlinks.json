@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vercel.arcade_de_juegos.twa",
+      "sha256_cert_fingerprints": ["SUSTITUIR_CON_TU_SHA256_DE_PLAY_CONSOLE"]
+    }
+  }
+]

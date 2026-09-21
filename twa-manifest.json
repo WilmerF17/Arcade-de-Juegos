@@ -1,0 +1,29 @@
+{
+  "packageId": "app.vercel.arcade_de_juegos.twa",
+  "host": "arcade-de-juegos.vercel.app",
+  "name": "ArcadePaLoMuchacho · 237 juegos",
+  "shortName": "PaLoMuchacho",
+  "themeColor": "#ff3d5a",
+  "backgroundColor": "#12060f",
+  "display": "standalone",
+  "orientation": "any",
+  "startUrl": "/",
+  "iconUrl": "https://arcade-de-juegos.vercel.app/icon-512.png",
+  "maskableIconUrl": "https://arcade-de-juegos.vercel.app/maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "enableNotifications": false,
+  "shortcuts": [],
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "appVersion": "2.3.0",
+  "appVersionCode": 1,
+  "minSdkVersion": 23,
+  "targetSdkVersion": 34,
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": { "enabled": false },
+    "playBilling": { "enabled": false }
+  }
+}

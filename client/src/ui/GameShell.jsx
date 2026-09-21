@@ -28,7 +28,7 @@ export function useRegistro(nombreJuego, juegoId = null) {
     try {
       s = await registrar(nombreJuego, puntos, ganadas, jugadas);
     } catch (e) {
-      setEstado(prev => ({ ...prev, mensaje: "No se pudo guardar la puntuación (servidor apagado)." }));
+      setEstado(prev => ({ ...prev, mensaje: "Sin conexión al ranking (offline o servidor apagado): tu XP y nivel se guardan igual en este dispositivo. ✅" }));
     }
 
     // Progresión local (siempre, aunque falle el servidor)

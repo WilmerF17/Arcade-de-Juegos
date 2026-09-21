@@ -531,4 +531,196 @@ body[data-tema="claro"] .xp-bar { background: #e2e6f2; }
 @media (min-width: 901px) {
   .barra-movil, .fondo-menu { display: none; }
   .banner-instalar { display: none; }
+  .nav-movil { display: none; }
 }
+
+/* ============================================================
+   OPTIMIZACIÓN MÓVIL v3 — rendimiento + táctil + safe-area
+   ============================================================ */
+html { height: 100%; }
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+}
+/* El teclado virtual no rompe el layout (Chrome Android) */
+@supports (height: 100dvh) {
+  .app { min-height: 100dvh; }
+}
+/* Imágenes y canvas nunca desbordan en pantallas estrechas */
+img, svg, video, canvas { max-width: 100%; }
+canvas { height: auto; }
+
+/* Render barato de las 237 cartas: el navegador salta las fuera de pantalla */
+.carta { content-visibility: auto; contain-intrinsic-size: auto 240px; }
+
+@media (max-width: 900px) {
+  /* --- Grid compacto 2 columnas en móvil --- */
+  .grid-cartas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .carta-banner { height: 78px; }
+  .carta-emoji { font-size: 2rem; }
+  .carta-cuerpo { padding: 10px 11px 12px; }
+  .carta-cuerpo h4 { font-size: 0.86rem; }
+  .carta-cuerpo p {
+    font-size: 0.74rem; min-height: 0;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .carta-jugar { font-size: 0.78rem; }
+
+  /* --- Shell de juego más compacta --- */
+  .gameshell { padding: 16px 14px calc(18px + env(safe-area-inset-bottom)); border-radius: 16px; }
+  .gameshell h2 { font-size: 1.3rem; }
+  .shell-icono { width: 46px; height: 46px; font-size: 1.7rem; border-radius: 13px; }
+  .contenido { padding: 68px 12px calc(150px + env(safe-area-inset-bottom)); }
+
+  /* --- Hero compacto --- */
+  .hero { padding: 18px 16px; border-radius: 18px; margin-bottom: 16px; }
+  .hero h2 { font-size: 1.55rem; }
+  .hero p { font-size: 0.86rem; }
+  .hero-stats { gap: 14px; flex-wrap: wrap; }
+  .hero-stats b { font-size: 1.2rem; }
+
+  /* --- Objetivos táctiles ≥44px (WCAG + Play) --- */
+  button { min-height: 44px; }
+  .nav-item { min-height: 48px; padding: 12px 10px; }
+  .chip-cat { min-height: 40px; padding: 8px 14px; font-size: 0.82rem; }
+  .switch { min-height: 44px; padding: 10px 14px; }
+  .tema-btn { width: 52px; height: 48px; }
+  .tecla { width: 34px; height: 48px; }
+  .tecla.ancha { width: 56px; }
+  .celda-mina { width: 36px; height: 36px; }
+  .flechas-2048 button { width: 52px; height: 52px; }
+  .cuadro-simon { width: 72px; height: 72px; }
+  .ficha-2048 { width: 68px; height: 68px; }
+  .ficha-puzzle { width: 60px; height: 60px; }
+  .rodillo { width: 62px; height: 62px; font-size: 2.4rem; }
+
+  /* --- Evita zoom automático de iOS al enfocar (font <16px) --- */
+  input[type="text"], input[type="number"], input[type="search"],
+  input[type="email"], input[type="tel"], select, textarea { font-size: 16px; }
+  .buscador input { font-size: 16px; }
+  .math-zona input { font-size: 1.3rem; width: 110px; }
+
+  /* --- Tablas y tableros con scroll horizontal seguro --- */
+  table.estadisticas { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tablero, .puzzle-tab { max-width: calc(100vw - 48px); }
+  .canvas-neon { width: 100%; height: auto; }
+
+  /* --- Wordle / teclados que caben en 360px --- */
+  .palabra-wordle { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 340px; }
+  .casilla-wordle { width: 100%; height: auto; aspect-ratio: 1; font-size: 1.4rem; }
+  .teclado .fila { max-width: 100%; overflow-x: auto; }
+
+  /* --- Auroras: blur(90px) funde la GPU gama baja → apagadas en móvil --- */
+  .aurora { display: none; }
+  body[data-rgb="on"] .aurora { display: none; }
+
+  /* --- Banner de instalación encima de la nav inferior --- */
+  .banner-instalar { bottom: calc(84px + env(safe-area-inset-bottom)); }
+
+  /* --- Nav inferior pulgar (Inicio · Aleatorio · Buscar · Récords) --- */
+  .nav-movil {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 55;
+    padding: 6px 6px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(13, 14, 21, 0.92);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+  }
+  body[data-tema="claro"] .nav-movil { background: rgba(255, 255, 255, 0.94); }
+  body[data-tema="playa"] .nav-movil { background: rgba(255, 253, 246, 0.94); }
+  .nav-movil button {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: transparent; color: var(--texto-suave);
+    font-size: 0.66rem; font-weight: 700; min-height: 52px; border-radius: 12px;
+  }
+  .nav-movil button.on { color: var(--texto); background: var(--bg-hover); }
+  .nav-movil button span.ico { font-size: 1.3rem; line-height: 1; }
+
+  .toast-logro {
+    left: 12px; right: 12px; bottom: calc(150px + env(safe-area-inset-bottom));
+    max-width: none;
+  }
+}
+
+/* Pantallas muy estrechas (≤380px): 2 columnas aún más densas */
+@media (max-width: 380px) {
+  .grid-cartas { gap: 8px; }
+  .carta-banner { height: 70px; }
+  .carta-cuerpo p { -webkit-line-clamp: 1; }
+  .hero h2 { font-size: 1.35rem; }
+  .rps-mano { font-size: 3rem; padding: 12px; }
+  .podio { gap: 6px; }
+}
+
+/* Movimiento reducido o ahorro de datos: mata animaciones caras */
+@media (prefers-reduced-motion: reduce), (prefers-reduced-data: reduce) {
+  .aurora, .confeti, .hero-fondo { display: none !important; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Pantallas grandes: 3 columnas cómodas */
+@media (min-width: 1400px) {
+  .contenido { max-width: 1240px; }
+  .grid-cartas { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+}
+
+/* ======== Botón instalar PWA (siempre visible) ======== */
+.caja-instalar {
+  margin: 12px 2px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(255,61,90,.14), rgba(255,154,61,.10)), var(--bg-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.caja-instalar-txt { display: flex; flex-direction: column; gap: 2px; font-size: .9rem; }
+.caja-instalar-txt small { color: var(--texto-suave); font-size: .75rem; }
+.btn-instalar-lateral {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+}
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, .6);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.modal-instalar {
+  width: min(440px, 100%);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--sombra);
+  padding: 18px;
+  animation: entra .2s ease;
+}
+.modal-instalar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 1.05rem;
+}
+.modal-instalar-sub { color: var(--texto-suave); font-size: .88rem; margin: 8px 0 12px; }
+.instalar-lista { margin: 0 0 12px; padding-left: 20px; display: grid; gap: 8px; font-size: .9rem; }
+.modal-instalar-nota {
+  font-size: .8rem;
+  color: var(--texto-suave);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin: 0 0 12px;
+}
+.modal-instalar .btn-principal { width: 100%; padding: 12px; }

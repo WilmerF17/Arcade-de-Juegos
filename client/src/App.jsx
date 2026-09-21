@@ -7,6 +7,7 @@ import { cargarBilletera, bonusDiario, bonusDisponible, rescate, MONEDA } from "
 import { sonidoActivado, cambiarSonido, sfx } from "./suite/sonido";
 import { Icono, IconoJuego, LogoArcade } from "./ui/Iconos";
 import BotonesCompartir from "./ui/Compartir";
+import BotonInstalar from "./ui/Instalar";
 
 function leerFavs() {
   try { return JSON.parse(localStorage.getItem("arcade-favs") || "[]"); } catch { return []; }
@@ -113,35 +114,78 @@ export default function App() {
   }, []);
 
   // PWA: captura el prompt de instalación (Chrome/Edge/Android/PC)
+  // Comparte el evento con el componente BotonInstalar vía window.__aplmInstallPrompt
   useEffect(() => {
+    if (window.__aplmInstallPrompt) {
+      promptInstalar.current = window.__aplmInstallPrompt;
+      setInstalable(true);
+    }
     const listo = e => {
       e.preventDefault();
       promptInstalar.current = e;
+      window.__aplmInstallPrompt = e;
       setInstalable(true);
+      window.dispatchEvent(new Event("aplm-instalable"));
     };
     const hecho = () => {
       promptInstalar.current = null;
+      window.__aplmInstallPrompt = null;
       setInstalable(false);
       setInstalada(true);
+      window.dispatchEvent(new Event("aplm-instalable"));
+    };
+    const sync = () => {
+      if (!window.__aplmInstallPrompt) {
+        promptInstalar.current = null;
+        setInstalable(false);
+      }
     };
     window.addEventListener("beforeinstallprompt", listo);
     window.addEventListener("appinstalled", hecho);
+    window.addEventListener("aplm-instalable", sync);
     return () => {
       window.removeEventListener("beforeinstallprompt", listo);
       window.removeEventListener("appinstalled", hecho);
+      window.removeEventListener("aplm-instalable", sync);
     };
   }, []);
 
   async function instalar() {
-    const e = promptInstalar.current;
+    const e = promptInstalar.current || window.__aplmInstallPrompt;
     if (!e) return;
     e.prompt();
     try { await e.userChoice; } catch { /* noop */ }
     promptInstalar.current = null;
+    window.__aplmInstallPrompt = null;
     setInstalable(false);
+    window.dispatchEvent(new Event("aplm-instalable"));
   }
 
   const esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent || "");
+  const esAndroid = /android/i.test(navigator.userAgent || "");
+  // Altura real del viewport en móviles (corrige 100vh con barra del navegador)
+  useEffect(() => {
+    const fijar = () => {
+      document.documentElement.style.setProperty("--app-height", `${window.innerHeight}px`);
+    };
+    fijar();
+    window.addEventListener("resize", fijar);
+    window.addEventListener("orientationchange", fijar);
+    return () => {
+      window.removeEventListener("resize", fijar);
+      window.removeEventListener("orientationchange", fijar);
+    };
+  }, []);
+
+  const mostrarBannerAuto = instalable && !instalada && !bannerOff;
+  // Android sin prompt (Samsung/Firefox): banner manual una vez por sesión
+  const mostrarBannerManual = !instalada && !instalable && !bannerOff && esAndroid && !esIOS;
+
+  function irABuscar() {
+    setMenuAbierto(true);
+    // Espera a que el cajón se abra y enfoca el buscador
+    setTimeout(() => buscarRef.current?.focus({ preventScroll: false }), 300);
+  }
   useEffect(() => {
     const fn = e => {
       const tag = document.activeElement?.tagName;
@@ -197,9 +241,7 @@ export default function App() {
         <div className="logo-orb"><LogoArcade size={24} /></div>
         <b>PaLoMuchacho</b>
         <span className="espacio" />
-        {instalable && !instalada && (
-          <button className="btn-suave" onClick={instalar} aria-label="Instalar app"><Icono n="descargar" size={16} /></button>
-        )}
+        <BotonInstalar variante="icono" />
       </header>
       {menuAbierto && <div className="fondo-menu" onClick={() => setMenuAbierto(false)} aria-hidden />}
       <aside className={`lateral${menuAbierto ? " abierto" : ""}`}>
@@ -207,6 +249,11 @@ export default function App() {
           <div className="logo-orb"><LogoArcade size={34} /></div>
           <h1>PaLoMuchacho</h1>
           <p>{totalJuegos} juegos · {totalPartidas} partidas</p>
+        </div>
+
+        <div className="caja-instalar">
+          <span className="caja-instalar-txt">📲 <b>Llévame contigo</b><small>Juega sin conexión · pantalla completa</small></span>
+          <BotonInstalar variante="lateral" />
         </div>
 
         <div className="progreso-box">
@@ -332,23 +379,8 @@ export default function App() {
                   )}
                   <button className="btn-suave" onClick={() => ir("marcador")}><Icono n="marcador" size={15} /> Ver marcador</button>
                   <BotonesCompartir texto={`🕹️ Juego ${totalJuegos} minijuegos gratis en ArcadePaLoMuchacho: XP, logros y desafío diario. ¡Supérame!`} />
-                  {instalable && !instalada && (
-                    <button className="btn-exito" onClick={instalar}><Icono n="descargar" size={15} /> Instalar app</button>
-                  )}
+                  <BotonInstalar variante="hero" />
                 </div>
-                {esIOS && !instalada && !instalable && (
-                  <p className="aviso info" style={{ margin: "10px 0 0" }}>En iPhone/iPad: Compartir → «Añadir a pantalla de inicio» para instalarla.</p>
-                )}
-                {!instalada && !instalable && !esIOS && (
-                  <details className="aviso info" style={{ margin: "10px 0 0" }}>
-                    <summary>📲 ¿Cómo instalo ArcadePaLoMuchacho?</summary>
-                    <p style={{ margin: "8px 0 0" }}>
-                      <b>Android (Chrome):</b> menú ⋮ → «Instalar app» o «Añadir a pantalla de inicio».
-                      <br /><b>PC (Chrome/Edge):</b> icono de instalación en la barra de direcciones o menú → «Instalar».
-                      <br /><b>iPhone/iPad:</b> Compartir → «Añadir a pantalla de inicio».
-                    </p>
-                  </details>
-                )}
                 <div className="hero-stats">
                   <div><b>{totalJuegos}</b><span>juegos</span></div>
                   <div><b>{CATEGORIAS.length}</b><span>categorías</span></div>
@@ -421,11 +453,33 @@ export default function App() {
         })()}
       </main>
       {toast && <div className="toast-logro"><Icono n="estrella-llena" size={15} /> {toast}</div>}
-      {instalable && !instalada && !bannerOff && (
+      {/* Nav inferior móvil: pulgar, 4 destinos, siempre visible */}
+      <nav className="nav-movil" aria-label="Navegación principal">
+        <button className={activo === "inicio" ? "on" : ""} onClick={() => ir("inicio")} aria-label="Inicio">
+          <span className="ico">🏠</span>Inicio
+        </button>
+        <button onClick={aleatorio} aria-label="Juego aleatorio">
+          <span className="ico">🎲</span>Azar
+        </button>
+        <button onClick={irABuscar} aria-label="Buscar juego">
+          <span className="ico">🔍</span>Buscar
+        </button>
+        <button className={activo === "marcador" ? "on" : ""} onClick={() => ir("marcador")} aria-label="Marcador">
+          <span className="ico">🏆</span>Récords
+        </button>
+      </nav>
+      {mostrarBannerAuto && (
         <div className="banner-instalar">
           <span style={{ fontSize: "1.6rem" }}>📲</span>
           <span>Llévame contigo<small>Juega sin conexión · ocupa poco</small></span>
           <button className="instalar" onClick={instalar}>Instalar</button>
+          <button className="cerrar" onClick={() => setBannerOff(true)} aria-label="Cerrar">✕</button>
+        </div>
+      )}
+      {mostrarBannerManual && (
+        <div className="banner-instalar">
+          <span style={{ fontSize: "1.6rem" }}>📲</span>
+          <span>Añádeme a tu inicio<small>Menú → «Añadir a pantalla de inicio»</small></span>
           <button className="cerrar" onClick={() => setBannerOff(true)} aria-label="Cerrar">✕</button>
         </div>
       )}
