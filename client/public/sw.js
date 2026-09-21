@@ -2,7 +2,7 @@
    - Navegaciones: network-first con fallback a la portada cacheada.
    - Assets propios (JS/CSS/imgs): stale-while-revalidate.
    - /api: solo red (las puntuaciones nunca se cachean). */
-const VERSION = "aplm-v7";
+const VERSION = "aplm-v8";
 const SHELL = ["./", "./index.html", "./favicon.svg", "./icon-192.png", "./icon-512.png", "./maskable-512.png", "./site.webmanifest"];
 
 self.addEventListener("install", e => {

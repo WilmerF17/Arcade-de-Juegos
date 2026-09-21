@@ -29,6 +29,8 @@ export default function App() {
   const [instalada, setInstalada] = useState(() =>
     window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone === true
   );
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const [bannerOff, setBannerOff] = useState(false);
   const promptInstalar = useRef(null);
   const buscarRef = useRef(null);
   const juego = JUEGOS[activo];
@@ -83,6 +85,7 @@ export default function App() {
 
   function ir(id) {
     setActivo(id);
+    setMenuAbierto(false);
     sfx.clic();
     window.location.hash = id === "inicio" ? "" : id;
   }
@@ -189,7 +192,17 @@ export default function App() {
       <div className="aurora a1" aria-hidden />
       <div className="aurora a2" aria-hidden />
       <div className="aurora a3" aria-hidden />
-      <aside className="lateral">
+      <header className="barra-movil">
+        <button className="btn-menu btn-suave" onClick={() => setMenuAbierto(true)} aria-label="Abrir menú">☰</button>
+        <div className="logo-orb"><LogoArcade size={24} /></div>
+        <b>PaLoMuchacho</b>
+        <span className="espacio" />
+        {instalable && !instalada && (
+          <button className="btn-suave" onClick={instalar} aria-label="Instalar app"><Icono n="descargar" size={16} /></button>
+        )}
+      </header>
+      {menuAbierto && <div className="fondo-menu" onClick={() => setMenuAbierto(false)} aria-hidden />}
+      <aside className={`lateral${menuAbierto ? " abierto" : ""}`}>
         <div className="logo" onClick={() => ir("inicio")} style={{ cursor: "pointer" }}>
           <div className="logo-orb"><LogoArcade size={34} /></div>
           <h1>PaLoMuchacho</h1>
@@ -408,6 +421,14 @@ export default function App() {
         })()}
       </main>
       {toast && <div className="toast-logro"><Icono n="estrella-llena" size={15} /> {toast}</div>}
+      {instalable && !instalada && !bannerOff && (
+        <div className="banner-instalar">
+          <span style={{ fontSize: "1.6rem" }}>📲</span>
+          <span>Llévame contigo<small>Juega sin conexión · ocupa poco</small></span>
+          <button className="instalar" onClick={instalar}>Instalar</button>
+          <button className="cerrar" onClick={() => setBannerOff(true)} aria-label="Cerrar">✕</button>
+        </div>
+      )}
       {hayUpdate && (
         <div className="toast-logro" style={{ cursor: "pointer" }} role="button" tabIndex={0}
           onClick={() => { setHayUpdate(false); window.__aplmActualizar ? window.__aplmActualizar() : window.location.reload(); }}

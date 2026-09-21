@@ -77,6 +77,8 @@ try {
   else ok(`${man.icons.length} iconos existen`);
   if (!man.shortcuts?.length) no("Sin shortcuts PWA");
   else ok(`${man.shortcuts.length} shortcuts PWA`);
+  if (!man.launch_handler) no("Sin launch_handler (ventanas duplicadas)");
+  else ok("launch_handler navigate-existing");
 } catch { no("site.webmanifest no es JSON válido"); }
 
 // 6. Servidor endurecido

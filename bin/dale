@@ -123,6 +123,9 @@ salud() {
   done
   grep -q 'aplm-v' "$DIR/client/public/sw.js" 2>/dev/null && ok "Service worker propio (offline)" || no "Sin service worker"
   grep -q 'shortcuts' "$DIR/$M" 2>/dev/null && ok "Accesos directos PWA (3)" || no "Sin shortcuts"
+  grep -q 'launch_handler' "$DIR/$M" 2>/dev/null && ok "Sin ventanas duplicadas" || no "Sin launch_handler"
+  grep -q 'barra-movil' "$DIR/client/src/App.jsx" 2>/dev/null && ok "Navegación móvil (drawer)" || no "Sin drawer móvil"
+  grep -q 'banner-instalar' "$DIR/client/src/App.jsx" 2>/dev/null && ok "Banner de instalación" || no "Sin banner"
   grep -q 'BASE_URL}sw.js' "$DIR/client/src/main.jsx" 2>/dev/null && ok "SW se registra en raíz y subruta" || no "Registro SW fijo a /"
   grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "237 juegos con carga perezosa" || no "Sin code-splitting"
   echo ""
