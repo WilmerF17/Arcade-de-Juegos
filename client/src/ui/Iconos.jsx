@@ -234,6 +234,8 @@ const TITULO_A_ICONO = {
   "Toca el Impar": "reflejos", "Toca el Primo": "reflejos",
   "Toca el Múltiplo de 5": "reflejos", "Toca la Decena": "reflejos",
   "Salto Largo": "saltarin", "Oído Veloz": "sonido",
+  "Quiz Mitología": "trivia", "Quiz Inventos": "trivia", "Quiz Océanos": "trivia",
+  "Parejas de Navidad": "memoria", "Parejas de Halloween": "memoria",
   "Siete Alto": "dados", "Moneda Racha": "tragaperras", "Hípica": "carrera",
   "Chuck de la Suerte": "dados", "Punto Banco": "poker",
   "Keno Veloz": "bingo", "Rasca y Gana": "tragaperras",

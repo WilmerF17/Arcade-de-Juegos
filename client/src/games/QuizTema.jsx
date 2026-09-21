@@ -221,3 +221,30 @@ export const QuizViajes = T("Quiz Viajes", "✈️", [
   Q("¿Medio de transporte más rápido?", "Barco", "*Avión", "Bici", "Tren a pie"),
   Q("¿Qué llevas en la maleta?", "*Ropa", "Muebles", "Comida del mes", "Macetas"),
 ], "linear-gradient(135deg,#0ea5e9,#6366f1)", "linear-gradient(135deg,#0ea5e9,#6366f1)");
+
+export const QuizMitologia = T("Quiz Mitología", "⚡", [
+  Q("¿Dios griego del rayo?", "*Zeus", "Ares", "Apolo", "Hades"),
+  Q("¿De quién es el martillo Mjolnir?", "Odín", "*Thor", "Loki", "Balder"),
+  Q("¿Quién vivía en el laberinto de Creta?", "Medusa", "*Minotauro", "Hidra", "Quimera"),
+  Q("¿Héroe de los doce trabajos?", "*Hércules", "Aquiles", "Ulises", "Perseo"),
+  Q("¿Cabello de serpientes y mirada de piedra?", "*Medusa", "Esfinge", "Sirena", "Arpía"),
+  Q("¿Enigma de la Esfinge de Egipto?", "*Enigma", "Tesoro", "Mapa", "Hechizo"),
+], "linear-gradient(135deg,#f59e0b,#7c3aed)", "linear-gradient(135deg,#f59e0b,#7c3aed)");
+
+export const QuizInventos = T("Quiz Inventos", "💡", [
+  Q("¿Qué invento movió el transporte?", "*La rueda", "La vela", "El clavo", "La cuerda"),
+  Q("¿Quién mejoró la bombilla?", "*Edison", "Tesla", "Bell", "Curie"),
+  Q("¿Quién patentó el teléfono?", "Morse", "*Bell", "Marconi", "Nobel"),
+  Q("¿Quiénes volaron primero?", "*Hermanos Wright", "Santos-Dumont", "Lindbergh", "Earhart"),
+  Q("¿Quién creó la imprenta moderna?", "*Gutenberg", "Da Vinci", "Galileo", "Copérnico"),
+  Q("¿Descubridor de la penicilina?", "Pasteur", "*Fleming", "Lister", "Koch"),
+], "linear-gradient(135deg,#facc15,#0ea5e9)", "linear-gradient(135deg,#facc15,#0ea5e9)");
+
+export const QuizOceanos = T("Quiz Océanos", "🌊", [
+  Q("¿El océano más grande?", "*Pacífico", "Atlántico", "Índico", "Ártico"),
+  Q("¿El segundo océano más grande?", "Índico", "*Atlántico", "Pacífico", "Antártico"),
+  Q("¿Animal marino más grande?", "Tiburón", "*Ballena", "Delfín", "Orca"),
+  Q("¿Fosa más profunda?", "*Marianas", "Java", "Tonga", "Kermadec"),
+  Q("¿Arrecife famoso de Australia?", "*Gran Barrera", "Rojo", "Florida", "Belice"),
+  Q("¿Qué tiburón es el mayor?", "*Tiburón ballena", "Blanco", "Tigre", "Martillo"),
+], "linear-gradient(135deg,#0369a1,#22d3ee)", "linear-gradient(135deg,#0369a1,#22d3ee)");

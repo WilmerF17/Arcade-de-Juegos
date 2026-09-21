@@ -1,5 +1,11 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.4.0 (2026-09-21) — Siempre al día
+- Auto-actualización PWA: avisa con ⚡ y recarga a la versión nueva sola.
+- Versión y fecha visibles en el lateral.
+- +5 juegos (237): Quiz Mitología, Inventos y Océanos + Parejas de
+  Navidad y Halloween. SEO fresco a hoy (sitemap 238 URLs, SW aplm-v7).
+
 ## v2.3.0 (2026-09-20) — Casino y billetera
 - Billetera virtual 🪙: saldo inicial 1000, bonus diario +500, rescate,
   widget en el lateral (fichas de juego, sin dinero real).

@@ -1,6 +1,6 @@
 # 🕹️ ArcadePaLoMuchacho
 
-**232 minijuegos originales en español**, con XP, niveles, logros, desafío diario,
+**237 minijuegos originales en español**, con XP, niveles, logros, desafío diario,
 billetera virtual y ranking global. Instalable en móvil y PC (PWA), funciona sin conexión.
 
 - 🎮 Juega: https://arcade-de-juegos.vercel.app

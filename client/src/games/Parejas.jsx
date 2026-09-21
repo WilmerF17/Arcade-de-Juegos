@@ -104,3 +104,7 @@ export const ParejasEspacio = P("Parejas del Espacio", "🪐", ["☀️", "🌙"
   "linear-gradient(135deg,#0f172a,#7c3aed)", "linear-gradient(135deg,#0f172a,#7c3aed)");
 export const ParejasMusica = P("Parejas de Música", "🎶", ["🎹", "🎸", "🎺", "🎻", "🥁", "🎷", "🎤", "🪗"],
   "linear-gradient(135deg,#ec4899,#6366f1)", "linear-gradient(135deg,#ec4899,#6366f1)");
+export const ParejasNavidad = P("Parejas de Navidad", "🎄", ["🎄", "🎅", "⭐", "🔔", "🕯️", "🎁", "❄️", "⛄"],
+  "linear-gradient(135deg,#166534,#ef4444)", "linear-gradient(135deg,#166534,#ef4444)");
+export const ParejasHalloween = P("Parejas de Halloween", "🎃", ["🎃", "👻", "🦇", "🕷️", "🍬", "🌙", "🔮", "💀"],
+  "linear-gradient(135deg,#7c2d12,#a855f7)", "linear-gradient(135deg,#7c2d12,#a855f7)");

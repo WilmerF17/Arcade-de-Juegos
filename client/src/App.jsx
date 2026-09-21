@@ -24,6 +24,7 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [favs, setFavs] = useState(leerFavs);
   const [instalable, setInstalable] = useState(false);
+  const [hayUpdate, setHayUpdate] = useState(false);
   const [billetera, setBilletera] = useState(() => cargarBilletera());
   const [instalada, setInstalada] = useState(() =>
     window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone === true
@@ -100,6 +101,13 @@ export default function App() {
     const ids = Object.keys(JUEGOS);
     ir(ids[Math.floor(Math.random() * ids.length)]);
   }
+
+  // PWA: hay versión nueva lista para estrenar
+  useEffect(() => {
+    const fn = () => setHayUpdate(true);
+    window.addEventListener("aplm-update", fn);
+    return () => window.removeEventListener("aplm-update", fn);
+  }, []);
 
   // PWA: captura el prompt de instalación (Chrome/Edge/Android/PC)
   useEffect(() => {
@@ -289,6 +297,9 @@ export default function App() {
               <Icono n={sonido ? "sonido" : "silencio"} size={13} /> {sonido ? "Sonido" : "Mudo"}
             </button>
           </div>
+          <p style={{ color: "var(--texto-suave)", fontSize: ".72rem", margin: "10px 0 0" }}>
+            v{typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "?"} · {typeof __BUILD_DATE__ !== "undefined" ? __BUILD_DATE__ : ""}
+          </p>
         </div>
       </aside>
 
@@ -397,6 +408,13 @@ export default function App() {
         })()}
       </main>
       {toast && <div className="toast-logro"><Icono n="estrella-llena" size={15} /> {toast}</div>}
+      {hayUpdate && (
+        <div className="toast-logro" style={{ cursor: "pointer" }} role="button" tabIndex={0}
+          onClick={() => { setHayUpdate(false); window.__aplmActualizar ? window.__aplmActualizar() : window.location.reload(); }}
+          onKeyDown={e => { if (e.key === "Enter") { setHayUpdate(false); window.__aplmActualizar ? window.__aplmActualizar() : window.location.reload(); } }}>
+          <Icono n="refrescar" size={15} /> ⚡ ¡Nueva versión lista! Toca para actualizar.
+        </div>
+      )}
     </div>
   );
 }
