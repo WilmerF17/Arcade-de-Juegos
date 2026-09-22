@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Sprint de Clics: ¿cuántos toques en 10 segundos? */
@@ -46,7 +46,7 @@ export default function Sprint() {
     <GameShell titulo="Sprint de Clics" emoji="👆"
       descripcion="Toca el botón sin parar durante 10 segundos · 60+ es victoria."
       tira="linear-gradient(90deg,#22d3ee,#ff3d5a)" iconoFondo="linear-gradient(135deg,#22d3ee,#ff3d5a)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         <span className="chip">Clics: <b>{clics}</b></span>
         {mejor > 0 && <span className="chip">🏆 Mejor: <b>{mejor}</b></span>}
@@ -60,7 +60,7 @@ export default function Sprint() {
       <p style={{ textAlign: "center", color: "var(--texto-suave)" }}>
         {(clics / Math.max(1, 10 - tiempo)).toFixed(1)} toques/segundo
       </p>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

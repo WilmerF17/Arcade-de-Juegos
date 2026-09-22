@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -112,7 +112,7 @@ export default function Tragaperras() {
           <span>7️⃣7️⃣7️⃣ = 100</span><span>💎💎💎 = 50</span><span>trío = 25</span><span>pareja = 5</span>
         </div>
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {creditos < apuesta && !girando && <p className="aviso info">Sin créditos: pulsa Recargar o baja la apuesta.</p>}
     </GameShell>
   );

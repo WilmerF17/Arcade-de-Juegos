@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const FIGURAS = ["🐓", "😈", "💃", "🤵", "☂️", "🧜", "🪜", "🍾", "🛢️", "🌳", "🍈", "🦸", "🎩", "💀", "🍐", "🚩", "🎻", "🐦", "✋", "🥾", "🌙", "🐦‍⬛", "🥁", "🍤", "🕷️", "⭐", "🌍", "🌵", "🌹", "🔔", "🦌", "☀️"];
@@ -48,7 +48,7 @@ export default function Loteria() {
     <GameShell titulo="Lotería" emoji="🎴"
       descripcion="El cantor saca figuras · marca 8 en tu cartón antes que los rivales."
       tira="linear-gradient(90deg,#eab308,#ef4444)" iconoFondo="linear-gradient(135deg,#eab308,#ef4444)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {!jugando && salidas.length === 0 && <button className="btn-principal" onClick={empezar}>▶ Repartir cartones</button>}
         {jugando && <button className="btn-principal" onClick={cantar}>📢 ¡Lotería! Cantar</button>}
         <span className="chip">Tuyas: <b>{mias}/{META}</b></span>
@@ -68,7 +68,7 @@ export default function Loteria() {
           </p>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && salidas.length > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra lotería</button></div>
       )}

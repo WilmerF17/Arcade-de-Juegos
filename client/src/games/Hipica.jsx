@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { cargarBilletera, apostar, cobrar } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 
@@ -65,7 +65,7 @@ export default function Hipica() {
     <GameShell titulo="Hípica" emoji="🐎"
       descripcion="Apuesta al corredor · paga su cuota si gana."
       tira="linear-gradient(90deg,#16a34a,#eab308)" iconoFondo="linear-gradient(135deg,#16a34a,#eab308)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         {fase === "fin" && apuestaEnJuego > 0 && <span className="chip">Apostado: <b>{apuestaEnJuego}</b></span>}
       </div>
@@ -102,7 +102,7 @@ export default function Hipica() {
         </div>
       )}
       {aviso && <p className="aviso info" style={{ textAlign: "center" }}>{aviso}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

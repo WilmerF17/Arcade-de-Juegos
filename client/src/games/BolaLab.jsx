@@ -102,7 +102,7 @@ export default function BolaLab() {
 
   return (
     <GameShell titulo="Bola Laberinto" emoji="🔮" descripcion="Flechas/WASD con física e inercia · llega a 🏁.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : fin ? "↻ Otra vez" : "▶ Jugar"}</button>
         <span className="chip">⏱️ <b>{tiempo}s</b></span>
       </div>

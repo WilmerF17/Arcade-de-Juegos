@@ -8,6 +8,10 @@ import { sonidoActivado, cambiarSonido, sfx } from "./suite/sonido";
 import { Icono, IconoJuego, LogoArcade } from "./ui/Iconos";
 import BotonesCompartir from "./ui/Compartir";
 import BotonInstalar from "./ui/Instalar";
+import ErrorJuego from "./ui/ErrorJuego";
+import Tienda from "./ui/Tienda";
+import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
+import { ProveedorTemaJuego } from "./ui/GameShell";
 
 function leerFavs() {
   try { return JSON.parse(localStorage.getItem("arcade-favs") || "[]"); } catch { return []; }
@@ -32,6 +36,13 @@ export default function App() {
   );
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [bannerOff, setBannerOff] = useState(false);
+  // La tienda avisa con "aplm-tienda": re-render para temas y potenciadores
+  const [, setTickTienda] = useState(0);
+  useEffect(() => {
+    const fn = () => setTickTienda(t => t + 1);
+    window.addEventListener("aplm-tienda", fn);
+    return () => window.removeEventListener("aplm-tienda", fn);
+  }, []);
   const promptInstalar = useRef(null);
   const buscarRef = useRef(null);
   const juego = JUEGOS[activo];
@@ -228,6 +239,10 @@ export default function App() {
   }, [busqueda, filtroCat, favs]);
 
   const { nivel, enNivel, need } = nivelDe(prog.xp || 0);
+  const famDelJuego = useMemo(() => {
+    if (!juego || activo === "inicio" || activo === "marcador") return null;
+    return CATEGORIAS.find(c => c.juegos.includes(activo))?.id || null;
+  }, [activo, juego]);
   const desafioJuego = JUEGOS[prog.desafio?.juego];
   const probados = Object.keys(prog.porJuego || {}).length;
 
@@ -280,6 +295,9 @@ export default function App() {
           <span className="nivel">{MONEDA} {billetera.saldo}</span>
           <span style={{ color: "var(--texto-suave)", fontSize: ".78rem" }}> fichas</span>
           <div className="interruptores" style={{ marginTop: 6 }}>
+            <button className="switch on" onClick={() => { ir("tienda"); }}>
+              🛍️ Tienda
+            </button>
             {bonusDisponible() ? (
               <button className="switch on" onClick={() => {
                 const c = bonusDiario() || rescate();
@@ -291,7 +309,13 @@ export default function App() {
               <button className="switch" disabled title="Vuelve mañana por más">🎁 Bonus reclamado</button>
             )}
           </div>
-          <small style={{ color: "var(--texto-suave)" }}>Fichas virtuales · solo por diversión</small>
+          <small style={{ color: "var(--texto-suave)" }}>Fichas virtuales · solo por diversión · +5 por partida</small>
+          {(dobleXpActivo() || escudosRestantes() > 0) && (
+            <div className="chips-cat" style={{ marginTop: 6 }}>
+              {dobleXpActivo() && <span className="chip-cat on">⚡ Doble XP</span>}
+              {escudosRestantes() > 0 && <span className="chip-cat on">🛡️ ×{escudosRestantes()}</span>}
+            </div>
+          )}
         </div>
 
         <div className="buscador">
@@ -305,6 +329,9 @@ export default function App() {
         </button>
         <button className={`nav-item ${activo === "marcador" ? "activo" : ""}`} onClick={() => ir("marcador")}>
           <Icono n="marcador" size={18} /> Marcador <span className="flecha">→</span>
+        </button>
+        <button className={`nav-item ${activo === "tienda" ? "activo" : ""}`} onClick={() => ir("tienda")}>
+          <span style={{ fontSize: "1.1rem" }}>🛍️</span> Tienda <span className="flecha">→</span>
         </button>
 
         <p className="cat">Categorías</p>
@@ -343,7 +370,9 @@ export default function App() {
         <div className="tema-box">
           <p className="cat">Tema visual</p>
           <div className="tema-btns">
-            {[["neon", "luna", "Neón"], ["retro", "retro", "Retro"], ["claro", "sol", "Claro"], ["playa", "playa", "Playa"]].map(([id, icon, nombre]) => (
+            {[["neon", "luna", "Neón"], ["retro", "retro", "Retro"], ["claro", "sol", "Claro"], ["playa", "playa", "Playa"],
+              ...(tienes("tema-dorado") ? [["dorado", "estrella-llena", "Dorado 👑"]] : []),
+              ...(tienes("tema-oceano") ? [["oceano", "pesca", "Océano 🌊"]] : [])].map(([id, icon, nombre]) => (
               <button key={id} title={nombre}
                 className={tema === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setTema(id); sfx.clic(); }}><Icono n={icon} size={20} /></button>
@@ -432,7 +461,7 @@ export default function App() {
             </section>
           </div>
         )}
-        {activo === "marcador" ? <Marcador /> : activo !== "inicio" && (() => {
+        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo !== "inicio" && (() => {
           if (!juego) {
             return (
               <div className="gameshell">
@@ -446,9 +475,25 @@ export default function App() {
           }
           const C = juego.Component;
           return (
-            <Suspense fallback={<div className="gameshell"><p className="sub">⚡ Cargando juego…</p></div>}>
-              <C key={activo} />
-            </Suspense>
+            <ProveedorTemaJuego value={{ tira: juego.grad, fam: famDelJuego }}>
+              <ErrorJuego key={`err-${activo}`} alInicio={() => ir("inicio")}>
+                <Suspense fallback={
+                  <div className="gameshell" aria-busy="true" aria-label="Cargando juego">
+                    <div className="shell-head">
+                      <div className="shell-icono esqueleto" />
+                      <div style={{ flex: 1 }}>
+                        <div className="esqueleto esq-titulo" />
+                        <div className="esqueleto esq-sub" />
+                      </div>
+                    </div>
+                    <div className="esqueleto esq-bloque" />
+                    <div className="esqueleto esq-bloque corto" />
+                  </div>
+                }>
+                  <C key={activo} />
+                </Suspense>
+              </ErrorJuego>
+            </ProveedorTemaJuego>
           );
         })()}
       </main>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const DADOS = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
@@ -54,7 +54,7 @@ export default function Escalera() {
     <GameShell titulo="Escalera de Dados" emoji="🎲"
       descripcion="Supera tu tiro anterior para subir · 6 peldaños · 3 caídas te tumban."
       tira="linear-gradient(90deg,#a855f7,#ff9a3d)" iconoFondo="linear-gradient(135deg,#a855f7,#ff9a3d)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Peldaño: <b>{peldano}/{META}</b></span>
         <span className="chip">A superar: <b>{ultimo === 0 ? "—" : `>${ultimo}`}</b></span>
         <span className="chip">Caídas: <b>{caidas}/3</b></span>
@@ -70,7 +70,7 @@ export default function Escalera() {
       <div className="fila-botones">
         <button className="btn-principal" onClick={lanzar}>{jugando ? "🎲 Lanzar" : "▶ Empezar"}</button>
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

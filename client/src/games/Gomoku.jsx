@@ -83,7 +83,7 @@ export default function Gomoku() {
 
   return (
     <GameShell titulo="Gomoku" emoji="⚪" descripcion="Flechas/WASD + ENTER · 5 en línea antes que la IA (9×9).">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={() => { const t = Array.from({ length: N }, () => Array(N).fill(0)); st.current = { tab: t, fin: null, movs: 0 }; setTab(t); setFin(null); setMovs(0); }}>Nueva partida</button>
         <span className="chip">Movs <b>{movs}</b></span>
       </div>

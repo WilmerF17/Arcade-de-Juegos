@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { cargarBilletera, apostar, cobrar } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 
@@ -58,7 +58,7 @@ export default function PuntoBanco() {
     <GameShell titulo="Punto Banco" emoji="🃏"
       descripcion="Jugador ×2 · Banca ×2 · Empate ×9 · mano alta en mod 10 gana."
       tira="linear-gradient(90deg,#052e16,#22c55e)" iconoFondo="linear-gradient(135deg,#052e16,#22c55e)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
       </div>
       <div className="fila-botones">
@@ -82,7 +82,7 @@ export default function PuntoBanco() {
         <button className="btn-exito" onClick={repartir}>🃏 Repartir {apuesta}</button>
       </div>
       {aviso && <p className="aviso info" style={{ textAlign: "center" }}>{aviso}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

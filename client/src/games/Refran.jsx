@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Motor de refranes: completa la frase con la opción correcta. 8 rondas. */
@@ -49,7 +49,7 @@ function RefranBase({ titulo, emoji, banco, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion="Completa el refrán · 8 rondas · cultura popular."
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Refrán: <b>{jugando ? `${idx}/${RONDAS}` : "—"}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>
@@ -67,7 +67,7 @@ function RefranBase({ titulo, emoji, banco, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && idx > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

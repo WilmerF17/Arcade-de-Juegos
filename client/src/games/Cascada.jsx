@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -77,7 +77,7 @@ export default function Cascada() {
 
   return (
     <GameShell titulo="Cascada de Letras" emoji="🔤" descripcion="Teclea la letra antes de que caiga · 3 vidas · 60s.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">❤️ <b>{vidas}</b></span>
@@ -90,7 +90,7 @@ export default function Cascada() {
         ))}
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 4, background: "var(--peligro)" }} />
       </div>
-      {mensaje && !jugando && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {mensaje && !jugando && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

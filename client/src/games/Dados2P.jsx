@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const DADOS = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
@@ -55,7 +55,7 @@ function DadosBase({ titulo, rondas, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="🎲"
       descripcion={`J1 lanza, luego J2 · mayor suma gana · ${rondas} rondas.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🔵 J1: <b>{s1}</b></span>
         <span className="chip">Ronda: <b>{ronda}/{rondas}</b></span>
         <span className="chip">🔴 J2: <b>{s2}</b></span>
@@ -72,7 +72,7 @@ function DadosBase({ titulo, rondas, tira, iconoFondo }) {
           <button className="btn-principal" onClick={lanzar}>🎲 Lanzar ({fase === "j1" ? "J1 🔵" : "J2 🔴"})</button>
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

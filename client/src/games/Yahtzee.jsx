@@ -69,7 +69,7 @@ export default function Yahtzee() {
   const total = Object.values(usadas).reduce((a, b) => a + b, 0);
   return (
     <GameShell titulo="Dados Cinco" emoji="🎲" descripcion="ENTER lanzar (3/turno) · 1-5 bloquear · elige categoría.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={lanzar} disabled={fin || tiradas >= 3}>🎲 Lanzar ({tiradas}/3)</button>
         <span className="chip">Total <b>{total}</b></span>
         <span className="chip">Ronda <b>{Object.keys(usadas).length + 1}/{CATS.length}</b></span>

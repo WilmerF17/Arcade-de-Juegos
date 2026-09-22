@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Tres en raya en tableros grandes contra IA glotona. */
@@ -82,7 +82,7 @@ function RayaBase({ titulo, emoji, n, meta, tira, iconoFondo }) {
       descripcion={`Tablero ${n}×${n} · haz ${meta} en línea antes que la IA.`}
       tira={tira} iconoFondo={iconoFondo}>
       {!jugando && tab.every(x => !x) && (
-        <div className="fila-botones" style={{ marginTop: 0 }}><button className="btn-principal" onClick={empezar}>▶ Empezar (eres X)</button></div>
+        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar (eres X)</button></div>
       )}
       {fin && <p style={{ textAlign: "center" }}>{fin}</p>}
       <div style={{ display: "grid", gridTemplateColumns: `repeat(${n},64px)`, gap: 6, justifyContent: "center" }}>
@@ -95,7 +95,7 @@ function RayaBase({ titulo, emoji, n, meta, tira, iconoFondo }) {
           </button>
         ))}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && fin && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Revancha</button></div>
       )}

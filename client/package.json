@@ -1,11 +1,12 @@
 {
   "name": "juegos-web-client",
-  "version": "2.0.0",
+  "version": "2.6.2",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "portable": "vite build --config vite.portable.config.js && node -e \"require('fs').copyFileSync('dist-portable/index.html','public/descargas/PaLoMuchacho-portable.html')\" && node -e \"console.log('portable:',(require('fs').statSync('public/descargas/PaLoMuchacho-portable.html').size/1048576).toFixed(2)+' MB')\"",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -13,5 +14,8 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "vite": "^8.3.0"
+  },
+  "devDependencies": {
+    "vite-plugin-singlefile": "^2.3.3"
   }
 }

@@ -67,7 +67,7 @@ export default function Pesca() {
   const fin = lances >= 10;
   return (
     <GameShell titulo="Pesca" emoji="🎣" descripcion="ENTER lanzar · ENTER recoger en verde · 10 lances.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={() => { st.current = { puntos: 0, lances: 0 }; setPuntos(0); setLances(0); setFase("espera"); setPez(null); }}>{lances > 0 ? "↻ Otra vez" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">Lances <b>{lances}/10</b></span>

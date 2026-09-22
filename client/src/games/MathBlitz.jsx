@@ -87,7 +87,7 @@ export default function MathBlitz() {
     <GameShell titulo="Math Blitz" emoji="🔢"
       descripcion="60 segundos de cálculo mental. Racha de aciertos = bonus. ¡Sin calculadora!"
       tira="linear-gradient(90deg,#38bdf8,#6366f1,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#6366f1)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[1, 2, 3].map(d => (
           <button key={d} disabled={jugando} className={dif === d && !jugando ? "btn-principal" : ""}
             onClick={() => empezar(d)}>{d === 1 ? "🟢 Fácil" : d === 2 ? "🟡 Normal" : "🔴 Difícil"}</button>

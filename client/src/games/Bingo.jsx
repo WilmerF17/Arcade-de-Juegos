@@ -73,7 +73,7 @@ export default function Bingo() {
   const ultima = bolas[bolas.length - 1];
   return (
     <GameShell titulo="Bingo 75" emoji="🎱" descripcion="ENTER saca bola · línea y bingo · auto cada 0.9s.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={sacar} disabled={fin === "bingo"}>🎱 Sacar (ENTER)</button>
         <button className={auto ? "btn-principal" : "btn-suave"} onClick={() => setAuto(a => !a)}>{auto ? "⏸ Auto" : "▶ Auto"}</button>
         <button className="btn-exito" onClick={nuevo}>Nuevo cartón</button>

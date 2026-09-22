@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { cargarBilletera, apostar, cobrar } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 
@@ -58,7 +58,7 @@ export default function RascaGana() {
     <GameShell titulo="Rasca y Gana" emoji="🎫"
       descripcion="Revela 3 · trío ×10 · pareja = reembolso."
       tira="linear-gradient(90deg,#f59e0b,#ec4899)" iconoFondo="linear-gradient(135deg,#f59e0b,#ec4899)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
       </div>
       {!ronda && tablero.length === 0 && (
@@ -90,7 +90,7 @@ export default function RascaGana() {
         <div className="fila-botones"><button className="btn-principal" onClick={() => { setTablero([]); }}>↻ Otro cartón</button></div>
       )}
       {aviso && <p className="aviso info" style={{ textAlign: "center" }}>{aviso}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

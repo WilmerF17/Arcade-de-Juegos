@@ -49,7 +49,7 @@ export default function AdivinaNumero() {
   return (
     <GameShell titulo="Adivina el número" emoji="🔢"
       descripcion="Intenta adivinar el número secreto con pistas de mayor/menor y frío/caliente.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[1, 2, 3].map(d => (
           <button key={d} className={dif === d ? "btn-principal" : ""} onClick={() => { setDif(d); }}>{(d === 1 ? "Fácil" : d === 2 ? "Normal" : "Difícil")}</button>
         ))}

@@ -97,7 +97,7 @@ export default function Puzzle15() {
     <GameShell titulo="Puzzle 15" emoji="🧩"
       descripcion="Clic o flechas/WASD para deslizar fichas · ordena del 1 al 15."
       tira="linear-gradient(90deg,#14b8a6,#6366f1,#22d3ee)" iconoFondo="linear-gradient(135deg,#14b8a6,#6366f1)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={mezclar}>🔀 Mezclar</button>
         <span className="chip">Movimientos: <b>{movs}</b></span>
         <span className="chip">Progreso: <b>{tab.filter((v, i) => v === (i + 1) % 16).length}/16</b></span>

@@ -82,7 +82,7 @@ export default function Laberinto() {
 
   return (
     <GameShell titulo="Laberinto" emoji="🧭" descripcion="Flechas o WASD hasta 🏁 · R genera otro.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={nuevo}>🔀 Nuevo laberinto</button>
         <span className="chip">Pasos <b>{pasos}</b></span>
         <span className="chip">⏱️ <b>{tiempo}s</b></span>

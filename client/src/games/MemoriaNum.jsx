@@ -40,7 +40,7 @@ export default function MemoriaNum() {
   }
   return (
     <GameShell titulo="Memoria Numérica" emoji="🔢" descripcion="Memoriza la cifra y escríbela · cada nivel +1 dígito.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={() => empezar(3)}>{fase === "inicio" ? "▶ Jugar" : "↻ Reiniciar"}</button>
         <span className="chip">Nivel <b>{nivel} dígitos</b></span>
         <span className="chip">🏆 <b>{mejor}</b></span>

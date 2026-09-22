@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Motor "toca el indicado": aparecen 3 números y tocas el que cumple el criterio. 30s. */
@@ -64,7 +64,7 @@ function TocaBase({ titulo, emoji, criterio, consigna, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion={`${consigna} · 30s · fallar resta 5.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>
@@ -82,7 +82,7 @@ function TocaBase({ titulo, emoji, criterio, consigna, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

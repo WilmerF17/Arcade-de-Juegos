@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo, OPUESTA } from "../suite/teclado";
 
-const FILAS = 20, COLS = 20, PASO = 160;
+const FILAS = 20, COLS = 20;
+const PASO_BASE = 160, PASO_MIN = 85, PASO_POR_NIVEL = 12;
+const CLAVE_MEJOR = "arcade-snake-mejor";
 
 function nuevoHuevo(snake = []) {
   for (let i = 0; i < 200; i++) {
@@ -15,14 +17,18 @@ function nuevoHuevo(snake = []) {
   return { x: 1, y: 1 };
 }
 
+function leerMejor() {
+  try { return Number(localStorage.getItem(CLAVE_MEJOR) || 0) || 0; } catch { return 0; }
+}
+
 export default function Snake() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Serpiente");
   const [snake, setSnake] = useState([{ x: 10, y: 10 }]);
   const [huevo, setHuevo] = useState(() => nuevoHuevo([{ x: 10, y: 10 }]));
-  const [dir, setDir] = useState("der");
   const [corriendo, setCorriendo] = useState(false);
   const [puntos, setPuntos] = useState(0);
   const [pausa, setPausa] = useState(false);
+  const [mejor, setMejor] = useState(leerMejor);
   const dirRef = useRef("der");
   const puntosRef = useRef(0);
   const colaRef = useRef(3);
@@ -30,7 +36,16 @@ export default function Snake() {
   const corriendoRef = useRef(false);
   const pausaRef = useRef(false);
   const finalRef = useRef(false);
+  const tactilRef = useRef(null);
   huevoRef.current = huevo;
+
+  const nivel = Math.floor(puntos / 50) + 1;
+  const paso = Math.max(PASO_MIN, PASO_BASE - (nivel - 1) * PASO_POR_NIVEL);
+
+  function girar(d) {
+    if (d !== OPUESTA[dirRef.current]) dirRef.current = d;
+    if (!corriendoRef.current && !finalRef.current) iniciar();
+  }
 
   function preparar() {
     const s = [{ x: 10, y: 10 }];
@@ -39,7 +54,7 @@ export default function Snake() {
     puntosRef.current = 0;
     colaRef.current = 3;
     setPuntos(0);
-    setDir("der"); dirRef.current = "der";
+    dirRef.current = "der";
     setCorriendo(false); corriendoRef.current = false;
     setPausa(false); pausaRef.current = false;
     finalRef.current = false;
@@ -52,11 +67,22 @@ export default function Snake() {
     setCorriendo(true); corriendoRef.current = true;
   }
 
+  function alternarPausa() {
+    if (corriendoRef.current) {
+      pausaRef.current = !pausaRef.current;
+      setPausa(pausaRef.current);
+    } else if (!finalRef.current) iniciar();
+  }
+
   function finalizar(s, gano, pts) {
     if (finalRef.current) return;
     finalRef.current = true;
     corriendoRef.current = false;
     setCorriendo(false);
+    if (pts > leerMejor()) {
+      try { localStorage.setItem(CLAVE_MEJOR, String(pts)); } catch { /* noop */ }
+      setMejor(pts);
+    }
     registrarPunt(pts, gano ? 1 : 0);
     setSnake(s);
   }
@@ -68,20 +94,12 @@ export default function Snake() {
       const d = dirDeTecla(e.key);
       if (d) {
         e.preventDefault();
-        // no permitir giro de 180°
-        if (d !== OPUESTA[dirRef.current]) {
-          dirRef.current = d;
-          setDir(d);
-        }
-        if (!corriendoRef.current && !finalRef.current) iniciar();
+        girar(d);
         return;
       }
       if (e.key === " " || e.key === "p" || e.key === "P") {
         e.preventDefault();
-        if (corriendoRef.current) {
-          pausaRef.current = !pausaRef.current;
-          setPausa(pausaRef.current);
-        } else if (!finalRef.current) iniciar();
+        alternarPausa();
       } else if (e.key === "Enter") {
         if (!corriendoRef.current && !finalRef.current) iniciar();
       }
@@ -127,48 +145,71 @@ export default function Snake() {
         }
         return nuevoSnake;
       });
-    }, PASO);
+    }, paso);
     return () => clearInterval(id);
-  }, [corriendo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [corriendo, nivel]);
+
+  // Swipe táctil sobre el tablero
+  function toqueInicio(e) {
+    tactilRef.current = e.touches[0];
+  }
+  function toqueFin(e) {
+    const ini = tactilRef.current;
+    tactilRef.current = null;
+    if (!ini) return;
+    const fin = e.changedTouches[0];
+    const dx = fin.clientX - ini.clientX, dy = fin.clientY - ini.clientY;
+    if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+    girar(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "der" : "izq") : (dy > 0 ? "aba" : "arr"));
+  }
 
   const mapa = {};
   snake.forEach((s, i) => { mapa[`${s.x},${s.y}`] = i === 0 ? "cabeza" : "cuerpo"; });
   const hueco = `${huevo.x},${huevo.y}`;
+  const terminado = finalRef.current && !corriendo;
 
   return (
     <GameShell titulo="Serpiente (Snake)" emoji="🐍"
-      descripcion="Flechas o WASD para girar · ESPACIO/P pausa · come huevos sin chocar.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
-        <button className="btn-exito" onClick={preparar}>Reiniciar</button>
-        {!corriendo && !finalRef.current && <button className="btn-principal" onClick={iniciar}>Jugar</button>}
-        {corriendo && <button onClick={() => { pausaRef.current = !pausaRef.current; setPausa(pausaRef.current); }}>{pausa ? "▶ Seguir" : "⏸ Pausa"}</button>}
-        <span className="chip">Puntos: <b>{puntos}</b></span>
-        <span className="chip">Longitud: <b>{snake.length}</b></span>
-      </div>
-      <div className="tablero" style={{ gridTemplateColumns: `repeat(${COLS}, 16px)`, margin: "14px auto 0", width: "max-content" }}>
+      descripcion="Flechas/WASD o desliza para girar · ESPACIO/P pausa · cada 50 puntos sube la velocidad."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "Longitud", valor: snake.length },
+        { icono: "⚡", etiqueta: "Nivel", valor: nivel },
+        { icono: "🏆", etiqueta: "Mi mejor", valor: Math.max(mejor, puntos) },
+      ]}
+      acciones={<>
+        <button className="btn-exito" onClick={preparar}>↻ Reiniciar</button>
+        {!corriendo && !finalRef.current && <button className="btn-principal" onClick={iniciar}>▶ Jugar</button>}
+        {corriendo && <button className="btn-suave" onClick={alternarPausa}>{pausa ? "▶ Seguir" : "⏸ Pausa"}</button>}
+      </>}
+      ayuda={<>
+        <span>Come los huevos dorados <b>(+10)</b> sin chocar con los bordes ni contigo.</span>
+        <span>Cada <b>50 puntos</b> la serpiente acelera un nivel. Ganas al llegar a <b>200</b>.</span>
+        <span>En móvil también puedes <b>deslizar el dedo</b> sobre el tablero para girar.</span>
+      </>}>
+      <div className="tablero sn-tablero" style={{ gridTemplateColumns: `repeat(${COLS}, 16px)` }}
+        onTouchStart={toqueInicio} onTouchEnd={toqueFin}>
         {Array.from({ length: FILAS * COLS }, (_, i) => {
           const x = i % COLS, y = Math.floor(i / COLS);
           const k = `${x},${y}`;
           const t = mapa[k];
-          return (
-            <div key={i} style={{
-              width: 16, height: 16, borderRadius: 3,
-              background: t === "cabeza" ? "var(--exito)" : t === "cuerpo" ? "rgba(34,197,94,0.55)" : k === hueco ? "var(--aviso)" : "rgba(255,255,255,0.03)",
-            }} />
-          );
+          return <div key={i} className={`sn-celda ${t === "cabeza" ? "sn-cabeza" : t === "cuerpo" ? "sn-cuerpo" : k === hueco ? "sn-huevo" : "sn-vacia"}`} />;
         })}
       </div>
       {/* Botones táctiles */}
-      <div className="fila-botones" style={{ marginTop: 10 }}>
-        {[["arr", "↑"], ["izq", "←"], ["aba", "↓"], ["der", "→"]].map(([d, f]) => (
-          <button key={d} className="btn-suave" onClick={() => {
-            if (d !== OPUESTA[dirRef.current]) { dirRef.current = d; setDir(d); }
-            if (!corriendoRef.current && !finalRef.current) iniciar();
-          }}>{f}</button>
-        ))}
+      <div className="sn-touch" role="group" aria-label="Controles táctiles">
+        <span />
+        <button className="btn-suave" onClick={() => girar("arr")} aria-label="Arriba">↑</button>
+        <span />
+        <button className="btn-suave" onClick={() => girar("izq")} aria-label="Izquierda">←</button>
+        <button className="btn-suave" onClick={() => girar("aba")} aria-label="Abajo">↓</button>
+        <button className="btn-suave" onClick={() => girar("der")} aria-label="Derecha">→</button>
       </div>
       {!corriendo && (
-        <div className={`mensaje-final ${tipo}`}>{finalRef.current ? mensaje : pausa ? "⏸ En pausa." : "Pulsa Jugar o una flecha / WASD para moverte."}</div>
+        <div className={`mensaje-final ${tipo}`}>
+          {terminado ? mensaje : pausa ? "⏸ En pausa." : "Pulsa Jugar o una flecha / WASD para moverte."}
+        </div>
       )}
     </GameShell>
   );

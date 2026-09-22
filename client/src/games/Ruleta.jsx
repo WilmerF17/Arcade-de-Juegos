@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -60,7 +60,7 @@ export default function Ruleta() {
   const colorBola = bola === 0 ? "#22c55e" : ROJOS.has(bola) ? "#ef4444" : "#1f2937";
   return (
     <GameShell titulo="Ruleta" emoji="🎡" descripcion="ENTER girar · rojo/negro/par/impar ×2 · número ×35.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{creditos}</b></span>
         <select value={apuesta} onChange={e => setApuesta(Number(e.target.value))} disabled={girando}>
           <option value={5}>Apuesta 5</option><option value={10}>Apuesta 10</option><option value={25}>Apuesta 25</option>
@@ -72,7 +72,7 @@ export default function Ruleta() {
           <span style={{ background: "#fff", borderRadius: "50%", width: 56, height: 56, display: "grid", placeItems: "center", fontWeight: 900, fontSize: "1.4rem", color: "#111" }}>{bola}</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div className="fila-botones" style={{ marginTop: 0 }}>
+          <div className="fila-botones">
             {["rojo", "negro", "par", "impar", "numero"].map(o => (
               <button key={o} className={eleccion === o ? "btn-principal" : ""} onClick={() => setEleccion(o)}>{o}</button>
             ))}
@@ -82,7 +82,7 @@ export default function Ruleta() {
         </div>
       </div>
       {historial.length > 0 && <p className="aviso-ia">Historial: {historial.map(n => `${n}${n === 0 ? "🟢" : ROJOS.has(n) ? "🔴" : "⚫"}`).join(" · ")}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

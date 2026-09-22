@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const PALOS = [{ n: "Oros", e: "🪙" }, { n: "Copas", e: "🏆" }, { n: "Espadas", e: "⚔️" }, { n: "Bastos", e: "🍷" }];
@@ -120,7 +120,7 @@ export default function Escoba() {
     <GameShell titulo="Escoba" emoji="🧹"
       descripcion="Suma 15 con la mesa para capturar · barrerla = escoba."
       tira="linear-gradient(90deg,#b45309,#f59e0b)" iconoFondo="linear-gradient(135deg,#b45309,#f59e0b)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {!jugando && mano.length === 0 && <button className="btn-principal" onClick={empezar}>▶ Repartir</button>}
         <span className="chip">🧹 Escobas: <b>{escobas}</b></span>
         <span className="chip">Tus cartas: <b>{misCap.length}</b></span>
@@ -143,7 +143,7 @@ export default function Escoba() {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Motor "¿qué emoji es?": lee la descripción y elige el emoji. 10 rondas. */
@@ -50,7 +50,7 @@ function EmojiBase({ titulo, emoji, banco, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion="Lee la descripción y toca su emoji · 10 rondas."
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Ronda: <b>{jugando ? `${idx}/${RONDAS}` : "—"}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>
@@ -68,7 +68,7 @@ function EmojiBase({ titulo, emoji, banco, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && idx > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

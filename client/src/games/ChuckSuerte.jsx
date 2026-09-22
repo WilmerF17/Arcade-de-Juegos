@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { cargarBilletera, apostar, cobrar } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 
@@ -39,7 +39,7 @@ export default function ChuckSuerte() {
     <GameShell titulo="Chuck de la Suerte" emoji="🍀"
       descripcion="Elige número del 1 al 6 · 3 dados · 1×2, 2×3, 3×5."
       tira="linear-gradient(90deg,#16a34a,#22c55e)" iconoFondo="linear-gradient(135deg,#16a34a,#22c55e)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
       </div>
       <div className="fila-botones">
@@ -61,7 +61,7 @@ export default function ChuckSuerte() {
         <button className="btn-exito" onClick={lanzar}>🍀 Lanzar {apuesta}</button>
       </div>
       {aviso && <p className="aviso info" style={{ textAlign: "center" }}>{aviso}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

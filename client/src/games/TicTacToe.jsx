@@ -167,7 +167,7 @@ export default function TicTacToe() {
   return (
     <GameShell titulo="Tic-Tac-Toe" emoji="❌"
       descripcion="Clic o teclado (flechas/WASD + ENTER, o teclas 1-9).">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className={vsIa ? "btn-principal" : ""} onClick={() => { setVsIa(true); empezar(); }}>vs IA</button>
         <button className={!vsIa ? "btn-principal" : ""} onClick={() => { setVsIa(false); empezar(); }}>2 jugadores</button>
         {[1, 2, 3].map(d => (

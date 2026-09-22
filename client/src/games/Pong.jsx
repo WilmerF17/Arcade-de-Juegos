@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 
 const W = 520, H = 340;
@@ -165,7 +165,7 @@ export default function Pong() {
     <GameShell titulo="Rebote Neón" emoji="🏓"
       descripción="Ratón, dedo o teclado (W/S y ↑/↓). Gana quien llegue a 5."
       tira="linear-gradient(90deg,#22d3ee,#e879f9,#6366f1)" iconoFondo="linear-gradient(135deg,#22d3ee,#e879f9)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <select value={vel} onChange={e => setVel(Number(e.target.value))}>
           <option value={0.7}>🐢 Lento</option>
@@ -175,7 +175,7 @@ export default function Pong() {
         <span className="chip">Tú <b>{puntos.j}</b> — IA <b>{puntos.ia}</b></span>
       </div>
       <canvas ref={canvasRef} className="canvas-neon" width={W} height={H} style={{ marginTop: 14, width: "100%", maxWidth: W }} />
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       <p className="aviso-ia">💡 Teclado: <b>W/S</b> o <b>↑/↓</b> · la bola acelera con cada rebote.</p>
     </GameShell>
   );

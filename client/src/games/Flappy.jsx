@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 import { escribiendo } from "../suite/teclado";
 
@@ -187,7 +187,7 @@ export default function Flappy() {
     <GameShell titulo="Vuelo Neón" emoji="🐤"
       descripcion="ESPACIO, W, ↑, clic o toque para volar. Esquiva los tubos."
       tira="linear-gradient(90deg,#22c55e,#facc15,#38bdf8)" iconoFondo="linear-gradient(135deg,#22c55e,#facc15)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{puntos > 0 && !jugando ? "↻ Reintentar" : "▶ Jugar"}</button>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🏆 Mejor: <b>{mejor}</b></span>
@@ -195,7 +195,7 @@ export default function Flappy() {
       <canvas ref={canvasRef} className="canvas-neon" width={W} height={H}
         style={{ marginTop: 14, width: "100%", maxWidth: W }}
         onClick={saltar} onTouchStart={e => { e.preventDefault(); saltar(); }} />
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       <p className="aviso-ia">💡 Teclado: <b>ESPACIO / W / ↑</b> · toques cortos mantienen el vuelo.</p>
     </GameShell>
   );

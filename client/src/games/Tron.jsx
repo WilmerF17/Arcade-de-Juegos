@@ -80,7 +80,7 @@ export default function Tron() {
   const setM = new Set([...jug.map(p => `${p}-j`), ...ia.map(p => `${p}-i`)]);
   return (
     <GameShell titulo="Moto Neón" emoji="🏍️" descripcion="Flechas/WASD · no choques · la IA falla primero.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Supervivencia <b>{puntos}</b></span>
       </div>

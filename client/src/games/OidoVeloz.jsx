@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Oído Veloz: pantalla neutra, toca al oír el pitido. 5 rondas, vale la media. */
@@ -92,7 +92,7 @@ export default function OidoVeloz() {
     <GameShell titulo="Oído Veloz" emoji="👂"
       descripcion="Sube el volumen · toca al oír el pitido, no antes · media de 5."
       tira="linear-gradient(90deg,#38bdf8,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#a855f7)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Intentos: <b>{tiempos.length}/{rondas}</b></span>
         {media > 0 && <span className="chip">📊 Media: <b>{media} ms</b></span>}
       </div>
@@ -110,7 +110,7 @@ export default function OidoVeloz() {
           ))}
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const LADOS = ["⬅️ Izquierda", "⬆️ Centro", "➡️ Derecha"];
@@ -39,7 +39,7 @@ export default function Atajada() {
     <GameShell titulo="Atajada" emoji="🧤"
       descripcion="Adivina el lado del penalti · 5 tiros · 3+ atajadas es victoria."
       tira="linear-gradient(90deg,#22c55e,#0ea5e9)" iconoFondo="linear-gradient(135deg,#22c55e,#0ea5e9)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Tiro: <b>{Math.min(tiro + (jugando ? 1 : 0), TIROS)}/{TIROS}</b></span>
         <span className="chip">🧤 Atajadas: <b>{atajadas}</b></span>
       </div>
@@ -53,7 +53,7 @@ export default function Atajada() {
       {!jugando && tiro === 0 && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

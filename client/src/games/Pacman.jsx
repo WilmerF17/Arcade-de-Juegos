@@ -94,7 +94,7 @@ export default function Pacman() {
 
   return (
     <GameShell titulo="Comepuntos" emoji="🟡" descripcion="Flechas o WASD · come todo sin que te atrapen.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">Puntos restantes <b>{dots.size}</b></span>

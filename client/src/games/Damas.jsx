@@ -113,7 +113,7 @@ export default function Damas() {
   const n1 = tab.flat().filter(v => v === 1).length, n2 = tab.flat().filter(v => v === 2).length;
   return (
     <GameShell titulo="Damas" emoji="♟️" descripcion="Flechas/WASD + ENTER · captura todo vs IA.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={() => { const t = inicial(); st.current = { tab: t, fin: null }; setTab(t); setFin(null); setSel(null); }}>Nueva partida</button>
         <span className="chip">🔴 Tú <b>{n1}</b></span>
         <span className="chip">⚫ IA <b>{n2}</b></span>

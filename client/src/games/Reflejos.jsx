@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 import { escribiendo } from "../suite/teclado";
 
@@ -97,7 +97,7 @@ export default function Reflejos() {
     <GameShell titulo="Reflejos" emoji="⚡"
       descripcion="Clic o ESPACIO/ENTER · toca solo en verde. Media de rondas."
       tira="linear-gradient(90deg,#facc15,#22c55e,#38bdf8)" iconoFondo="linear-gradient(135deg,#facc15,#22c55e)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <select value={rondas} onChange={e => setRondas(Number(e.target.value))}>
           <option value={3}>3 rondas</option>
           <option value={5}>5 rondas</option>
@@ -126,7 +126,7 @@ export default function Reflejos() {
           ))}
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

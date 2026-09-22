@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 
 const W = 520, H = 360;
@@ -169,7 +169,7 @@ export default function Breakout() {
     <GameShell titulo="Rompebloques" emoji="🧱"
       descripcion="Ratón o teclado (←/→, A/D). Los rojos aguantan 2 golpes."
       tira="linear-gradient(90deg,#fb7185,#a855f7,#facc15)" iconoFondo="linear-gradient(135deg,#fb7185,#a855f7)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={() => empezar(1)}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         {[1, 2, 3].map(n => (
           <button key={n} className={nivel === n && !jugando ? "btn-principal" : ""} onClick={() => empezar(n)}>Nivel {n}</button>
@@ -178,7 +178,7 @@ export default function Breakout() {
         <span className="chip">❤️ <b>{vidas}</b></span>
       </div>
       <canvas ref={canvasRef} className="canvas-neon" width={W} height={H} style={{ marginTop: 14, width: "100%", maxWidth: W }} />
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       <p className="aviso-ia">💡 Teclado: <b>←/→</b> o <b>A/D</b> · el ángulo depende de dónde golpee la bola.</p>
     </GameShell>
   );

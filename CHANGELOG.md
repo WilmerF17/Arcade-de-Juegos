@@ -1,5 +1,43 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.6.2 (2026-09-22) — Juego portable para PC
+- **Botón Instalar descarga en PC**: baja `PaLoMuchacho-portable.html`
+  (0.9 MB, los 250 juegos en un solo archivo, doble clic y a jugar offline).
+- iOS sigue con PWA; Android con APK directo.
+
+## v2.6.1 (2026-09-22) — Descarga directa del APK
+- **Botón Instalar descarga el juego**: en Android baja directo el APK firmado
+  (`/descargas/palomuchacho.apk`, TWA v2.6.0) sin pasar por la tienda.
+- APK + AAB compilados con Bubblewrap (código 3, firmados, fullscreen verificado
+  con `assetlinks.json` propio). iOS/PC siguen con PWA.
+
+## v2.6.0 (2026-09-22) — 250 juegos + casino y tienda
+- **+13 juegos de casino y apuestas (250)**: Plinko, Minas, Torre Dorada,
+  Penaltis de Oro, Carta Mayor, Suma 7, Tómbola, Escalera Millonaria, Rueda
+  Fortuna, La Bolsa, Dobles, Quince y Lotto 6. Todos apuestan fichas virtuales.
+- **Hook compartido `suite/apuesta.js`**: selector de apuesta, saldo en vivo y
+  cobro con registro para no duplicar lógica entre juegos.
+- **Tienda 🛍️** (nueva sección): gasta fichas en Tema Dorado 👑, Tema Océano 🌊,
+  Doble XP ×2 (30 min) y Escudo de racha 🛡️. Sin dinero real.
+- **Economía**: cada partida paga +5 fichas (+15 si ganas) para gastar en la tienda.
+- SEO/PWA a 250 (JSON-LD, sitemap 251 URLs, manifest, SW aplm-v13).
+
+## v2.5.0 (2026-09-22) — Diseño pro + rendimiento
+- **GameShell v2**: tira de color por juego, anillo de familia (8 categorías),
+  stats unificados, ayuda plegable «¿Cómo se juega?» y banner de resultado con
+  confeti. Llega a los 237 juegos sin tocar su lógica.
+- **Migración automática**: 96 banners de resultado al componente compartido y
+  136 estilos inline redundantes eliminados en 130 ficheros.
+- **XP instantáneo**: la progresión local se aplica primero y el ranking va
+  después en segundo plano (se nota offline y con red lenta).
+- **Blindaje**: ErrorBoundary por juego (un juego roto ya no tumba la app) y
+  esqueleto de carga con brillo en vez de texto plano.
+- **Insignia rediseñados**: Trivia (crono 15 s, racha, progreso por puntos),
+  Serpiente (niveles de velocidad, swipe táctil, mejor local, tablero neón) y
+  Blackjack (mesa de fieltro, carta oculta, pips a 5 rondas).
+- **Móvil**: versión 2.5.0 (código 2 TWA), SW aplm-v12 (fuerza actualización),
+  botones táctiles y canvas con marco en todos los juegos.
+
 ## v2.4.0 (2026-09-21) — Siempre al día
 - Auto-actualización PWA: avisa con ⚡ y recarga a la versión nueva sola.
 - Versión y fecha visibles en el lateral.

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -70,7 +70,7 @@ export default function Aim() {
   const media = tiempos.length ? Math.round(tiempos.reduce((a, b) => a + b, 0) / tiempos.length) : 0;
   return (
     <GameShell titulo="Aim Trainer" emoji="🎯" descripcion="ENTER empezar · clic en el blanco · 30s · precisión.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">🎯 <b>{aciertos}/{disparos}</b> ({prec}%)</span>
@@ -83,7 +83,7 @@ export default function Aim() {
           <div onClick={clicBlanco} style={{ position: "absolute", left: `${blanco.x}%`, top: `${blanco.y}%`, width: 54, height: 54, marginLeft: -27, marginTop: -27, borderRadius: "50%", background: "radial-gradient(circle,#ef4444 0 30%,#fff 30% 55%,#ef4444 55% 100%)", border: "3px solid #fff", boxShadow: "0 0 18px rgba(239,68,68,.7)", cursor: "crosshair", animation: "pop .15s" }} />
         )}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const META = 24;
@@ -68,7 +68,7 @@ export default function Oca() {
     <GameShell titulo="La Oca Veloz" emoji="🪿"
       descripcion="Dados contra la IA · ocas +4, puentes +2, calavera al inicio · clava el 24."
       tira="linear-gradient(90deg,#22c55e,#eab308)" iconoFondo="linear-gradient(135deg,#22c55e,#eab308)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🧍 Tú: <b>{yo}</b></span>
         <span className="chip">🤖 IA: <b>{ia}</b></span>
         <span className="chip">🎲 <b>{dado ?? "—"}</b></span>
@@ -89,7 +89,7 @@ export default function Oca() {
         {jugando && turno === "yo" && <button className="btn-principal" onClick={lanzar}>🎲 Lanzar dado</button>}
         {jugando && turno === "ia" && <span className="chip">🤖 Turno de la IA…</span>}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

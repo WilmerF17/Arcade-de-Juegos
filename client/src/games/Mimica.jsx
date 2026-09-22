@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Mímica: actúa la palabra antes de que acabe el tiempo. Puntos por acierto. */
@@ -54,7 +54,7 @@ function MimicaBase({ titulo, banco, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="🤹"
       descripcion="Actúa sin hablar y que tu equipo adivine · 60s · +100 por acierto."
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         <span className="chip">✅ <b>{aciertos}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
@@ -71,7 +71,7 @@ function MimicaBase({ titulo, banco, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

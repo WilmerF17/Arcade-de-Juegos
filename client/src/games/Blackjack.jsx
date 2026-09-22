@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 
 const crearBaraja = () => {
@@ -22,6 +22,14 @@ const valor = mano => {
   while (total > 21 && ases) { total -= 10; ases -= 1; }
   return total;
 };
+
+function Pips({ n, meta = 5 }) {
+  return (
+    <span className="bj-pips" aria-label={`${n} de ${meta}`}>
+      {Array.from({ length: meta }, (_, i) => <span key={i} className={`bj-pip${i < n ? " on" : ""}`} />)}
+    </span>
+  );
+}
 
 export default function Blackjack() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Blackjack");
@@ -146,49 +154,58 @@ export default function Blackjack() {
   }, [jugador, baraja, crupier, victorias, derrotas]);
 
   const paloRojo = p => p === "♥" || p === "♦";
-  const cartaCls = c => `btn-carta ${paloRojo(c[2]) ? "rojo" : ""}`;
 
   return (
     <GameShell titulo="Blackjack" emoji="🃏"
-      descripcion="Teclado: C pedir · P plantarse · D doblar · N ronda. Primero a 5.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
-        <button className="btn-exito" onClick={nuevaRonda}>Nueva partida</button>
-        <span className="chip">Tú <b style={{ color: "var(--exito)" }}>{victorias}</b></span>
-        <span className="chip">IA <b style={{ color: "var(--peligro)" }}>{derrotas}</b></span>
-        <span className="chip">Dobles: <b>{dobles}</b></span>
+      descripcion="Acércate a 21 sin pasarte y gana a la banca. Primero en llegar a 5 rondas."
+      stats={[
+        { etiqueta: "Tú", valor: victorias },
+        { etiqueta: "Banca", valor: derrotas },
+        { etiqueta: "Dobles", valor: dobles },
+      ]}
+      resultado={sesionFin ? { mensaje, tipo } : null}
+      ayuda={<>
+        <span>Las figuras valen <b>10</b> y el As vale <b>11 u 1</b> según convenga.</span>
+        <span>La banca pide hasta <b>17</b>. Gana la sesión quien llegue a <b>5 rondas</b>.</span>
+        <span>Teclas: <kbd>C</kbd> pedir · <kbd>P</kbd> plantarse · <kbd>D</kbd> doblar · <kbd>N</kbd> ronda.</span>
+      </>}>
+      <div className="fila-botones">
+        <button className="btn-exito" onClick={nuevaRonda}>{jugador.length ? "↻ Nueva partida" : "🃏 Repartir"}</button>
+        <Pips n={victorias} />
       </div>
       {jugador.length > 0 && (
-        <div>
-          <div style={{ marginTop: 16 }}>
-            <p style={{ margin: 0, marginBottom: 4 }}>🧑 Tú <b>({valor(jugador)})</b></p>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {jugador.map((c, i) => <span key={i} className={cartaCls(c)} style={{ padding: "8px 10px" }}>{c[0]}</span>)}
+        <div className="bj-mesa">
+          <div className="bj-zona">
+            <p className="bj-zona-titulo">🧑 Tu mano <span className="bj-total">{valor(jugador)}</span></p>
+            <div className="bj-cartas">
+              {jugador.map((c, i) => (
+                <span key={`${c[0]}-${i}`} className={`btn-carta${paloRojo(c[2]) ? " rojo" : ""}`}>{c[0]}</span>
+              ))}
             </div>
           </div>
-          <div style={{ marginTop: 14 }}>
-            <p style={{ margin: 0, marginBottom: 4 }}>🖥️ IA <b>({terminado ? valor(crupier) : "?"})</b></p>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div className="bj-zona">
+            <p className="bj-zona-titulo">🖥️ Banca <span className="bj-total">{terminado ? valor(crupier) : "?"}</span></p>
+            <div className="bj-cartas">
               {crupier.map((c, i) => (
-                <span key={i} className={cartaCls(c)} style={{ padding: "8px 10px" }}>
+                <span key={`${c[0]}-${i}`} className={`btn-carta${!terminado && i > 0 ? " oculta" : paloRojo(c[2]) ? " rojo" : ""}`}>
                   {!terminado && i > 0 ? "?" : c[0]}
                 </span>
               ))}
             </div>
           </div>
           {!terminado && valor(jugador) < 21 && (
-            <div className="fila-botones">
-              <button className="btn-principal" onClick={pedir}>Pedir carta 🂠 (C)</button>
-              <button onClick={plantarse}>Plantarme (P)</button>
-              {jugador.length === 2 && <button className="btn-exito" onClick={doblar}>Doblar (x2) 💰 (D)</button>}
+            <div className="fila-botones" style={{ marginTop: 14 }}>
+              <button className="btn-principal" onClick={pedir}>Pedir 🂠 (C)</button>
+              <button className="btn-suave" style={{ color: "#fff" }} onClick={plantarse}>Plantarme (P)</button>
+              {jugador.length === 2 && <button className="btn-exito" onClick={doblar}>Doblar ×2 (D)</button>}
             </div>
           )}
-          {ronda && <p style={{ marginTop: 14, fontWeight: 600 }}>{ronda}</p>}
+          {ronda && <p className="bj-ronda">{ronda}</p>}
           {terminado && !sesionFin && (
-            <div className="fila-botones">
+            <div className="fila-botones" style={{ marginTop: 12 }}>
               <button className="btn-exito" onClick={nuevaRonda}>Siguiente ronda (N)</button>
             </div>
           )}
-          {sesionFin && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
         </div>
       )}
     </GameShell>

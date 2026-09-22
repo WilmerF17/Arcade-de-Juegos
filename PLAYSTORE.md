@@ -6,9 +6,9 @@
 - **Nav inferior** (🏠 Inicio · 🎲 Azar · 🔍 Buscar · 🏆 Récords): alcance del pulgar, sin abrir el menú.
 - **Botones ≥44px** y **inputs a 16px**: sin zoom forzado en iPhone, táctil cómodo.
 - **Auroras desactivadas en móvil**: el `blur(90px)` fundía la GPU de gama baja; en PC siguen.
-- **Cartas con `content-visibility`**: el navegador no pinta las 237 de golpe.
+- **Cartas con `content-visibility`**: el navegador no pinta las 250 de golpe.
 - **Vendor React en chunk aparte** (`vite.config.js`): se cachea y las actualizaciones pesan menos.
-- **Service worker v9** con *navigation preload*: la portada abre más rápido y sigue offline.
+- **Service worker v12** con *navigation preload*: la portada abre más rápido y sigue offline.
 - **Safe-area + `100dvh`**: sin huecos raros con la barra del navegador ni el notch.
 - **Wordle, teclados, tableros y canvas** adaptados a 360px con scroll horizontal seguro.
 
@@ -16,7 +16,8 @@
 
 | Dispositivo | Cómo se instala |
 |---|---|
-| Android + Chrome/Edge | Banner «Instalar» o menú ⋮ → *Instalar app* |
+| Android | **Botón «Descargar app»** → abre el APK 📥 e instala (permite orígenes desconocidos una vez). APK firmado v2.6.0 servido en `/descargas/palomuchacho.apk` |
+| Android + Chrome/Edge | También: banner «Instalar» o menú ⋮ → *Instalar app* (PWA) |
 | Android + Samsung/Firefox | Banner manual o menú → *Añadir a pantalla de inicio* |
 | iPhone/iPad | Compartir → *Añadir a pantalla de inicio* |
 | PC Chrome/Edge | Icono de instalación en la barra → *Instalar* |
@@ -46,18 +47,24 @@ bubblewrap build
 Sube ese `.aab` a **Play Console → Producción**. Mínimo Android 8 (SDK 23),
 target SDK 34: compatible con ~99% de móviles actuales.
 
+> El `.aab` y el `.apk` ya están compilados en `~/android-twa/app/`
+> (`app-release-bundle.aab` + `app-release-signed.apk`, v2.6.0 código 3,
+> firmados con `~/android-twa/android.keystore`). El APK además se sirve
+> directo en la web para descarga sin tienda. **Guarda bien el keystore**:
+> sin él no podrás actualizar la app.
+
 > `twa-manifest.json` de este repo ya trae el package
 > `app.vercel.arcade_de_juegos.twa`, colores, iconos y versión listos para
 > `bubblewrap build --manifest ./twa-manifest.json`.
+> Versión actual para Play: **2.5.0 (código de versión 2)**.
 
 ### Paso crítico: huellas SHA-256
 
-1. En Play Console → *Configuración → Integridad de la app* copia la huella
-   **SHA-256 del certificado de firma**.
-2. Pégala en `client/public/.well-known/assetlinks.json` donde pone
-   `SUSTITUIR_CON_TU_SHA256_DE_PLAY_CONSOLE`.
-3. Re-despliega (`git push`: Vercel reconstruye solo). Sin esto la app de Play
-   mostraría la barra del navegador en vez de pantalla completa.
+El `assetlinks.json` ya lleva la huella del certificado propio
+(`05:74:81:BA:…:27:DF`), así el APK descargado abre a pantalla completa
+sin barra del navegador. **Si publicas en Play**, sustitúyela por la
+**SHA-256 del certificado de firma de Play Console**
+(*Configuración → Integridad de la app*) y re-despliega.
 
 ## 4. Alternativa: APK nativo con Capacitor
 

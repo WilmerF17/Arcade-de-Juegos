@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Buscaminas con tamaño configurable. */
@@ -76,7 +76,7 @@ function BuscaBase({ titulo, emoji, n, minas, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion={`${n}×${n} con ${minas} minas · clic abre, clic derecho marca.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{abiertas.size ? "↻ Nuevo" : "▶ Empezar"}</button>
         <span className="chip">💣 <b>{minas - marcas.size}</b></span>
         <span className="chip">✅ <b>{abiertas.size}/{n * n - minas}</b></span>
@@ -96,7 +96,7 @@ function BuscaBase({ titulo, emoji, n, minas, tira, iconoFondo }) {
           );
         })}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

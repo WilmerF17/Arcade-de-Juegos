@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Secuencia Inversa: memoriza los dígitos y escríbelos al revés. 3 vidas. */
@@ -60,7 +60,7 @@ export default function Inversa() {
     <GameShell titulo="Secuencia Inversa" emoji="🔄"
       descripcion="Memoriza los dígitos y escríbelos al revés · 3 vidas · crece cada nivel."
       tira="linear-gradient(90deg,#a855f7,#22d3ee)" iconoFondo="linear-gradient(135deg,#a855f7,#22d3ee)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Nivel: <b>{nivel} dígitos</b></span>
         <span className="chip">❤️ <b>{vidas}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
@@ -83,7 +83,7 @@ export default function Inversa() {
           <button className="btn-principal" onClick={comprobar}>Comprobar ⏎</button>
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {fase === "fin" && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Jugar otra vez</button></div>
       )}

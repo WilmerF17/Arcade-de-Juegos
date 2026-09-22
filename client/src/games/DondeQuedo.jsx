@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* ¿Dónde Quedó?: sigue la bolita entre los vasos que se mezclan. */
@@ -63,7 +63,7 @@ function DondeBase({ titulo, vasos, rondas, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="🥤"
       descripcion={`Memoriza dónde quedó la bolita tras la mezcla · ${rondas} rondas.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{rondas}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
       </div>
@@ -85,7 +85,7 @@ function DondeBase({ titulo, vasos, rondas, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {fase === "fin" && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

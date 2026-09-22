@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Motor Verdadero/Falso: 12 afirmaciones, 60 segundos. */
@@ -63,7 +63,7 @@ function VoFBase({ titulo, emoji, banco, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion="¿Verdadero o falso? · 60s · fallar resta 10."
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>
@@ -80,7 +80,7 @@ function VoFBase({ titulo, emoji, banco, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

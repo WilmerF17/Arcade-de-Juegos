@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 import { escribiendo } from "../suite/teclado";
 
@@ -71,7 +71,7 @@ export default function Pulso() {
     <GameShell titulo="Pulso Neón" emoji="💓"
       descripcion="ESPACIO/clic cuando la barra pase por la ventana dorada · 15 pulsos."
       tira="linear-gradient(90deg,#ff3d5a,#ff9a3d)" iconoFondo="linear-gradient(135deg,#ff3d5a,#7c3aed)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Pulso: <b>{turno}/15</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
       </div>
@@ -88,7 +88,7 @@ export default function Pulso() {
         {!jugando && <button className="btn-principal" onClick={empezar}>▶ Empezar</button>}
         {jugando && <button className="btn-principal" onClick={tocar}>⚡ ¡Ahora!</button>}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

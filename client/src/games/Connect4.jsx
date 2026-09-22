@@ -116,7 +116,7 @@ export default function Connect4() {
   return (
     <GameShell titulo="Conecta 4" emoji="🔴"
       descripcion="Clic o teclado (←/→ o A/D + ENTER/↓, o teclas 1-7).">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={empezar}>Empezar partida</button>
         {[1, 2, 3].map(d => (
           <button key={d} className={dif === d ? "btn-principal" : ""} onClick={() => setDif(d)}>

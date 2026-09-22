@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Ordena Números: toca del menor al mayor. 8 rondas contra el crono. */
@@ -62,7 +62,7 @@ export default function Ordena() {
     <GameShell titulo="Ordena Números" emoji="🔢"
       descripcion="Toca del menor al mayor · 8 rondas · los errores restan puntos."
       tira="linear-gradient(90deg,#38bdf8,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#a855f7)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>
         <span className="chip">Siguiente: <b>{ordenados[siguiente] ?? "—"}</b></span>
         <span className="chip">❌ <b>{errores}</b></span>
@@ -85,7 +85,7 @@ export default function Ordena() {
           })}
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && ronda > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Jugar otra vez</button></div>
       )}

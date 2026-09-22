@@ -69,7 +69,7 @@ export default function Luces() {
   const encendidas = grid.flat().filter(Boolean).length;
   return (
     <GameShell titulo="Lights Out" emoji="💡" descripcion="Flechas/WASD + ENTER · apaga todas las luces.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={nuevo}>🔀 Nuevo</button>
         <span className="chip">Movs <b>{movs}</b></span>
         <span className="chip">Encendidas <b>{encendidas}</b></span>

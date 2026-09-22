@@ -46,7 +46,7 @@ export default function Penaltis() {
 
   return (
     <GameShell titulo="Penaltis" emoji="⚽" descripcion="Flechas/WASD o 1-5 · 5 lanzamientos · el portero adivina.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[1, 2, 3].map(d => <button key={d} className={dif === d ? "btn-principal" : ""} onClick={() => setDif(d)}>{d === 1 ? "Fácil" : d === 2 ? "Normal" : "Difícil"}</button>)}
         <button className="btn-exito" onClick={reiniciar}>Reiniciar</button>
         <span className="chip">Goles <b>{goles}/{ronda}</b></span>

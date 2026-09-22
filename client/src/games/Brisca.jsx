@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const PALOS = [{ n: "Oros", e: "🪙" }, { n: "Copas", e: "🏆" }, { n: "Espadas", e: "⚔️" }, { n: "Bastos", e: "🍷" }];
@@ -125,7 +125,7 @@ export default function Brisca() {
     <GameShell titulo="Brisca" emoji="🃏"
       descripcion={`Triunfo: ${PALOS[triunfo].n} ${PALOS[triunfo].e} · gana la baza y roba · +60 puntos vence.`}
       tira="linear-gradient(90deg,#052e16,#22c55e)" iconoFondo="linear-gradient(135deg,#052e16,#22c55e)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {!jugando && mano.length === 0 && <button className="btn-principal" onClick={empezar}>▶ Repartir</button>}
         <span className="chip">Tú: <b>{pts[0]}</b></span>
         <span className="chip">IA: <b>{pts[1]}</b></span>
@@ -151,7 +151,7 @@ export default function Brisca() {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

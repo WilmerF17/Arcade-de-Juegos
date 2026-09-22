@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -65,7 +65,7 @@ export default function Poker() {
   }
   return (
     <GameShell titulo="Video Poker" emoji="🃏" descripcion="Apuesta 5 · conserva con clic o 1-5 · ENTER cambiar.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={jugar}>Nueva mano (5 🪙)</button>
         <span className="chip">🪙 <b>{creditos}</b></span>
         {res && <span className="chip"><b>{res.nombre}</b> +{res.premio}</span>}
@@ -84,7 +84,7 @@ export default function Poker() {
         {res && <p style={{ textAlign: "center", color: "#fff" }}>{res.nombre} → +{res.premio} 🪙</p>}
       </div>
       {creditos < 5 && <p className="aviso info">Sin créditos: recarga <button className="btn-suave" onClick={() => { setCreditos(50); credRef.current = 50; }}>↻ 50</button></p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const BANCOS = {
@@ -73,7 +73,7 @@ export default function CazaPalabra() {
     <GameShell titulo="Caza Palabra" emoji="🔎"
       descripcion="Toca la palabra de la categoría · 45s · las rachas dan bonus."
       tira="linear-gradient(90deg,#0ea5e9,#a855f7,#ff3d5a)" iconoFondo="linear-gradient(135deg,#0ea5e9,#a855f7)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🔥 Racha: <b>{racha}</b></span>
@@ -91,7 +91,7 @@ export default function CazaPalabra() {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

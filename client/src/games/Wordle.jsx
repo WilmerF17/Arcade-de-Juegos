@@ -127,7 +127,7 @@ export default function Palabra5() {
   return (
     <GameShell titulo="Palabra 5" emoji="🟩"
       descripcion="Teclado físico o en pantalla · 5 letras en 6 intentos.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={empezar}>{secreto ? "Reiniciar" : "Empezar"}</button>
       </div>
       {secreto && (

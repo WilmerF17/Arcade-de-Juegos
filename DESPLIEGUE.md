@@ -7,7 +7,7 @@
 
 ## Arquitectura
 
-- Frontend Vite + PWA (`client/`), 232 juegos con carga perezosa.
+- Frontend Vite + PWA (`client/`), 250 juegos con carga perezosa.
 - API serverless en Vercel (`api/`): puntuaciones globales en Upstash Redis.
 - Sin llaves en el código: `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`
   viven en Vercel → Settings → Environment Variables (All Environments).
@@ -21,6 +21,16 @@ npm run dale          # API + web + navegador  (o: jugar)
 npm run test          # 17 chequeos del catálogo
 npm run salud         # 18 chequeos PWA + Google
 ```
+
+## Publicar una actualización (todo en uno)
+
+```bash
+npm run publicar -- "v2.6.3 arreglo el bingo"
+```
+
+Hace en orden: tests → build → verifica APK + portable en dist →
+`git add/commit/push` a GitHub. Vercel y GitHub Pages redespliegan solos.
+Si solo quieres probar sin publicar: `npm run publicar -- --dry`.
 
 ## Salir en Google
 

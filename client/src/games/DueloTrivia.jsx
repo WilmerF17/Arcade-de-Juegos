@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Duelo de Trivia 2P: turnos alternos, 5 preguntas cada uno. */
@@ -52,7 +52,7 @@ function DueloTBase({ titulo, banco, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="⚔️"
       descripcion={`J1 y J2 se turnan · ${POR_JUGADOR} preguntas cada uno.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🔵 J1: <b>{s[0]}</b></span>
         <span className="chip">🔴 J2: <b>{s[1]}</b></span>
         {jugando && <span className="chip">Turno: <b>{turno % 2 === 0 ? "J1 🔵" : "J2 🔴"}</b></span>}
@@ -75,7 +75,7 @@ function DueloTBase({ titulo, banco, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

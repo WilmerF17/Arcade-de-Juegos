@@ -127,7 +127,7 @@ export default function Ahorcado() {
   return (
     <GameShell titulo="Ahorcado" emoji="💀"
       descripcion="Teclado físico o en pantalla · adivina antes de 6 fallos.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={empezar}>{juego ? "Reiniciar" : "Empezar"}</button>
       </div>
       {juego && (

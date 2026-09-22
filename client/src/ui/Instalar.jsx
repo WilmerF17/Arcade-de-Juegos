@@ -79,6 +79,13 @@ function detectaPlataforma() {
   return { esIOS, esAndroid, esPC };
 }
 
+/** APK firmado generado con Bubblewrap (TWA): descarga directa, sin tienda. */
+export const URL_APK = `${import.meta.env.BASE_URL}descargas/palomuchacho.apk`;
+export const APK_NOMBRE = "palomuchacho.apk";
+/** Juego portable para PC: un solo .html con los 250 juegos (doble clic y a jugar). */
+export const URL_PORTABLE = `${import.meta.env.BASE_URL}descargas/PaLoMuchacho-portable.html`;
+export const PORTABLE_NOMBRE = "PaLoMuchacho-portable.html";
+
 function AyudaInstalar({ onCerrar }) {
   const { esIOS, esAndroid, esPC } = detectaPlataforma();
   return (
@@ -114,11 +121,13 @@ function AyudaInstalar({ onCerrar }) {
         ) : esAndroid ? (
           <ol className="instalar-lista">
             <li>
-              En <b>Chrome</b>: menú <b>⋮</b> → <b>«Instalar app»</b> o{" "}
-              <b>«Añadir a pantalla de inicio»</b>.
+              <b>Directa (recomendado):</b>{" "}
+              <a href={URL_APK} download={APK_NOMBRE}>descarga el APK 📥</a>,
+              ábrelo y toca <b>Instalar</b> (permite «orígenes desconocidos» una vez).
             </li>
             <li>
-              En <b>Samsung Internet / Firefox</b>: menú →{" "}
+              O en <b>Chrome</b>: menú <b>⋮</b> → <b>«Instalar app»</b>. En{" "}
+              <b>Samsung Internet / Firefox</b>: menú →{" "}
               <b>«Añadir a pantalla de inicio»</b>.
             </li>
             <li>Busca el icono 📲 en tu inicio y juega offline.</li>
@@ -154,7 +163,8 @@ function AyudaInstalar({ onCerrar }) {
 
 /**
  * Botón de instalar siempre visible.
- * - Si hay prompt del navegador: instala directo.
+ * - En Android: descarga directa del APK firmado (un toque y a instalar).
+ * - Si hay prompt del navegador: instala directo (PWA).
  * - Si no: abre el modal con instrucciones según plataforma.
  * - Si ya está instalada: muestra confirmación (o nada en variante icono).
  *
@@ -166,6 +176,7 @@ export default function BotonInstalar({
 }) {
   const { instalable, instalada, instalar } = useInstalacion();
   const [ayuda, setAyuda] = useState(false);
+  const { esAndroid, esPC } = detectaPlataforma();
 
   async function alClic() {
     if (instalada) return;
@@ -183,6 +194,36 @@ export default function BotonInstalar({
       <button className={`btn-suave ${className}`} disabled title="Ya instalada">
         <Icono n="descargar" size={15} /> ✓ Instalada
       </button>
+    );
+  }
+
+  // Android: el botón descarga el APK directamente, sin vueltas.
+  // PC: descarga el juego portable (un .html con todo dentro).
+  const descarga = esAndroid
+    ? { url: URL_APK, nombre: APK_NOMBRE }
+    : esPC
+      ? { url: URL_PORTABLE, nombre: PORTABLE_NOMBRE }
+      : null;
+  if (descarga) {
+    if (variante === "icono") {
+      return (
+        <a className={`btn-suave ${className}`} href={descarga.url} download={descarga.nombre}
+          aria-label="Descargar juego" title="Descargar juego">
+          <Icono n="descargar" size={16} />
+        </a>
+      );
+    }
+    if (variante === "lateral") {
+      return (
+        <a className={`btn-exito btn-instalar-lateral ${className}`} href={descarga.url} download={descarga.nombre}>
+          <Icono n="descargar" size={15} /> Descargar juego
+        </a>
+      );
+    }
+    return (
+      <a className={`btn-exito ${className}`} href={descarga.url} download={descarga.nombre}>
+        <Icono n="descargar" size={15} /> Descargar juego
+      </a>
     );
   }
 

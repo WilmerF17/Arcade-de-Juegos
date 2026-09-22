@@ -151,7 +151,7 @@ export default function HundirFlota() {
     <GameShell titulo="Hundir la flota" emoji="🚢"
       descripcion="Clic o teclado (flechas/WASD + ENTER). Tocado 🔥, agua 💦."
       tira="linear-gradient(90deg,#0ea5e9,#1e3a8a,#22d3ee)" iconoFondo="linear-gradient(135deg,#0ea5e9,#1e3a8a)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={reiniciar}>⚓ Nueva batalla</button>
         <span className="chip">Tus impactos: <b>{aciertos}/{totalCeldas}</b></span>
         <span className="chip">IA: <b>{aciertosIA}/{totalCeldas}</b></span>

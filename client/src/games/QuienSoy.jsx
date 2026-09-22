@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Motor "¿Quién soy?": 3 pistas y 4 opciones. 8 rondas. */
@@ -47,7 +47,7 @@ function QuienBase({ titulo, emoji, banco, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion="3 pistas para adivinar · menos pistas = más puntos · 8 rondas."
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Ronda: <b>{jugando ? `${idx}/${RONDAS}` : "—"}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
       </div>
@@ -69,7 +69,7 @@ function QuienBase({ titulo, emoji, banco, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && idx > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

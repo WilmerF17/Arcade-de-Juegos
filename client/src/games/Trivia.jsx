@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 
 const PREGUNTAS = [
@@ -32,6 +32,8 @@ const PREGUNTAS = [
 ];
 
 const CATEGORIAS = ["Mezcla", "Ciencia", "Historia", "Geografía", "Tecnología", "Literatura", "Deporte", "Naturaleza", "Arte"];
+const TIEMPO_MS = 15000;
+const LETRAS = ["A", "B", "C", "D"];
 
 export default function Trivia() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Trivia");
@@ -41,8 +43,11 @@ export default function Trivia() {
   const [elegida, setElegida] = useState(null);
   const [fin, setFin] = useState(false);
   const [cursor, setCursor] = useState(0);
-  const estadoRef = useRef({ lista: [], idx: 0, correctas: 0, elegida: null });
-  estadoRef.current = { lista, idx, correctas, elegida };
+  const [racha, setRacha] = useState(0);
+  const [historial, setHistorial] = useState([]);
+  const [restante, setRestante] = useState(TIEMPO_MS);
+  const estadoRef = useRef({ lista: [], idx: 0, correctas: 0, elegida: null, racha: 0, historial: [] });
+  estadoRef.current = { lista, idx, correctas, elegida, racha, historial };
 
   function empezar(cat) {
     let pool = [...PREGUNTAS];
@@ -51,33 +56,59 @@ export default function Trivia() {
     const seleccion = pool.slice(0, Math.min(10, pool.length));
     setLista(seleccion);
     setIdx(0); setCorrectas(0); setElegida(null); setFin(false); setCursor(0);
+    setRacha(0); setHistorial([]); setRestante(TIEMPO_MS);
   }
 
-  function responder(i) {
-    const { lista: l, idx: k, elegida: e, correctas: c } = estadoRef.current;
-    if (e != null || !l.length || k >= l.length) return;
-    setElegida(i);
-    estadoRef.current.elegida = i;
-    const esCorrecta = i === l[k].r;
-    const nuevas = c + (esCorrecta ? 1 : 0);
+  function avanzar(nuevas, nuevaRacha, nuevoHist) {
+    const { lista: l, idx: k } = estadoRef.current;
     setTimeout(() => {
       if (k + 1 >= l.length) {
         const puntos = nuevas * 10;
         registrarPunt(puntos, nuevas >= 7 ? 1 : 0);
         setCorrectas(nuevas);
+        setRacha(nuevaRacha);
+        setHistorial(nuevoHist);
         setFin(true);
       } else {
         setCorrectas(nuevas);
+        setRacha(nuevaRacha);
+        setHistorial(nuevoHist);
         setIdx(k + 1);
         setElegida(null);
         estadoRef.current.elegida = null;
         setCursor(0);
+        setRestante(TIEMPO_MS);
       }
-    }, 700);
+    }, 750);
+  }
+
+  function responder(i) {
+    const { lista: l, idx: k, elegida: e, correctas: c, racha: r, historial: h } = estadoRef.current;
+    if (e != null || !l.length || k >= l.length) return;
+    setElegida(i);
+    estadoRef.current.elegida = i;
+    const esCorrecta = i === l[k].r;
+    avanzar(c + (esCorrecta ? 1 : 0), esCorrecta ? r + 1 : 0, [...h, esCorrecta]);
   }
 
   const responderRef = useRef(responder);
   responderRef.current = responder;
+
+  // Crono por pregunta: 15 s, al agotarse cuenta como fallo
+  useEffect(() => {
+    if (!lista.length || fin || elegida != null) return;
+    const id = setInterval(() => {
+      setRestante(prev => {
+        if (prev <= 100) {
+          clearInterval(id);
+          responderRef.current(-1);
+          return 0;
+        }
+        return prev - 100;
+      });
+    }, 100);
+    return () => clearInterval(id);
+  }, [lista, idx, fin, elegida]);
 
   useEffect(() => {
     const fn = e => {
@@ -104,9 +135,14 @@ export default function Trivia() {
   if (lista.length === 0) {
     return (
       <GameShell titulo="Trivia" emoji="❓"
-        descripcion="Responde 10 preguntas de cultura general. Cada acierto vale 10 puntos.">
+        descripcion="Responde 10 preguntas contra el crono (15 s cada una). Cada acierto vale 10 puntos."
+        ayuda={<>
+          <span>Elige una categoría y responde <b>10 preguntas</b>: cada acierto vale <b>10 puntos</b>.</span>
+          <span>Tienes <b>15 segundos</b> por pregunta: si se agota el tiempo, cuenta como fallo y se rompe tu racha.</span>
+          <span>Controles: teclas <kbd>A</kbd>–<kbd>D</kbd> o <kbd>1</kbd>–<kbd>4</kbd>, flechas + <kbd>ENTER</kbd>, o toca la opción.</span>
+        </>}>
         <p>Elige una categoría:</p>
-        <div className="fila-botones" style={{ marginTop: 0 }}>
+        <div className="fila-botones">
           {CATEGORIAS.map((c, i) => (
             <button key={c} className="btn-principal" onClick={() => empezar(i)}>{i === 0 ? "🔀" : ""} {c}</button>
           ))}
@@ -116,36 +152,55 @@ export default function Trivia() {
   }
 
   const pregunta = lista[idx];
+  const pctTiempo = Math.max(0, Math.round((restante / TIEMPO_MS) * 100));
 
   return (
     <GameShell titulo="Trivia" emoji="❓"
-      descripcion="Teclado: A-D / 1-4 o flechas + ENTER. 10 preguntas.">
-      <div className="marcador-chips">
-        <span className="chip">Pregunta <b>{idx + 1}/{lista.length}</b></span>
-        <span className="chip">Correctas <b style={{ color: "var(--exito)" }}>{correctas + (elegida != null && elegida === pregunta.r ? 1 : 0)}</b></span>
-      </div>
-      <h3 style={{ margin: "6px 0 10px" }}>{pregunta.p}</h3>
-      <div>
-        {pregunta.o.map((op, i) => {
-          let cls = "trivia-op";
-          if (elegida != null) {
-            if (i === pregunta.r) cls += " correcta";
-            else if (i === elegida) cls += " elegida";
-          } else if (i === cursor) cls += " cursor";
-          return (
-            <button key={i} className={cls} onClick={() => responder(i)} disabled={elegida != null}
-              onMouseEnter={() => setCursor(i)}>
-              {String.fromCharCode(65 + i)}) {op}
-            </button>
-          );
-        })}
-      </div>
-      {fin && (
-        <div className={`mensaje-final ${tipo}`}>
-          {mensaje} <br /> Resultado: {correctas}/{lista.length}
+      descripcion="Teclado: A-D / 1-4 o flechas + ENTER. 10 preguntas contra el crono."
+      stats={[
+        { etiqueta: "Pregunta", valor: `${idx + 1}/${lista.length}` },
+        { icono: "✅", etiqueta: "Aciertos", valor: correctas + (elegida != null && elegida === pregunta.r ? 1 : 0) },
+        ...(racha >= 2 ? [{ icono: "🔥", etiqueta: "Racha", valor: `×${racha}` }] : []),
+      ]}
+      resultado={fin ? { mensaje: `${mensaje} · Resultado: ${correctas}/${lista.length}`, tipo } : null}
+      acciones={fin ? <button className="btn-exito" onClick={() => empezar(0)}>🔀 Otra ronda</button> : null}
+      ayuda={<>
+        <span>Cada acierto vale <b>10 puntos</b>. Con <b>7+</b> la partida cuenta como victoria.</span>
+        <span>El crono da <b>15 s</b> por pregunta; al agotarse, fallo automático.</span>
+      </>}>
+      {!fin && (
+        <div className="trivia-card">
+          <span className="trivia-cat">{pregunta.c}</span>
+          <h3 className="trivia-pregunta">{pregunta.p}</h3>
+          <div className={`trivia-tiempo${pctTiempo <= 33 ? " urgente" : ""}`} role="progressbar"
+            aria-valuenow={pctTiempo} aria-valuemin={0} aria-valuemax={100} aria-label="Tiempo restante">
+            <div style={{ width: `${pctTiempo}%` }} />
+          </div>
+          <div>
+            {pregunta.o.map((op, i) => {
+              let cls = "trivia-op";
+              if (elegida != null) {
+                if (i === pregunta.r) cls += " correcta";
+                else if (i === elegida) cls += " elegida";
+              } else if (i === cursor) cls += " cursor";
+              return (
+                <button key={i} className={cls} onClick={() => responder(i)} disabled={elegida != null}
+                  onMouseEnter={() => setCursor(i)}>
+                  <i className="op-letra">{LETRAS[i]}</i> {op}
+                  <kbd>{LETRAS[i]}</kbd>
+                </button>
+              );
+            })}
+          </div>
+          <div className="trivia-puntos" aria-label="Progreso">
+            {lista.map((_, i) => (
+              <span key={i} className={
+                `tp-dot${i < historial.length ? (historial[i] ? " bien" : " mal") : i === idx ? " actual" : ""}`
+              } />
+            ))}
+          </div>
         </div>
       )}
-      {fin && <div className="fila-botones"><button className="btn-exito" onClick={() => empezar(0)}>Otra ronda</button></div>}
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
 
 const SIMBOLOS = ["🍎", "🍌", "🍇", "🍊", "🍓", "🍉", "🥝", "🍍", "🍒", "🥥", "🍋", "🍑", "🥭", "🍅", "🌽", "🎈", "🎁", "⭐"];
@@ -97,7 +97,7 @@ export default function Memoria() {
   return (
     <GameShell titulo="Memoria" emoji="🧠"
       descripcion="Clic o teclado (flechas/WASD + ENTER) · encuentra las parejas.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[[4, 4], [4, 6], [6, 6]].map((t, i) => (
           <button key={i} className={tamaño[0] === t[0] && tamaño[1] === t[1] ? "btn-principal" : ""}
             onClick={() => empezar(t[0], t[1])}>{t[0]}×{t[1]} ({t[0] * t[1] / 2} pares)</button>
@@ -120,7 +120,7 @@ export default function Memoria() {
               );
             })}
           </div>
-          {fin && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+          {fin && <Resultado mensaje={mensaje} tipo={tipo} />}
           {!fin && <p className="aviso-ia">💡 Teclado: <b>flechas/WASD</b> mover · <b>ENTER</b> voltear.</p>}
         </div>
       )}

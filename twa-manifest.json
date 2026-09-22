@@ -1,7 +1,7 @@
 {
   "packageId": "app.vercel.arcade_de_juegos.twa",
   "host": "arcade-de-juegos.vercel.app",
-  "name": "ArcadePaLoMuchacho · 237 juegos",
+  "name": "ArcadePaLoMuchacho · 250 juegos",
   "shortName": "PaLoMuchacho",
   "themeColor": "#ff3d5a",
   "backgroundColor": "#12060f",
@@ -17,8 +17,8 @@
     "path": "./android.keystore",
     "alias": "android"
   },
-  "appVersion": "2.3.0",
-  "appVersionCode": 1,
+  "appVersion": "2.6.0",
+  "appVersionCode": 3,
   "minSdkVersion": 23,
   "targetSdkVersion": 34,
   "fallbackType": "customtabs",

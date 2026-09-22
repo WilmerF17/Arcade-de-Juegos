@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://arcade-de-juegos.vercel.app/sitemap.xml

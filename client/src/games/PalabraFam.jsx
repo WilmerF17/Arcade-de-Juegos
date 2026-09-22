@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Palabras con pistas de colores: verde = bien, amarillo = otra posición. 6 intentos. */
@@ -68,7 +68,7 @@ function PalabraBase({ titulo, emoji, banco, longitud, diaria, tira, iconoFondo 
       descripcion={`Adivina la palabra de ${longitud} letras en ${INTENTOS} intentos${diaria ? " · cambia cada día" : ""}.`}
       tira={tira} iconoFondo={iconoFondo}>
       {!jugando && filas.length === 0 && (
-        <div className="fila-botones" style={{ marginTop: 0 }}><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
+        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
       )}
       <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
         {filas.map((f, r) => (
@@ -92,7 +92,7 @@ function PalabraBase({ titulo, emoji, banco, longitud, diaria, tira, iconoFondo 
         </div>
       )}
       {!jugando && filas.length > 0 && <p style={{ textAlign: "center" }}>Era: <b>{objetivo}</b></p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && filas.length > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

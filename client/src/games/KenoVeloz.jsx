@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { cargarBilletera, apostar, cobrar } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 
@@ -50,7 +50,7 @@ export default function KenoVeloz() {
     <GameShell titulo="Keno Veloz" emoji="🎱"
       descripcion="Elige 5 · salen 8 · 3×2, 4×5, 5×20."
       tira="linear-gradient(90deg,#0f172a,#7c3aed)" iconoFondo="linear-gradient(135deg,#0f172a,#7c3aed)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         <span className="chip">Elegidos: <b>{elegidos.length}/5</b></span>
       </div>
@@ -79,7 +79,7 @@ export default function KenoVeloz() {
         <button className="btn-suave" onClick={limpiar}>Limpiar</button>
       </div>
       {aviso && <p className="aviso info" style={{ textAlign: "center" }}>{aviso}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

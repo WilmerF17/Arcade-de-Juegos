@@ -73,7 +73,7 @@ export default function Sopa() {
 
   return (
     <GameShell titulo="Sopa de Letras" emoji="🔍" descripcion="Escribe las palabras ocultas (→ ↓ ↘) · 3 niveles.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[0, 1, 2].map(n => <button key={n} className={nivel === n ? "btn-principal" : ""} onClick={() => nuevo(n)}>{["Fácil", "Normal", "Difícil"][n]}</button>)}
         <span className="chip">Halladas <b>{halladas.length}/{juego.puestas.length}</b></span>
         <span className="chip">❌ <b>{fallos}</b></span>

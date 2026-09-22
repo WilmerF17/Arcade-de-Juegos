@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Destello: toca la celda que parpadea antes de que se apague. 20 rondas, cada vez más rápido. */
@@ -72,7 +72,7 @@ export default function Destello() {
     <GameShell titulo="Destello" emoji="✨"
       descripcion="Toca la celda dorada antes de que se apague · 20 rondas · 3 vidas."
       tira="linear-gradient(90deg,#facc15,#ff9a3d,#ff3d5a)" iconoFondo="linear-gradient(135deg,#facc15,#ff9a3d)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">❤️ <b>{vidas}</b></span>
@@ -93,7 +93,7 @@ export default function Destello() {
           ))}
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && ronda > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

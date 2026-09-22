@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Sudoku 4×4: 3 minipuzzles con filas, columnas y cuadros 2×2 del 1 al 4. */
@@ -46,7 +46,7 @@ export default function Sudoku4() {
     <GameShell titulo="Sudoku 4×4" emoji="🔢"
       descripcion="Filas, columnas y cuadros 2×2 del 1 al 4 · 3 puzzles."
       tira="linear-gradient(90deg,#38bdf8,#6366f1)" iconoFondo="linear-gradient(135deg,#38bdf8,#6366f1)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[0, 1, 2].map(i => (
           <button key={i} className={pi === i ? "btn-principal" : "btn-suave"} onClick={() => elegirPuzzle(i)}>Puzzle {i + 1}</button>
         ))}
@@ -73,7 +73,7 @@ export default function Sudoku4() {
           <button key={v} className="btn-principal" style={{ fontSize: "1.3rem", padding: "10px 20px" }} onClick={() => poner(v)}>{v}</button>
         ))}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Motor de adivinanza numérica con rango e intentos configurables. */
@@ -44,7 +44,7 @@ function RangoBase({ titulo, emoji, min, max, intentos, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion={`Adivina entre ${min} y ${max} con ${intentos} intentos.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Intentos: <b>{restan}</b></span>
       </div>
       {!jugando && restan === intentos && !pista && (
@@ -60,7 +60,7 @@ function RangoBase({ titulo, emoji, min, max, intentos, tira, iconoFondo }) {
           <button className="btn-principal" onClick={probar}>Probar ⏎</button>
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && pista && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}
@@ -126,7 +126,7 @@ export function MaquinaAdivina() {
     <GameShell titulo="La Máquina Adivina" emoji="🤖"
       descripcion="Piensa un número del 1 al 100 y guía a la IA: más alto, más bajo o ¡igual!"
       tira="linear-gradient(90deg,#22d3ee,#a855f7)" iconoFondo="linear-gradient(135deg,#22d3ee,#a855f7)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Rango: <b>{min}–{max}</b></span>
         <span className="chip">Intentos: <b>{intentos}</b></span>
       </div>
@@ -145,7 +145,7 @@ export function MaquinaAdivina() {
         </>
       )}
       {fin && <p style={{ textAlign: "center" }}>{fin}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && intentos > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

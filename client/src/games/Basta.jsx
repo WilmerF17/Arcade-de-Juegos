@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* ¡Basta!: te dan letra y categorías, escribe una palabra de cada en 60s. */
@@ -47,7 +47,7 @@ function BastaBase({ titulo, categorias, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="✏️"
       descripcion={`Letra + categorías · 60s · cada válida = 50 · todas distintas = +50.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         {letra && <span className="chip">Letra: <b style={{ fontSize: "1.3rem" }}>{letra}</b></span>}
       </div>
@@ -65,7 +65,7 @@ function BastaBase({ titulo, categorias, tira, iconoFondo }) {
           ))}
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

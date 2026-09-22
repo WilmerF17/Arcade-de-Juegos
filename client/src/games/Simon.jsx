@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 
 const COLORES = ["s1", "s2", "s3", "s4"];
@@ -119,7 +119,7 @@ export default function Simon() {
   return (
     <GameShell titulo="Secuencia Neón" emoji="🔵"
       descripcion="Clic o teclado (1-4, flechas o WASD). Supera el nivel 5.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {(!secuencia.length) && (
           <button className="btn-exito" onClick={empezar}>{fin ? "↻ Jugar otra vez" : "Empezar"}</button>
         )}
@@ -135,7 +135,7 @@ export default function Simon() {
       </div>
       <p className="aviso-ia">💡 Teclas: <b>1-4</b> · <b>W/↑</b>=🔴 <b>A/←</b>=🟢 <b>S/↓</b>=🔵 <b>D/→</b>=🟣 · <b>ENTER</b> empezar.</p>
       {mensajeAi && <p className="aviso-ia">{mensajeAi}</p>}
-      {fin && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {fin && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

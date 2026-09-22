@@ -1,6 +1,6 @@
 # 🕹️ ArcadePaLoMuchacho
 
-**237 minijuegos originales en español**, con XP, niveles, logros, desafío diario,
+**250 minijuegos originales en español**, con XP, niveles, logros, desafío diario,
 billetera virtual y ranking global. Instalable en móvil y PC (PWA), funciona sin conexión.
 
 - 🎮 Juega: https://arcade-de-juegos.vercel.app
@@ -19,5 +19,6 @@ npm run install-all   # una vez: dependencias de servidor + cliente
 npm run dale          # prende API + web y abre el navegador (o ./bin/dale)
 npm run salud         # chequeo PWA + Google (18 puntos)
 npm run test          # 17 chequeos automáticos del catálogo
+npm run publicar -- "mensaje"  # tests + build + push: actualiza Vercel, GitHub y sitemap
 jugar                 # atajo clásico: mismo efecto que npm run dale
 ```

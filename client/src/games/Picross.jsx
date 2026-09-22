@@ -90,7 +90,7 @@ export default function Picross() {
 
   return (
     <GameShell titulo="Nonogram 5×5" emoji="🧩" descripcion="Flechas/WASD + ENTER pintar · X cruz · 3 errores = fin.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {PRESETS.map((_, i) => <button key={i} className={idx === i ? "btn-principal" : ""} onClick={() => nuevo(i)}>Puzzle {i + 1}</button>)}
         <span className="chip">❌ <b>{errores}/3</b></span>
       </div>

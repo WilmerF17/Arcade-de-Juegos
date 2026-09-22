@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -131,7 +131,7 @@ export default function Tetris() {
 
   return (
     <GameShell titulo="Bloques Neón" emoji="🧱" descripcion="Flechas o WASD mover · ↑/W girar · ESPACIO bajar · P pausa.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : fin ? "↻ Reintentar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">Líneas <b>{lineas}</b></span>
@@ -145,19 +145,19 @@ export default function Tetris() {
           )))}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div className="fila-botones" style={{ marginTop: 0 }}>
+          <div className="fila-botones">
             <button onClick={() => moverRef.current(-1, 0)}>←</button>
             <button onClick={() => girarRef.current()}>⟳</button>
             <button onClick={() => moverRef.current(1, 0)}>→</button>
           </div>
-          <div className="fila-botones" style={{ marginTop: 0 }}>
+          <div className="fila-botones">
             <button onClick={() => moverRef.current(0, 1)}>↓</button>
             <button onClick={() => { if (jugando) { const v = !pausa; st.current.pausa = v; setPausa(v); } }}>{pausa ? "▶" : "⏸"}</button>
           </div>
           {pausa && <div className="aviso info">⏸ En pausa.</div>}
         </div>
       </div>
-      {fin && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {fin && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

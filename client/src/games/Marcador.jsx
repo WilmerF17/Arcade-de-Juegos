@@ -39,7 +39,7 @@ export default function Marcador() {
     <GameShell titulo="Marcador" emoji="🏆"
       descripcion="Ranking global, podio y winrate de todos los juegos."
       tira="linear-gradient(90deg,#f59e0b,#ef4444,#a855f7)" iconoFondo="linear-gradient(135deg,#f59e0b,#ef4444)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={cargar}>{recargando ? "Cargando..." : <><Icono n="refrescar" size={14} /> Refrescar</>}</button>
         <span className="chip"><Icono n="mando" size={13} /> Partidas: <b>{totalJugadas}</b></span>
         <span className="chip"><Icono n="desafio" size={13} /> Victorias: <b>{totalVictorias}</b></span>

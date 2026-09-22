@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const META = 20;
@@ -109,7 +109,7 @@ function ParchisBase({ titulo, modo, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="🎲"
       descripcion={dosJ ? "Duelo local: J1 🔵 y J2 🔴 · elige ficha y lanza." : "Tú 🔵 contra la IA 🔴 · elige ficha y lanza."}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🔵 <b>{yo.join(" · ")}</b></span>
         <span className="chip">🔴 <b>{rival.join(" · ")}</b></span>
         <span className="chip">🎲 <b>{dado ?? "—"}</b></span>
@@ -136,7 +136,7 @@ function ParchisBase({ titulo, modo, tira, iconoFondo }) {
         )}
         {jugando && !dosJ && turno === "ia" && <span className="chip">🤖 Turno de la IA…</span>}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -94,7 +94,7 @@ export default function Zombies() {
   }, [jugando, balas]);
   return (
     <GameShell titulo="Defensa Zombie" emoji="🧟" descripcion="Clic dispara · R recarga · no dejes que lleguen al centro.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <button className="btn-suave" onClick={recargar} disabled={balas > 0}>🔄 Recargar (R)</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
@@ -112,7 +112,7 @@ export default function Zombies() {
         ))}
         {!jugando && zombies.length === 0 && <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", color: "var(--texto-suave)" }}>Pulsa Jugar · defiende la casa 🏠</div>}
       </div>
-      {mensaje && !jugando && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {mensaje && !jugando && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

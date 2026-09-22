@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Duelo de Manos: piedra-papel-tijeras 2P en local, jugadas ocultas. */
@@ -55,7 +55,7 @@ function DueloBase({ titulo, opciones, rondas, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="✋"
       descripcion={fase === "p2" && jugando ? "J2 elige en secreto (J1 no mires 👀)" : `J1 elige en secreto · al mejor de ${rondas}.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🔵 J1: <b>{s1}</b></span>
         <span className="chip">Ronda: <b>{ronda}/{rondas}</b></span>
         <span className="chip">🔴 J2: <b>{s2}</b></span>
@@ -71,7 +71,7 @@ function DueloBase({ titulo, opciones, rondas, tira, iconoFondo }) {
           ))}
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

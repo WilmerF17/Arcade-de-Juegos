@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { cargarBilletera, apostar, cobrar } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 
@@ -52,7 +52,7 @@ export default function MonedaRacha() {
     <GameShell titulo="Moneda Racha" emoji="🪙"
       descripcion="Cara o cruz ×2 · planta y cobra o arriesga la racha (máx 5)."
       tira="linear-gradient(90deg,#facc15,#eab308)" iconoFondo="linear-gradient(135deg,#facc15,#eab308)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         <span className="chip">💰 Bote: <b>{bote}</b></span>
         <span className="chip">🔥 <b>{racha}/5</b></span>
@@ -74,7 +74,7 @@ export default function MonedaRacha() {
         {bote > 0 && <button className="btn-exito" onClick={() => plantar()}>💰 Plantar ({bote})</button>}
       </div>
       {aviso && <p className="aviso info" style={{ textAlign: "center" }}>{aviso}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

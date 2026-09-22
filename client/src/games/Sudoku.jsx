@@ -74,7 +74,7 @@ export default function Sudoku() {
 
   return (
     <GameShell titulo="Sudoku" emoji="🔢" descripcion="Flechas/WASD cursor · 1-9 poner · Retroceso borrar.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {PUZZLES.map((_, i) => <button key={i} className={idxPuzzle === i ? "btn-principal" : ""} onClick={() => cargar(i)}>Puzzle {i + 1}</button>)}
         <span className="chip">Errores <b>{errores}</b></span>
       </div>

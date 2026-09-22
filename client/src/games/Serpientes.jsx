@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const META = 30;
@@ -83,7 +83,7 @@ function SerpBase({ titulo, modo, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="🐍"
       descripcion={dosJ ? "Duelo local J1 🔵 vs J2 🔴 · escaleras suben, serpientes bajan." : "Tú 🔵 contra la IA 🔴 · escaleras suben, serpientes bajan."}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🔵 <b>{yo}</b></span>
         <span className="chip">🔴 <b>{rival}</b></span>
         <span className="chip">🎲 <b>{dado ?? "—"}</b></span>
@@ -103,7 +103,7 @@ function SerpBase({ titulo, modo, tira, iconoFondo }) {
         {jugando && (dosJ || turno === "yo") && <button className="btn-principal" onClick={lanzar}>🎲 Lanzar ({quien})</button>}
         {jugando && !dosJ && turno === "ia" && <span className="chip">🤖 Turno de la IA…</span>}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

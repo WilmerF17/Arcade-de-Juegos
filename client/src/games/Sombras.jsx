@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const EMOJIS = ["🐶", "🐱", "🦊", "🐼", "🦁", "🐸", "🐵", "🐷", "🐮", "🐥", "🦆", "🐢", "🐙", "🦋", "🐝", "🌵", "🍎", "⚽", "🚗", "✈️", "⛵", "🏠", "🌙", "⭐"];
@@ -67,7 +67,7 @@ export default function Sombras() {
     <GameShell titulo="Sombras Gemelas" emoji="👯"
       descripcion="Un emoji cambió en el segundo tablero · tócalo · 10 rondas."
       tira="linear-gradient(90deg,#a855f7,#22d3ee)" iconoFondo="linear-gradient(135deg,#a855f7,#22d3ee)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">❌ <b>{errores}</b></span>
@@ -91,7 +91,7 @@ export default function Sombras() {
           </div>
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && ronda > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

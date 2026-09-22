@@ -171,7 +171,7 @@ export default function Minesweeper() {
   return (
     <GameShell titulo="Buscaminas" emoji="💣"
       descripcion="Clic o ENTER/ESPACIO revela · clic derecho o F bandera · flechas/WASD mueven cursor.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {Object.keys(TAM).map(k => (
           <button key={k} className={tamaño === k ? "btn-principal" : ""} onClick={() => { setTamaño(k); }}>{k}</button>
         ))}

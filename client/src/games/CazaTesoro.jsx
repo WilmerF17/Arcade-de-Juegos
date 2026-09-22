@@ -75,7 +75,7 @@ export default function CazaTesoro() {
   return (
     <GameShell titulo="Caza del tesoro" emoji="💰"
       descripcion="Flechas o WASD para moverte · el radar te guía al tesoro oculto.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[8, 10, 12].map(t => (
           <button key={t} className={tam === t ? "btn-principal" : ""} onClick={() => setTam(t)}>{t}×{t}</button>
         ))}

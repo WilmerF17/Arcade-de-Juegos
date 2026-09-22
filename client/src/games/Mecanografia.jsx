@@ -48,7 +48,7 @@ export default function Mecanografia() {
 
   return (
     <GameShell titulo="Mecanografía" emoji="⌨️" descripcion="60 segundos · escribe sin mirar · precisión y PPM.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : fin ? "↻ Otra vez" : "▶ Jugar 60s"}</button>
         <span className="chip">⏱️ <b>{tiempo}s</b></span>
         <span className="chip">PPM <b>{ppm}</b></span>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const ABC = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("");
@@ -52,7 +52,7 @@ function AhorBase({ titulo, emoji, banco, pista, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion={`${pista} · ${MAX} fallos permitidos.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip" style={{ fontSize: "1.6rem" }}>{etapas[fallos]}</span>
         <span className="chip">Fallos: <b>{fallos}/{MAX}</b></span>
       </div>
@@ -73,7 +73,7 @@ function AhorBase({ titulo, emoji, banco, pista, tira, iconoFondo }) {
           )}
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && palabra && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra palabra</button></div>
       )}

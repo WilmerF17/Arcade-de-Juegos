@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx, nota } from "../suite/sonido";
 
 const NIVELES = [
@@ -65,7 +65,7 @@ export default function OidoFino() {
     <GameShell titulo="Oído Fino" emoji="👂"
       descripcion="Escucha el tono: ¿grave, medio o agudo? · 12 rondas · 3 vidas."
       tira="linear-gradient(90deg,#38bdf8,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#a855f7)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">❤️ <b>{vidas}</b></span>
@@ -87,7 +87,7 @@ export default function OidoFino() {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && ronda > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

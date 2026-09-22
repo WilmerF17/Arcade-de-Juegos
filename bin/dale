@@ -7,6 +7,7 @@
 #    dale --duro       → modo producción (compila y sirve todo junto)
 #    dale --tumba      → apaga todo
 #    dale --salud      → chequeo: ¿lista para Google y para instalar en PC/móvil?
+#    dale --publicar   → tests + build + push (actualiza Vercel, GitHub y sitemap)
 #    dale --ayuda      → esta ayuda
 #
 set -u
@@ -34,7 +35,7 @@ banner() {
   echo -e "${ROJO}  ██║  ██║██╔══██║${AMARILLO}██║     ██║   ██║${VERDE}██║╚██╔╝██║██║   ██║██║     ██╔══██║██╔══██║██║     ██╔══██║██║   ██║${RESET}"
   echo -e "${ROJO}  ██████╔╝██║  ██║${AMARILLO}███████╗╚██████╔╝${VERDE}██║ ╚═╝ ██║╚██████╔╝╚██████╗██║  ██║██║  ██║╚██████╗██║  ██║╚██████╔╝${RESET}"
   echo -e "${CIAN}  ╚═════╝ ╚═╝  ╚═╝${AMARILLO}╚══════╝ ╚═════╝ ${VERDE}╚═╝     ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ${RESET}"
-  echo -e "${MAGENTA}                    🔥 237 minijuegos · XP · logros · instalable 🔥${RESET}"
+  echo -e "${MAGENTA}                    🔥 250 minijuegos · XP · logros · instalable 🔥${RESET}"
   echo ""
 }
 
@@ -127,7 +128,7 @@ salud() {
   grep -q 'barra-movil' "$DIR/client/src/App.jsx" 2>/dev/null && ok "Navegación móvil (drawer)" || no "Sin drawer móvil"
   grep -q 'banner-instalar' "$DIR/client/src/App.jsx" 2>/dev/null && ok "Banner de instalación" || no "Sin banner"
   grep -q 'BASE_URL}sw.js' "$DIR/client/src/main.jsx" 2>/dev/null && ok "SW se registra en raíz y subruta" || no "Registro SW fijo a /"
-  grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "237 juegos con carga perezosa" || no "Sin code-splitting"
+  grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "250 juegos con carga perezosa" || no "Sin code-splitting"
   echo ""
   echo -e "${BLANCO}[ Buscable en Google ]${RESET}"
   grep -q '<link rel="canonical"' "$DIR/client/index.html" 2>/dev/null && ok "Canonical presente" || no "Sin canonical"
@@ -155,6 +156,7 @@ case "${1:-}" in
   --tumba|tumba|stop|off) banner; tumbar ;;
   --duro|duro|prod) modo_duro ;;
   --salud|salud|doctor) salud ;;
+  --publicar|publicar|subir|push) banner; node "$DIR/scripts/publicar.mjs" "${@:2}" ;;
   ""|--dev|dev) modo_dev ;;
   *) echo -e "${ROJO}❌ Esa no me la sé: $1${RESET}"; sed -n '2,12p' "$0"; exit 1 ;;
 esac

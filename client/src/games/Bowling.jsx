@@ -63,7 +63,7 @@ export default function Bowling() {
   const total = tiros.reduce((a, t) => a + t.pinos, 0);
   return (
     <GameShell titulo="Bolos Neón" emoji="🎳" descripcion="ENTER/ESPACIO fija ángulo y potencia · 5 tiros.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{tiros.length && !jugando ? "↻ Otra vez" : jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Tiro <b>{Math.min(tiros.length + 1, 5)}/5</b></span>
         <span className="chip">Pinos <b>{total}/50</b></span>

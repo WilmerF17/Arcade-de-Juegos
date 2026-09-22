@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Teléfono Roto: memoriza la lista y escríbela en orden. Crece cada nivel. */
@@ -57,7 +57,7 @@ function TelefonoBase({ titulo, banco, frase, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="📞"
       descripcion={frase}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Nivel: <b>{nivel}</b></span>
         <span className="chip">❤️ <b>{vidas}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
@@ -79,7 +79,7 @@ function TelefonoBase({ titulo, banco, frase, tira, iconoFondo }) {
           <button className="btn-principal" onClick={comprobar}>Comprobar ⏎</button>
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {fase === "fin" && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
       )}

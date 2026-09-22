@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Puzzle 9: deslizante 3×3, ordena del 1 al 8. */
@@ -46,7 +46,7 @@ export default function Puzzle9() {
     <GameShell titulo="Puzzle 9" emoji="🧩"
       descripcion="Desliza del 1 al 8 en orden · el hueco manda."
       tira="linear-gradient(90deg,#14b8a6,#6366f1)" iconoFondo="linear-gradient(135deg,#14b8a6,#6366f1)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Movimientos: <b>{movs}</b></span>
         <button className="btn-principal" onClick={mezclar}>🔀 {jugando ? "Reiniciar" : "Empezar"}</button>
       </div>
@@ -61,7 +61,7 @@ export default function Puzzle9() {
           </button>
         ))}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

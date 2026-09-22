@@ -79,19 +79,19 @@ export default function Mastermind() {
   return (
     <GameShell titulo="Mastermind" emoji="🎨"
       descripcion="Teclado: 1-6 elige color · ENTER probar · 4 colores, 10 intentos.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={empezar}>{combo.length ? "Nueva partida" : "Empezar"}</button>
         <span className="chip">Intentos: <b>{intentos.length}/10</b></span>
       </div>
       <div style={{ marginTop: 10 }}>
         <p style={{ margin: "0 0 6px" }}>Elige 4 colores:</p>
-        <div className="fila-botones" style={{ marginTop: 0 }}>
+        <div className="fila-botones">
           {COLORES.map((c, i) => (
             <button key={i} className={fila.includes(i) ? "btn-principal" : "btn-suave"} onClick={() => elegirColor(i)} style={{ fontSize: "1.3rem" }} title={`Tecla ${i + 1}`}>{c}<small style={{ display: "block", fontSize: ".6rem" }}>{i + 1}</small></button>
           ))}
         </div>
         <p style={{ margin: "10px 0 4px" }}>Tu intento:</p>
-        <div className="fila-botones" style={{ marginTop: 0, minHeight: 44 }}>
+        <div className="fila-botones" style={{ minHeight: 44 }}>
           {Array.from({ length: 4 }, (_, i) => (
             <span key={i} style={{ width: 44, height: 44, borderRadius: 10, background: fila[i] != null ? undefined : "var(--bg-soft)", border: "2px dashed var(--border)", display: "grid", placeItems: "center", fontSize: "1.5rem" }}>
               {fila[i] != null ? COLORES[fila[i]] : ""}

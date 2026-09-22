@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 import { escribiendo } from "../suite/teclado";
 
@@ -86,7 +86,7 @@ function DueloBase({ titulo, rondas, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="⚡"
       descripcion={`J1 pulsa A · J2 pulsa L · solo en verde · ${rondas} rondas · ¡salir antes regala el punto!`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🔵 J1: <b>{p1}</b></span>
         <span className="chip">Ronda: <b>{ronda}/{rondas}</b></span>
         <span className="chip">🔴 J2: <b>{p2}</b></span>
@@ -103,7 +103,7 @@ function DueloBase({ titulo, rondas, tira, iconoFondo }) {
         <button className="btn-principal" style={{ flex: 1, padding: "18px" }} onClick={() => pulsar(1)}>🔵 J1 (A)</button>
         <button className="btn-peligro" style={{ flex: 1, padding: "18px" }} onClick={() => pulsar(2)}>🔴 J2 (L)</button>
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

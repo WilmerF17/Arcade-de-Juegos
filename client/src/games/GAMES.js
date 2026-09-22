@@ -158,6 +158,19 @@ const Escalera = lazy(() => import("./Escalera"));
 const OidoFino = lazy(() => import("./OidoFino"));
 const Atajada = lazy(() => import("./Atajada"));
 const Oca = lazy(() => import("./Oca"));
+const Plinko = lazy(() => import("./Plinko"));
+const Minas = lazy(() => import("./Minas"));
+const Torre = lazy(() => import("./Torre"));
+const PenaltisOro = lazy(() => import("./PenaltisOro"));
+const CartaMayor = lazy(() => import("./CartaMayor"));
+const Suma7 = lazy(() => import("./Suma7"));
+const Tombola = lazy(() => import("./Tombola"));
+const EscaleraOro = lazy(() => import("./EscaleraOro"));
+const Rueda = lazy(() => import("./Rueda"));
+const Bolsa = lazy(() => import("./Bolsa"));
+const Dobles = lazy(() => import("./Dobles"));
+const Quince = lazy(() => import("./Quince"));
+const Lotto6 = lazy(() => import("./Lotto6"));
 const AdivinaNumero = lazy(() => import("./AdivinaNumero"));
 const CazaTesoro = lazy(() => import("./CazaTesoro"));
 const Ahorcado = lazy(() => import("./Ahorcado"));
@@ -475,6 +488,19 @@ export const JUEGOS = {
   quizoceanos: { nombre: "Quiz Océanos", emoji: "🌊", descripcion: "Mares y océanos en 6 preguntas.", Component: QuizOceanos, tema: "aplm", grad: "linear-gradient(135deg,#0369a1,#22d3ee)", tag: "Cultura" },
   parejasnavidad: { nombre: "Parejas de Navidad", emoji: "🎄", descripcion: "Memoria navideña 4×4.", Component: ParejasNavidad, tema: "aplm", grad: "linear-gradient(135deg,#166534,#ef4444)", tag: "Mente" },
   parejashalloween: { nombre: "Parejas de Halloween", emoji: "🎃", descripcion: "Memoria de miedo 4×4.", Component: ParejasHalloween, tema: "aplm", grad: "linear-gradient(135deg,#7c2d12,#a855f7)", tag: "Mente" },
+  plinko: { nombre: "Plinko", emoji: "🔮", descripcion: "La bola cae entre clavos: premio ×0.5 a ×10.", Component: Plinko, tema: "casino-neon", grad: "linear-gradient(135deg,#22d3ee,#a855f7)", tag: "Casino" },
+  minas: { nombre: "Minas", emoji: "💣", descripcion: "Revela sin pisar minas · cada acierto ×1.3 · cobra cuando quieras.", Component: Minas, tema: "militar", grad: "linear-gradient(135deg,#57534e,#ef4444)", tag: "Casino" },
+  torre: { nombre: "Torre Dorada", emoji: "🗼", descripcion: "Sube 6 pisos eligiendo puertas · ×1.5 por piso · cobra cuando quieras.", Component: Torre, tema: "templo", grad: "linear-gradient(135deg,#f59e0b,#78350f)", tag: "Casino" },
+  penaltisoro: { nombre: "Penaltis de Oro", emoji: "🥅", descripcion: "3 penaltis: 2 goles ×2, pleno ×5.", Component: PenaltisOro, tema: "estadio", grad: "linear-gradient(135deg,#16a34a,#facc15)", tag: "Casino" },
+  cartamayor: { nombre: "Carta Mayor", emoji: "🂡", descripcion: "Tu carta contra la banca · gana ×2 · empate devuelve.", Component: CartaMayor, tema: "casino", grad: "linear-gradient(135deg,#0ea5e9,#1e3a8a)", tag: "Casino" },
+  suma7: { nombre: "Suma 7", emoji: "🎲", descripcion: "Dos dados: menor ×2.2 · siete ×4.5 · mayor ×2.2.", Component: Suma7, tema: "dados", grad: "linear-gradient(135deg,#f97316,#dc2626)", tag: "Azar" },
+  tombola: { nombre: "Tómbola", emoji: "🎪", descripcion: "Elige 3 del 0 al 9: 2 aciertos ×2, pleno ×6.", Component: Tombola, tema: "feria", grad: "linear-gradient(135deg,#ec4899,#f59e0b)", tag: "Azar" },
+  escaleraoro: { nombre: "Escalera Millonaria", emoji: "🪜", descripcion: "5 peldaños con 2 dados · ×1.4 cada uno · cobra cuando quieras.", Component: EscaleraOro, tema: "obra", grad: "linear-gradient(135deg,#eab308,#a16207)", tag: "Casino" },
+  rueda: { nombre: "Rueda Fortuna", emoji: "🎡", descripcion: "Gira la rueda de 8 premios: de ×0 a ×10.", Component: Rueda, tema: "feria", grad: "linear-gradient(135deg,#8b5cf6,#ec4899)", tag: "Casino" },
+  bolsa: { nombre: "La Bolsa", emoji: "📈", descripcion: "Invierte y sigue 5 movimientos: vende en verde o aguanta.", Component: Bolsa, tema: "oficina", grad: "linear-gradient(135deg,#16a34a,#0ea5e9)", tag: "Casino" },
+  doblesdados: { nombre: "Dobles", emoji: "🎲", descripcion: "Dos dados: pareja ×5 · suma 7 devuelve.", Component: Dobles, tema: "dados", grad: "linear-gradient(135deg,#7c3aed,#eab308)", tag: "Azar" },
+  quince: { nombre: "Quince", emoji: "🃏", descripcion: "Acércate al 15 sin pasarte y supera a la banca ×2.", Component: Quince, tema: "casino", grad: "linear-gradient(135deg,#065f46,#f59e0b)", tag: "Casino" },
+  lotto6: { nombre: "Lotto 6", emoji: "🎱", descripcion: "Elige 6 del 1 al 20: pleno ×100.", Component: Lotto6, tema: "bolas", grad: "linear-gradient(135deg,#1e3a8a,#22d3ee)", tag: "Azar" },
 };
 
 export const CATEGORIAS = [
@@ -482,7 +508,7 @@ export const CATEGORIAS = [
   { id: "fiesta", nombre: "Fiesta y 2 jugadores", icono: "tragaperras", juegos: ["mimica", "mimicapelis", "verdad", "verdadkids", "telroto", "telfrases", "duelmanos", "duelopro", "dados2p", "dados2plargo", "dueloreflejos", "duelolargo", "copa", "loteria", "donde", "dondepro", "basta", "bastajunior", "duelotrivia", "duelocultura"] },
   { id: "palabras", nombre: "Palabras", icono: "sopa", juegos: ["ahorcado", "wordle", "sopa", "anagramas", "mecanografia", "crucigrama", "cascada", "capitales", "memorianum", "cazapalabra", "pistaanimales", "pistapaises", "pistacomidas", "pistaoficios", "pistadeportes", "pistainstrumentos", "pistaflores", "pistavehiculos", "pistafrutas", "pistaropa", "pistamuebles", "pistacolores", "refranes", "dichos", "fraserefranes", "frasehechos", "fraseanimales", "fraseviajes", "palabradiaria", "palabra6", "palabra4", "ahoranimales", "ahorcomidas", "ahorpaises", "ahoroficios", "ahordeportes", "emojianimales", "emojicomida", "emojideportes", "emojiobjetos", "emojinatura", "emojiviajes"] },
   { id: "logica", nombre: "Lógica y puzzle", icono: "puzzle15", juegos: ["mastermind", "puzzle15", "juego2048", "mathblitz", "caza", "sudoku", "hanoi", "luces", "picross", "laberinto", "stack", "mate1", "bolalab", "labciego", "ordena", "inversa", "sombras", "ruta", "ordenainverso", "ordenaletras", "ordenapares", "sumas", "restas", "tablas", "divisiones", "dobles", "mezcla", "intrusoanimales", "intrusofrutas", "intrusopaises", "intrusocolores", "intrusodeportes", "intrusooficios", "intrusomusica", "intrusocomidas", "intrusoropa", "intrusocasa", "parejasnumeros", "parejasletras", "parejasbanderas", "parejasanimales", "parejasfrutas", "parejasdeportes", "parejasformas", "parejascomida", "parejasplanetas", "parejasmusica", "parejasnavidad", "parejashalloween", "puzzle9"] },
-  { id: "azar", nombre: "Azar y casino", icono: "dados", juegos: ["adivina", "rps", "dados", "blackjack", "tragaperras", "ruleta", "yahtzee", "guerra", "poker", "bingo", "sietemedio", "escalera", "adivina50", "adivina1000", "adivinaexpres", "maquina", "mayormenor", "escoba", "brisca", "sietealto", "monedaracha", "hipica", "chuck", "puntobanco", "keno", "rasca"] },
+  { id: "azar", nombre: "Azar y casino", icono: "dados", juegos: ["adivina", "rps", "dados", "blackjack", "tragaperras", "ruleta", "yahtzee", "guerra", "poker", "bingo", "sietemedio", "escalera", "adivina50", "adivina1000", "adivinaexpres", "maquina", "mayormenor", "escoba", "brisca", "sietealto", "monedaracha", "hipica", "chuck", "puntobanco", "keno", "rasca", "plinko", "minas", "torre", "penaltisoro", "cartamayor", "suma7", "tombola", "escaleraoro", "rueda", "bolsa", "doblesdados", "quince", "lotto6"] },
   { id: "tablero", nombre: "Tablero y estrategia", icono: "treslinea", juegos: ["treslinea", "c4", "buscaminas", "flota", "othello", "damas", "gomoku", "oca", "parchis", "parchisduelo", "serpientes", "serpientesduelo", "raya4", "raya5", "sudoku4", "buscachico", "buscagrande"] },
   { id: "arcade", nombre: "Arcade y acción", icono: "mando", juegos: ["snake", "pong", "pong2p", "breakout", "simon", "flappy", "reflejos", "tetris", "topo", "atrapar", "esquiva", "dino", "naves", "pacman", "piano", "aim", "frogger", "tron", "carrera", "saltarin", "burbujas", "malabares", "ddr", "pesca", "zombies", "equilibrio", "sprint", "pulso", "destello", "tocamayor", "tocamenor", "tocapar", "tocaimpar", "tocaprimo", "tocamult5", "tocadecena", "saltolargo", "oidoveloz"] },
   { id: "cultura", nombre: "Cultura, mente y deporte", icono: "capitales", juegos: ["trivia", "memoria", "stroop", "penaltis", "bowling", "parimpar", "atajada", "oidofino"] },

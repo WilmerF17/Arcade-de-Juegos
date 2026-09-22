@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 
 const BASICO = { p: ["piedra", "🪨"], a: ["papel", "📄"], t: ["tijeras", "✂️"] };
@@ -70,7 +70,7 @@ export default function RPS() {
   return (
     <GameShell titulo="Piedra, papel o tijeras" emoji="✂️"
       descripcion="Teclado: P/A/T (+L/S) o 1-5 · primero en ganar 3 rondas.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className={!avanzado ? "btn-principal" : ""} onClick={() => setAvanzado(false)}>Clásico</button>
         <button className={avanzado ? "btn-principal" : ""} onClick={() => setAvanzado(true)}>Con lagarto+spock</button>
         <button className="btn-exito" onClick={reiniciar}>Reiniciar</button>
@@ -93,7 +93,7 @@ export default function RPS() {
           {" — "}{ultimo.resultado === "tu" ? "¡Punto para ti! ✅" : ultimo.resultado === "maq" ? "Punto para la IA ❌" : "Empate 🤝"}
         </p>
       )}
-      {fin && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {fin && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

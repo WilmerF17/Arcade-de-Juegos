@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -54,7 +54,7 @@ export default function Mate1() {
   const p = PUZZLES[idx];
   return (
     <GameShell titulo="Mate en 1" emoji="♞" descripcion="Clic origen + destino · encuentra el mate · racha 3 = XP.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {PUZZLES.map((q, i) => <button key={i} className={idx === i ? "btn-principal" : ""} onClick={() => { setIdx(i); setSel(null); setRes(null); }}>{i + 1}. {q.titulo}</button>)}
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">🔥 <b>×{rachas}</b></span>
@@ -74,7 +74,7 @@ export default function Mate1() {
       </div>
       {res === "win" && <div className="mensaje-final victoria">♞ ¡Mate correcto! <button className="btn-principal" onClick={siguiente}>Siguiente (ENTER)</button></div>}
       {res === "fail" && <div className="mensaje-final perdida">❌ Ese no es mate. Prueba otra. <button className="btn-suave" onClick={() => { setRes(null); setSel(null); }}>Reintentar</button></div>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

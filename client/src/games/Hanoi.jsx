@@ -68,7 +68,7 @@ export default function Hanoi() {
   const optimo = Math.pow(2, n) - 1;
   return (
     <GameShell titulo="Torres de Hanói" emoji="🗼" descripcion="←/→ o 1-3 + ENTER · lleva la torre a la derecha.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         {[3, 4, 5].map(x => <button key={x} className={n === x && !movs ? "btn-principal" : ""} onClick={() => empezar(x)}>{x} discos</button>)}
         <button className="btn-exito" onClick={() => empezar(n)}>Reiniciar</button>
         <span className="chip">Movs <b>{movs}</b> / óptimo <b>{optimo}</b></span>

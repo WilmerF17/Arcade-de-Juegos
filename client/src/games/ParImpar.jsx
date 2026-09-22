@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 import { escribiendo } from "../suite/teclado";
 
@@ -72,7 +72,7 @@ export default function ParImpar() {
     <GameShell titulo="Par o Impar Relámpago" emoji="⚡"
       descripcion="← PAR · → IMPAR · 30s · los fallos restan 5."
       tira="linear-gradient(90deg,#facc15,#ff3d5a)" iconoFondo="linear-gradient(135deg,#facc15,#ff3d5a)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>
@@ -89,7 +89,7 @@ export default function ParImpar() {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

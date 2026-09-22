@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const PALABRAS = ["gato", "perro", "mesa", "papel", "luna", "flor", "barco", "calle", "tigre", "fuego", "nieve", "queso", "mundo", "selva", "dragon", "pixel", "noche", "puntos", "tecla", "magia", "reino", "juego", "veloz", "trueno"];
@@ -58,7 +58,7 @@ export default function Anagramas() {
   }
   return (
     <GameShell titulo="Anagramas" emoji="🔀" descripcion="60s · ordena las letras · racha = bonus.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar 60s"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">🔥 <b>×{racha}</b></span>
@@ -74,7 +74,7 @@ export default function Anagramas() {
           </div>
         </div>
       )}
-      {!jugando && mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {!jugando && mensaje && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Salto Largo: mantén para cargar, suelta en la zona verde. 5 saltos. */
@@ -66,7 +66,7 @@ export default function SaltoLargo() {
     <GameShell titulo="Salto Largo" emoji="🦘"
       descripcion="Mantén para cargar y suelta en verde · 5 saltos."
       tira="linear-gradient(90deg,#84cc16,#22c55e)" iconoFondo="linear-gradient(135deg,#84cc16,#22c55e)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Salto: <b>{salto}/5</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
       </div>
@@ -81,7 +81,7 @@ export default function SaltoLargo() {
           background: cargando ? "linear-gradient(135deg,#facc15,#ff3d5a)" : "var(--bg-hover)", color: "white" }}>
         {jugando ? (cargando ? "¡SUELTA!" : "MANTÉN…") : "▶ Empezar"}
       </button>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

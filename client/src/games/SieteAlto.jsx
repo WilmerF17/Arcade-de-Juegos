@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { cargarBilletera, apostar, cobrar } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 
@@ -45,7 +45,7 @@ export default function SieteAlto() {
     <GameShell titulo="Siete Alto" emoji="🎲"
       descripcion="Apuesta con fichas · Alto/Bajo ×2 · Siete exacto ×5."
       tira="linear-gradient(90deg,#eab308,#dc2626)" iconoFondo="linear-gradient(135deg,#eab308,#dc2626)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>
       </div>
@@ -64,7 +64,7 @@ export default function SieteAlto() {
         <button className="btn-suave" onClick={() => jugar("alto")}>📈 Alto (8-12) ×2</button>
       </div>
       {aviso && <p className="aviso info" style={{ textAlign: "center" }}>{aviso}</p>}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

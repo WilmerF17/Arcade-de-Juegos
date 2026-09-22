@@ -1,4 +1,5 @@
 /* Sistema de progresión local de la suite: XP, niveles, racha y logros. */
+import { cargarTienda, consumirEscudo } from "./tienda";
 
 const CLAVE = "arcade-progreso-v1";
 
@@ -74,15 +75,22 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
   };
   let xpGanado = 5 + Math.min(60, Math.max(0, Math.round(puntos / 2))) + (victoria ? 15 : 0);
   if (esDesafio && !prev.desafio?.hecho) xpGanado *= 2;
+  // Potenciador de la tienda: doble XP si está activo
+  let dobleXp = false;
+  try {
+    if (cargarTienda().boosterXpHasta > Date.now()) { xpGanado *= 2; dobleXp = true; }
+  } catch { /* noop */ }
 
   const antes = nivelDe(prev.xp || 0).nivel;
   prog.xp = (prev.xp || 0) + xpGanado;
   const despues = nivelDe(prog.xp).nivel;
 
-  // racha diaria
+  // racha diaria (el escudo de la tienda evita que se rompa un día)
   const h = hoy();
+  let escudoUsado = false;
   if (prev.ultimaJugada === h) { /* misma racha */ }
   else if (prev.ultimaJugada === ayer()) prog.racha = (prev.racha || 0) + 1;
+  else if (consumirEscudo()) { prog.racha = prev.racha || 1; escudoUsado = true; }
   else prog.racha = 1;
   prog.ultimaJugada = h;
 
@@ -106,5 +114,5 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
     }
   }
   guardarProgreso(prog);
-  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado };
+  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado, dobleXp, escudoUsado };
 }

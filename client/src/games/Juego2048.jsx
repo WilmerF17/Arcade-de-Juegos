@@ -132,7 +132,7 @@ export default function Juego2048() {
   return (
     <GameShell titulo="Fusión 2048" emoji="🃃"
       descripcion="Flechas o WASD para fusionar · R reinicia · llega a 2048.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-exito" onClick={empezar}>{tabla[0][0] === 0 && !puntos ? "Empezar" : "Nueva partida"}</button>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">Meta: <b>2048</b></span>

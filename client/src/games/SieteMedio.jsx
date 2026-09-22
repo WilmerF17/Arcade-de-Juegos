@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -73,7 +73,7 @@ export default function SieteMedio() {
   }, [fase, apuesta, tu, banca]);
   return (
     <GameShell titulo="Siete y Medio" emoji="🪙" descripcion="C pedir · P plantarse · figuras valen 0.5 · no pases 7.5.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">🪙 <b>{creditos}</b></span>
         <select value={apuesta} onChange={e => setApuesta(Number(e.target.value))} disabled={fase === "juego"}>
           <option value={5}>Apuesta 5</option><option value={10}>Apuesta 10</option><option value={25}>Apuesta 25</option>
@@ -86,7 +86,7 @@ export default function SieteMedio() {
           <p style={{ color: "#fff", margin: "0 0 6px" }}>🧑 Tú <b>({suma(tu)})</b>: {tu.map(nom).join(" · ")}</p>
           <p style={{ color: "#fff", margin: "0 0 10px" }}>🖥️ Banca <b>({fase === "juego" ? "?" : suma(banca)})</b>: {fase === "juego" ? `${nom(banca[0])} · ?` : banca.map(nom).join(" · ")}</p>
           {fase === "juego" && (
-            <div className="fila-botones" style={{ marginTop: 0 }}>
+            <div className="fila-botones">
               <button className="btn-principal" onClick={pedir}>Pedir (C)</button>
               <button onClick={plantarse}>Plantarse (P)</button>
             </div>
@@ -94,7 +94,7 @@ export default function SieteMedio() {
           {res && <p style={{ color: "#fff", fontWeight: 700 }}>{res}</p>}
         </div>
       )}
-      {mensaje && fase === "fin" && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {mensaje && fase === "fin" && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

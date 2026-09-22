@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -86,7 +86,7 @@ export default function Piano() {
 
   return (
     <GameShell titulo="Teclas Ritmo" emoji="🎹" descripcion="D F J K (o 1-4 / flechas) · toca las fichas al llegar abajo · 30s.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">⏱️ <b>{tiempo}s</b></span>
@@ -104,7 +104,7 @@ export default function Piano() {
           );
         })}
       </div>
-      {mensaje && !jugando && tiempo <= 0 && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {mensaje && !jugando && tiempo <= 0 && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

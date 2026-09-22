@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 import { escribiendo } from "../suite/teclado";
 
@@ -79,7 +79,7 @@ export default function Equilibrio() {
     <GameShell titulo="Torre Equilibrio" emoji="🏗️"
       descripcion="ESPACIO/clic para fijar el piso en la zona verde · 10 pisos · 3 fallos."
       tira="linear-gradient(90deg,#ff3d5a,#ff9a3d,#22c55e)" iconoFondo="linear-gradient(135deg,#ff3d5a,#ff9a3d)">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Piso: <b>{piso}/10</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">Fallos: <b>{fallos}/3</b></span>
@@ -97,7 +97,7 @@ export default function Equilibrio() {
         {!jugando && <button className="btn-principal" onClick={empezar}>▶ Empezar</button>}
         {jugando && <button className="btn-principal" onClick={fijar}>🔒 Fijar piso</button>}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

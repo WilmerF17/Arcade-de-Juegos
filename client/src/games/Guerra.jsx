@@ -53,7 +53,7 @@ export default function Guerra() {
 
   return (
     <GameShell titulo="Guerra de Cartas" emoji="🪖" descripcion="ENTER voltear · 13 rondas · carta alta gana · empate = guerra.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={fin ? reiniciar : batalla}>{fin ? "↻ Otra guerra" : "🃏 Batalla (ENTER)"}</button>
         <span className="chip">Ronda <b>{ronda}/13</b></span>
         <span className="chip">Tú <b>{pg}</b> — IA <b>{pm}</b></span>

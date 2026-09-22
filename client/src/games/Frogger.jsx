@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -85,7 +85,7 @@ export default function Frogger() {
   const EMOJI = { 5: "🚗", 4: "🚕", 3: "🚙", 2: "🚌", 1: "🚛" };
   return (
     <GameShell titulo="Rana Crossing" emoji="🐸" descripcion="Flechas/WASD · cruza 5 carriles y llega arriba · 3 vidas.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">Nivel <b>{nivel}</b></span>
@@ -110,7 +110,7 @@ export default function Frogger() {
           <button key={d} className="btn-suave" onClick={() => (!jugando ? empezar() : mover(d))}>{f}</button>
         ))}
       </div>
-      {mensaje && !jugando && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      {mensaje && !jugando && <Resultado mensaje={mensaje} tipo={tipo} />}
     </GameShell>
   );
 }

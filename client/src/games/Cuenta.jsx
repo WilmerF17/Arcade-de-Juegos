@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 import { escribiendo } from "../suite/teclado";
 
@@ -61,7 +61,7 @@ function CuentaBase({ titulo, emoji, generar, simbolo, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji={emoji}
       descripcion={`${simbolo} · escribe el resultado y ENTER · 45s.`}
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>
@@ -82,7 +82,7 @@ function CuentaBase({ titulo, emoji, generar, simbolo, tira, iconoFondo }) {
           <button className="btn-principal" onClick={comprobar}>⏎</button>
         </div>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );
 }

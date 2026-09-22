@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 /* Verdad o Reto familiar: gira y cumple. Suma puntos por cada prueba superada. */
@@ -38,7 +38,7 @@ function VoRBase({ titulo, banco, tira, iconoFondo }) {
     <GameShell titulo={titulo} emoji="🎉"
       descripcion="Gira, cumple la prueba y suma · 8 pruebas = victoria."
       tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <span className="chip">Pruebas: <b>{hechos}/{META}</b></span>
         <span className="chip">Puntos: <b>{puntos}</b></span>
       </div>
@@ -56,7 +56,7 @@ function VoRBase({ titulo, banco, tira, iconoFondo }) {
           </div>
         </>
       )}
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       {!jugando && hechos > 0 && !mensaje && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra fiesta</button></div>
       )}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
@@ -77,7 +77,7 @@ export default function Topo() {
 
   return (
     <GameShell titulo="Toca al Topo" emoji="🐹" descripcion="Clic o teclas 1-9 · 30 segundos · el dorado vale 30.">
-      <div className="fila-botones" style={{ marginTop: 0 }}>
+      <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : tiempo < 30 ? "↻ Otra vez" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>
         <span className="chip">⏱️ <b>{tiempo}s</b></span>
@@ -92,7 +92,7 @@ export default function Topo() {
           </div>
         ))}
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje}</div>}
+      <Resultado mensaje={mensaje} tipo={tipo} />
       <p className="aviso-ia">💡 Teclado: <b>1-9</b> golpea · no falles (-3).</p>
     </GameShell>
   );
