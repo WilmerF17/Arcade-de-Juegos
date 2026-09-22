@@ -1,5 +1,9 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.6.4 (2026-09-22) — Icono nuevo
+- **Nuevo icono Mando**: gamepad coral con 250, aplicado en web (favicon,
+  PWA, Apple), portadas (og-image, promo, Play) y APK/AAB reconstruidos.
+
 ## v2.6.3 (2026-09-22) — Privacidad, calidad y cara nueva
 - **Kit Google Play listo**: AAB v2.6.3 código 4 firmado, APK directo
   actualizado, gráficos (destacada + 2 capturas) y `play/ficha-play.md`
