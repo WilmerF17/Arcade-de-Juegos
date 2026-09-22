@@ -28,7 +28,7 @@ npm run salud         # 18 chequeos PWA + Google
 npm run publicar -- "v2.6.3 arreglo el bingo"
 ```
 
-Hace en orden: tests → build → verifica APK + portable en dist →
+Hace en orden: tests → build → verifica el APK en dist →
 `git add/commit/push` a GitHub. Vercel y GitHub Pages redespliegan solos.
 Si solo quieres probar sin publicar: `npm run publicar -- --dry`.
 

@@ -1,3 +1,0 @@
-Contact: https://github.com/WilmerF17/Arcade-de-Juegos
-Expires: 2027-12-31T00:00:00.000Z
-Preferred-Languages: es

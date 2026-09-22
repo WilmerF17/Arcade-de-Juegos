@@ -1,5 +1,9 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.6.5 (2026-09-22) — Instalación PWA en PC
+- **Adiós al portable**: en PC el botón Instalar vuelve a la instalación
+  PWA directa (icono, offline y auto-actualización). Android sigue con APK.
+
 ## v2.6.4 (2026-09-22) — Icono nuevo
 - **Nuevo icono Mando**: gamepad coral con 250, aplicado en web (favicon,
   PWA, Apple), portadas (og-image, promo, Play) y APK/AAB reconstruidos.

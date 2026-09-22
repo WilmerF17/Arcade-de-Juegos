@@ -82,9 +82,6 @@ function detectaPlataforma() {
 /** APK firmado generado con Bubblewrap (TWA): descarga directa, sin tienda. */
 export const URL_APK = `${import.meta.env.BASE_URL}descargas/palomuchacho.apk`;
 export const APK_NOMBRE = "palomuchacho.apk";
-/** Juego portable para PC: un solo .html con los 250 juegos (doble clic y a jugar). */
-export const URL_PORTABLE = `${import.meta.env.BASE_URL}descargas/PaLoMuchacho-portable.html`;
-export const PORTABLE_NOMBRE = "PaLoMuchacho-portable.html";
 
 function AyudaInstalar({ onCerrar }) {
   const { esIOS, esAndroid, esPC } = detectaPlataforma();
@@ -176,7 +173,7 @@ export default function BotonInstalar({
 }) {
   const { instalable, instalada, instalar } = useInstalacion();
   const [ayuda, setAyuda] = useState(false);
-  const { esAndroid, esPC } = detectaPlataforma();
+  const { esAndroid } = detectaPlataforma();
 
   async function alClic() {
     if (instalada) return;
@@ -198,12 +195,10 @@ export default function BotonInstalar({
   }
 
   // Android: el botón descarga el APK directamente, sin vueltas.
-  // PC: descarga el juego portable (un .html con todo dentro).
+  // PC y resto: instalación PWA directa (prompt o instrucciones).
   const descarga = esAndroid
     ? { url: URL_APK, nombre: APK_NOMBRE, meta: "APK · Android" }
-    : esPC
-      ? { url: URL_PORTABLE, nombre: PORTABLE_NOMBRE, meta: "HTML · PC · sin internet" }
-      : null;
+    : null;
   if (descarga) {
     if (variante === "icono") {
       return (

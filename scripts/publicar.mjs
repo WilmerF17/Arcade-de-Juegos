@@ -2,7 +2,7 @@
 /* Publicación total de ArcadePaLoMuchacho en un solo comando:
    1. Tests del catálogo (npm run test) — si falla, se aborta.
    2. Build del cliente (npm run build) — si falla, se aborta.
-   3. Verifica que el dist trae el APK + portable.
+   3. Verifica que el dist trae el APK.
    4. git add -A + commit + push a origin (y a hf si existe el remoto).
       Vercel y GitHub Pages redespliegan solos al recibir el push.
    5. Muestra qué revisar después (URLs, Search Console).
@@ -52,10 +52,10 @@ paso("2/4 Build del cliente");
 try {
   corre("npm run build");
 } catch { mal("build fallido"); }
-for (const f of ["client/dist/index.html", "client/dist/descargas/palomuchacho.apk", "client/dist/descargas/PaLoMuchacho-portable.html"]) {
+for (const f of ["client/dist/index.html", "client/dist/descargas/palomuchacho.apk"]) {
   if (!existsSync(join(RAIZ, f))) mal("falta en dist: " + f);
 }
-ok("dist trae index + APK + portable");
+ok("dist trae index + APK");
 
 // 3 y 4. Commit + push (o simulacro)
 const rama = execSync("git branch --show-current", { cwd: RAIZ, encoding: "utf8" }).trim() || "main";
