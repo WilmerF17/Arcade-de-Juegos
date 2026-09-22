@@ -79,19 +79,17 @@ npm run build && npx cap sync && npx cap open android
 
 Config base ya creada en `capacitor.config.ts`.
 
-## 5. Publicar en Play (no puedo hacerlo por ti)
+## 5. Publicar en Play (tu parte: cuenta + subir)
 
-Subir a Google Play exige una **cuenta de desarrollador personal**
-(25 USD, pago único) que solo tú puedes crear y verificar:
+Todo el material está listo en `play/` (gráficos + `ficha-play.md` para pegar):
 
-1. Crea la cuenta en <https://play.google.com/console> y verifica identidad.
-2. Crea la app → sube el `.aab` del punto 3.
-3. Completa ficha obligatoria: icono 512, imagen destacada 1024×500,
-   2+ capturas de móvil, categoría *Juegos → Casual*, clasificación IARC
-   (cuestionario gratis), política de privacidad (la app no pide datos:
-   declara «sin recogida de datos»).
-4. Revisa el checklist de `npm run salud` (PWA + manifest + SW) antes de enviar.
-5. Envía a revisión (tarda de horas a ~7 días).
-
-Cuando tengas la cuenta creada dime y te genero el `.aab` firmado + la ficha
-de Play lista para pegar.
+1. Crea la cuenta en <https://play.google.com/console> ($25, verifica identidad).
+2. Crea la app y sube `~/android-twa/app/app-release-bundle.aab` primero a
+   **Pruebas internas** (pruébala tú desde el enlace).
+3. Pega la ficha de `play/ficha-play.md` (título, descripciones, categoría,
+   email) y sube icono + destacada + 2 capturas.
+4. Completa los formularios con las respuestas de `ficha-play.md`
+   (IARC, público 13+, datos, anuncios: no).
+5. Envía a **Producción** (revisión: horas a ~7 días).
+6. Tras la primera subida, copia la SHA-256 de firma de Play a
+   `assetlinks.json` y `npm run publicar`.

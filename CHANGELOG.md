@@ -1,6 +1,9 @@
 # Historial — ArcadePaLoMuchacho
 
 ## v2.6.3 (2026-09-22) — Privacidad, calidad y cara nueva
+- **Kit Google Play listo**: AAB v2.6.3 código 4 firmado, APK directo
+  actualizado, gráficos (destacada + 2 capturas) y `play/ficha-play.md`
+  con textos y guía de consola paso a paso.
 - **Privacidad 🔒**: página propia enlazada en el lateral (lista para Play).
 - **Auditoría de jugabilidad** (`npm test` la incluye): 144 juegos sanos;
   corregidas 3 fugas de `touchmove` en Atrapar, Breakout y Malabares.
