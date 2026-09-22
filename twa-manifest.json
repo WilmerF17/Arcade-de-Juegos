@@ -17,13 +17,17 @@
     "path": "./android.keystore",
     "alias": "android"
   },
-  "appVersion": "2.6.3",
-  "appVersionCode": 4,
+  "appVersion": "2.6.4",
+  "appVersionCode": 5,
   "minSdkVersion": 23,
   "targetSdkVersion": 34,
   "fallbackType": "customtabs",
   "features": {
-    "locationDelegation": { "enabled": false },
-    "playBilling": { "enabled": false }
+    "locationDelegation": {
+      "enabled": false
+    },
+    "playBilling": {
+      "enabled": false
+    }
   }
 }
