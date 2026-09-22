@@ -6,6 +6,9 @@
   corregidas 3 fugas de `touchmove` en Atrapar, Breakout y Malabares.
 - **Rediseño v3**: hero con título degradado y brillo, cartas con glow,
   lateral y botones premium, footer con Privacidad/Tienda/Código.
+- **Botones de descarga rediseñados**: tamaño y tacto de botón real
+  (ya no se ven planos), flecha animada, brillo deslizante y etiqueta
+  con formato (APK · Android / HTML · PC · sin internet).
 - Keystore documentado (`~/android-twa/LEEME-keystore.txt`).
 
 ## v2.6.2 (2026-09-22) — Juego portable para PC

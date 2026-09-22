@@ -849,8 +849,39 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: none; bo
   margin: 0 0 12px;
 }
 .modal-instalar .btn-principal { width: 100%; padding: 12px; }
-/* El botón instalar/descargar también es <a>: mismo tacto que los botones */
-a.btn-principal, a.btn-exito, a.btn-suave { text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+/* Botón de descarga (es <a>, con presencia de botón de verdad) */
+.btn-descargar, .btn-descargar:link, .btn-descargar:visited,
+.btn-descargar-icono, .btn-descargar-icono:link, .btn-descargar-icono:visited {
+  font-family: inherit;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 20px; border-radius: 12px; min-height: 48px;
+  background: linear-gradient(135deg, var(--neon-rosa, #ff3d5a), #ff7a3d);
+  color: #fff; font-weight: 800; font-size: .95rem; text-decoration: none;
+  box-shadow: 0 8px 22px rgba(255, 61, 90, .35);
+  transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
+  position: relative; overflow: hidden;
+}
+.btn-descargar:hover { filter: brightness(1.12); box-shadow: 0 10px 28px rgba(255,61,90,.5); transform: translateY(-2px); }
+.btn-descargar:active { transform: scale(.96); box-shadow: 0 4px 14px rgba(255,61,90,.4); }
+.btn-descargar:focus-visible, .btn-descargar-icono:focus-visible { outline: none; box-shadow: var(--anillo); }
+.btn-descargar svg { animation: descargar-bote 1.6s ease infinite; }
+@keyframes descargar-bote { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+.btn-descargar::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.45) 50%, transparent 60%);
+  transform: translateX(-120%); animation: hero-brillo 3.8s ease infinite; pointer-events: none;
+}
+.descargar-txt { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.descargar-txt small { font-weight: 400; font-size: .72rem; opacity: .85; }
+.btn-descargar-lateral { width: 100%; }
+.btn-descargar-icono {
+  width: 44px; height: 44px; padding: 0; border-radius: 12px;
+  background: transparent; border: 1px solid var(--border); color: var(--texto);
+  box-shadow: none;
+}
+.btn-descargar-icono:hover { background: var(--bg-hover); box-shadow: 0 4px 14px rgba(99,102,241,.25); transform: none; }
+.btn-descargar-icono:active { transform: scale(.93); }
+.btn-descargar-icono svg { animation: none; }
 
 /* Pantallas grandes: 3 columnas cómodas */
 @media (min-width: 1400px) {

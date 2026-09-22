@@ -200,29 +200,24 @@ export default function BotonInstalar({
   // Android: el botón descarga el APK directamente, sin vueltas.
   // PC: descarga el juego portable (un .html con todo dentro).
   const descarga = esAndroid
-    ? { url: URL_APK, nombre: APK_NOMBRE }
+    ? { url: URL_APK, nombre: APK_NOMBRE, meta: "APK · Android" }
     : esPC
-      ? { url: URL_PORTABLE, nombre: PORTABLE_NOMBRE }
+      ? { url: URL_PORTABLE, nombre: PORTABLE_NOMBRE, meta: "HTML · PC · sin internet" }
       : null;
   if (descarga) {
     if (variante === "icono") {
       return (
-        <a className={`btn-suave ${className}`} href={descarga.url} download={descarga.nombre}
-          aria-label="Descargar juego" title="Descargar juego">
+        <a className="btn-descargar-icono" href={descarga.url} download={descarga.nombre}
+          aria-label={`Descargar juego (${descarga.meta})`} title={`Descargar juego (${descarga.meta})`}>
           <Icono n="descargar" size={16} />
         </a>
       );
     }
-    if (variante === "lateral") {
-      return (
-        <a className={`btn-exito btn-instalar-lateral ${className}`} href={descarga.url} download={descarga.nombre}>
-          <Icono n="descargar" size={15} /> Descargar juego
-        </a>
-      );
-    }
+    const clase = variante === "lateral" ? "btn-descargar btn-descargar-lateral" : "btn-descargar";
     return (
-      <a className={`btn-exito ${className}`} href={descarga.url} download={descarga.nombre}>
-        <Icono n="descargar" size={15} /> Descargar juego
+      <a className={clase} href={descarga.url} download={descarga.nombre}>
+        <Icono n="descargar" size={18} />
+        <span className="descargar-txt">Descargar juego<small>{descarga.meta}</small></span>
       </a>
     );
   }
