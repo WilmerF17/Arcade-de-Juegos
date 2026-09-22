@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
+import GameShell, { useRegistro } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
 
 const PREGUNTAS = [

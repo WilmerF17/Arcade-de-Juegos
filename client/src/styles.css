@@ -859,6 +859,114 @@ a.btn-principal, a.btn-exito, a.btn-suave { text-decoration: none; display: inli
 }
 
 /* ============================================================
+   DISEÑO v3 — cara nueva del arcade (solo CSS, misma estructura)
+   ============================================================ */
+:root {
+  --neon-rosa: #ff3d5a;
+  --neon-dorado: #fbbf24;
+  --cristal: rgba(255, 255, 255, .06);
+}
+body {
+  background:
+    radial-gradient(1100px 520px at 85% -5%, rgba(255, 61, 90, .14), transparent 60%),
+    radial-gradient(900px 480px at 8% 4%, rgba(56, 189, 248, .12), transparent 60%),
+    radial-gradient(700px 600px at 50% 110%, rgba(168, 85, 247, .10), transparent 60%),
+    var(--bg);
+}
+/* HERO portada */
+.hero {
+  border: 1px solid color-mix(in srgb, var(--principal) 45%, transparent);
+  background:
+    radial-gradient(600px 260px at 90% 10%, rgba(255, 61, 90, .18), transparent 65%),
+    linear-gradient(160deg, rgba(255,255,255,.05), transparent 40%),
+    var(--bg-card);
+  box-shadow: var(--sombra-elev, var(--sombra)), 0 0 44px rgba(255, 61, 90, .12);
+  overflow: hidden;
+}
+.hero h2, .hero-txt h2 {
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  background: linear-gradient(92deg, #fff 20%, var(--neon-dorado) 55%, var(--neon-rosa) 90%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+body[data-tema="claro"] .hero h2, body[data-tema="claro"] .hero-txt h2,
+body[data-tema="playa"] .hero h2, body[data-tema="playa"] .hero-txt h2 { background: none; color: var(--texto); }
+.pill {
+  background: rgba(255, 61, 90, .12);
+  border: 1px solid color-mix(in srgb, var(--principal) 55%, transparent);
+  backdrop-filter: blur(4px);
+  font-weight: 700;
+}
+.hero-btns .btn-principal, .hero-btns .btn-exito { position: relative; overflow: hidden; }
+.hero-btns .btn-principal::after, .hero-btns .btn-exito::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.45) 50%, transparent 60%);
+  transform: translateX(-120%); animation: hero-brillo 3.8s ease infinite; pointer-events: none;
+}
+@keyframes hero-brillo { 0%, 55% { transform: translateX(-120%); } 90%, 100% { transform: translateX(120%); } }
+/* CARTAS de juego */
+.carta {
+  background: linear-gradient(170deg, rgba(255,255,255,.05), transparent 45%), var(--bg-card);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.carta:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--principal) 60%, transparent); box-shadow: 0 18px 44px rgba(0,0,0,.5), 0 0 22px rgba(255,61,90,.16); }
+.carta-banner { position: relative; overflow: hidden; }
+.carta-banner::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.35));
+  pointer-events: none;
+}
+.carta-emoji { font-size: 2.5rem; filter: drop-shadow(0 6px 12px rgba(0,0,0,.5)); transition: transform .16s ease; }
+.carta:hover .carta-emoji { transform: scale(1.12) rotate(-4deg); }
+.carta-tag { backdrop-filter: blur(4px); font-weight: 700; }
+.carta-jugar { font-weight: 800; color: var(--neon-dorado); }
+/* LATERAL */
+.lateral { background: linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%), var(--bg-soft, var(--bg-card)); }
+.logo h1, .logo b {
+  background: linear-gradient(92deg, var(--neon-rosa), var(--neon-dorado));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.nav-item { border: 1px solid transparent; }
+.nav-item:hover { background: var(--bg-hover); }
+.nav-item.activo {
+  background: linear-gradient(92deg, rgba(255,61,90,.18), rgba(251,191,36,.10));
+  border-color: color-mix(in srgb, var(--principal) 55%, transparent);
+}
+.miniatura { box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), 0 2px 8px rgba(0,0,0,.4); }
+/* SHELL de juego */
+.gameshell {
+  background: linear-gradient(175deg, rgba(255,255,255,.05), transparent 35%), var(--bg-card);
+  box-shadow: var(--sombra-elev, var(--sombra));
+}
+.shell-head h2 { letter-spacing: -.01em; }
+/* BOTONES con tacto */
+.btn-principal {
+  background: linear-gradient(135deg, var(--neon-rosa), #ff7a3d);
+  box-shadow: 0 8px 22px rgba(255, 61, 90, .35);
+}
+.btn-principal:hover { filter: brightness(1.1); box-shadow: 0 10px 26px rgba(255,61,90,.45); }
+.btn-exito { box-shadow: 0 8px 22px rgba(34, 197, 94, .30); }
+/* FOOTER lateral + privacidad */
+.pie-lateral {
+  display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border);
+  font-size: .78rem; color: var(--texto-suave);
+}
+.enlace-pie { background: none; border: none; padding: 6px 4px; color: var(--texto-suave); cursor: pointer; font-size: .78rem; min-height: 0; }
+.enlace-pie:hover { color: var(--texto); background: none; box-shadow: none; text-decoration: underline; }
+a.enlace-pie { text-decoration: none; display: inline; }
+.privacidad { display: grid; gap: 4px; }
+.privacidad h3 { margin: 12px 0 0; font-size: 1rem; color: var(--neon-dorado); }
+.privacidad p { margin: 2px 0 6px; color: var(--texto-suave); line-height: 1.55; }
+.privacidad p b, .privacidad a { color: var(--texto); }
+/* Movimiento reducido: apaga el brillo del hero */
+@media (prefers-reduced-motion: reduce) {
+  .hero-btns .btn-principal::after, .hero-btns .btn-exito::after { animation: none; }
+  .carta:hover { transform: none; }
+}
+
+/* ============================================================
    CASINO v2.6 + TIENDA + TEMAS PREMIUM
    ============================================================ */
 /* Temas premium de la tienda */

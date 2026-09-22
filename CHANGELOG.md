@@ -1,5 +1,13 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.6.3 (2026-09-22) — Privacidad, calidad y cara nueva
+- **Privacidad 🔒**: página propia enlazada en el lateral (lista para Play).
+- **Auditoría de jugabilidad** (`npm test` la incluye): 144 juegos sanos;
+  corregidas 3 fugas de `touchmove` en Atrapar, Breakout y Malabares.
+- **Rediseño v3**: hero con título degradado y brillo, cartas con glow,
+  lateral y botones premium, footer con Privacidad/Tienda/Código.
+- Keystore documentado (`~/android-twa/LEEME-keystore.txt`).
+
 ## v2.6.2 (2026-09-22) — Juego portable para PC
 - **Botón Instalar descarga en PC**: baja `PaLoMuchacho-portable.html`
   (0.9 MB, los 250 juegos en un solo archivo, doble clic y a jugar offline).

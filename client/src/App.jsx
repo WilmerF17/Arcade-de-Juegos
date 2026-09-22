@@ -10,6 +10,7 @@ import BotonesCompartir from "./ui/Compartir";
 import BotonInstalar from "./ui/Instalar";
 import ErrorJuego from "./ui/ErrorJuego";
 import Tienda from "./ui/Tienda";
+import Privacidad from "./ui/Privacidad";
 import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
 import { ProveedorTemaJuego } from "./ui/GameShell";
 
@@ -390,6 +391,13 @@ export default function App() {
             v{typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "?"} · {typeof __BUILD_DATE__ !== "undefined" ? __BUILD_DATE__ : ""}
           </p>
         </div>
+        <footer className="pie-lateral">
+          <button className="enlace-pie" onClick={() => ir("privacidad")}>🔒 Privacidad</button>
+          <span aria-hidden>·</span>
+          <button className="enlace-pie" onClick={() => ir("tienda")}>🛍️ Tienda</button>
+          <span aria-hidden>·</span>
+          <a className="enlace-pie" href="https://github.com/WilmerF17/Arcade-de-Juegos" target="_blank" rel="noopener">Código</a>
+        </footer>
       </aside>
 
       <main className="contenido">
@@ -461,7 +469,7 @@ export default function App() {
             </section>
           </div>
         )}
-        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo !== "inicio" && (() => {
+        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo === "privacidad" ? <Privacidad /> : activo !== "inicio" && (() => {
           if (!juego) {
             return (
               <div className="gameshell">

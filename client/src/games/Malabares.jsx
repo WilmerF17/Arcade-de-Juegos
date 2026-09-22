@@ -87,7 +87,7 @@ export default function Malabares() {
       ctx.fillText(`${tRef.current}`, W / 2, 34);
     }
     raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); cv.removeEventListener("mousemove", mv); };
+    return () => { cancelAnimationFrame(raf); cv.removeEventListener("mousemove", mv); cv.removeEventListener("touchmove", mv); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (

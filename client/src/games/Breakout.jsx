@@ -161,7 +161,7 @@ export default function Breakout() {
       ctx.fillText(`Puntos ${puntosRef.current}   ❤️ ${vidasRef.current}   Nivel ${nivelRef.current}`, 12, 22);
     }
     raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); cv.removeEventListener("mousemove", mover); };
+    return () => { cancelAnimationFrame(raf); cv.removeEventListener("mousemove", mover); cv.removeEventListener("touchmove", mover); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
