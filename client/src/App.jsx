@@ -14,6 +14,7 @@ import Privacidad from "./ui/Privacidad";
 import Perfiles from "./ui/Perfiles";
 import Admin from "./ui/Admin";
 import Bienvenida, { necesitaBienvenida } from "./ui/Bienvenida";
+import Buscador from "./ui/Buscador";
 import { asegurarPerfiles, perfilActivo } from "./suite/perfiles";
 import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
 import { ProveedorTemaJuego } from "./ui/GameShell";
@@ -340,13 +341,9 @@ export default function App() {
           )}
         </div>
 
-        <div className="buscador">
-          <Icono n="buscar" size={16} />
-          <input ref={buscarRef} type="search" value={busqueda} onChange={e => setBusqueda(e.target.value)}
-            placeholder="Buscar juego... ( / )" aria-label="Buscar juego" autoComplete="off" />
-          {busqueda && <button className="buscar-limpiar" onClick={() => { setBusqueda(""); buscarRef.current?.focus(); }}
-            aria-label="Limpiar búsqueda">✕</button>}
-        </div>
+        <Buscador busqueda={busqueda} setBusqueda={setBusqueda} inputRef={buscarRef}
+          stats={stats} desafioId={prog.desafio?.hecho ? null : prog.desafio?.juego}
+          onIr={ir} onAleatorio={aleatorio} />
 
         <button className={`nav-item ${activo === "inicio" ? "activo" : ""}`} onClick={() => ir("inicio")}>
           <Icono n="inicio" size={18} /> Inicio <span className="flecha">→</span>

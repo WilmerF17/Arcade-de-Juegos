@@ -6,7 +6,10 @@
 - **Sigue jugando 🕘**: tira en el inicio con tus últimos 8 juegos (por perfil).
 - **+2 quizzes (276)**: Videojuegos 🎮 y Redes 📱 (con seguridad en línea).
 - **Trivia +12 preguntas** nuevas en todas las categorías.
-- PWA SW `aplm-v18` (fuerza actualización), versión visible 2.10.0.
+- **Buscador remake 🔍**: píldora con pista `/`, resultados instantáneos con texto
+  resaltado, navegación ↑↓ + Enter, récord y ×2 a la vista, y "Probar suerte"
+  si no hay nada.
+- PWA SW `aplm-v19` (fuerza actualización), versión visible 2.10.0.
 
 ## v2.9.0 (2026-09-26) — Peleas, disparos, administración y remaster total
 - **+6 juegos de acción (274)**: Pelea Neón/Turbo (vs IA) y Pelea Duelo (2P local
