@@ -12,7 +12,10 @@
 - **Lateral remake 💅**: la parte superior ahora son tarjetas (identidad con
   mini-stats, jugador con nivel, instalar con icono propio y progreso con
   racha, medidor de probados, desafío y misiones sin encimarse).
-- PWA SW `aplm-v20` (fuerza actualización), versión visible 2.10.0.
+- **Icono nuevo 🎮⚡**: mando coral con rayo y aro degradado en favicon, app
+  instalada, Apple, portadas y logo interno (sin número para no caducar nunca).
+  Se genera con `npm run iconos`. Tarjeta de instalar reestructurada.
+- PWA SW `aplm-v21` (fuerza actualización), versión visible 2.10.0.
 
 ## v2.9.0 (2026-09-26) — Peleas, disparos, administración y remaster total
 - **+6 juegos de acción (274)**: Pelea Neón/Turbo (vs IA) y Pelea Duelo (2P local

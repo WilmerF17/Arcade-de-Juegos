@@ -1,20 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#2a0f22"/>
-      <stop offset=".55" stop-color="#12060f"/>
-      <stop offset="1" stop-color="#0a1a2e"/>
+    <linearGradient id="fondo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a0f2e"/>
+      <stop offset=".55" stop-color="#150826"/>
+      <stop offset="1" stop-color="#0a1a3e"/>
     </linearGradient>
-    <linearGradient id="coral" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="mando" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#ff3d5a"/>
       <stop offset="1" stop-color="#ff9a3d"/>
     </linearGradient>
+    <linearGradient id="rayo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe259"/>
+      <stop offset="1" stop-color="#ffb03d"/>
+    </linearGradient>
+    <linearGradient id="aro" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff3d5a"/>
+      <stop offset=".5" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
   </defs>
-  <rect x="0" y="0" width="64" height="64" rx="14" fill="url(#bg)"/>
-  <rect x="0" y="0" width="64" height="64" rx="14" fill="none" stroke="url(#coral)" stroke-width="3"/>
-  <rect x="13" y="22" width="38" height="22" rx="11" fill="url(#coral)"/>
-  <rect x="19" y="29" width="3.4" height="10" rx="1.7" fill="#fff"/>
-  <rect x="15.5" y="32.5" width="10" height="3.4" rx="1.7" fill="#fff"/>
-  <circle cx="41" cy="30" r="2.6" fill="#fff"/>
-  <circle cx="46" cy="35" r="2.6" fill="#fff" opacity=".85"/>
+  <rect x="8" y="8" width="496" height="496" rx="118" fill="url(#fondo)"/>
+  <circle cx="108" cy="112" r="10" fill="#fff" opacity=".18"/>
+  <circle cx="420" cy="140" r="7" fill="#fff" opacity=".14"/>
+  <circle cx="392" cy="418" r="9" fill="#fff" opacity=".12"/>
+  <circle cx="120" cy="400" r="6" fill="#fff" opacity=".14"/>
+  <rect x="86" y="216" width="340" height="164" rx="82" fill="url(#mando)"/>
+  <rect x="176" y="272" width="26" height="76" rx="13" fill="#fff"/>
+  <rect x="151" y="297" width="76" height="26" rx="13" fill="#fff"/>
+  <circle cx="330" cy="284" r="19" fill="#fff"/>
+  <circle cx="368" cy="322" r="19" fill="#fff" opacity=".88"/>
+  <polygon points="292,96 192,296 250,296 222,428 336,236 272,236" fill="url(#rayo)" stroke="#7c2d12" stroke-width="12" stroke-linejoin="round"/>
+  <rect x="8" y="8" width="496" height="496" rx="118" fill="none" stroke="url(#aro)" stroke-width="16"/>
 </svg>

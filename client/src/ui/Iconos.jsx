@@ -249,12 +249,11 @@ export function LogoArcade({ size = 34 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#fff"
       strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M7 12h10a4.5 4.5 0 0 1 4.5 4.5c0 2.2-1.3 4.8-3 4.8-1.3 0-1.8-1.3-2.4-2.6H7.9c-.6 1.3-1.1 2.6-2.4 2.6-1.7 0-3-2.6-3-4.8A4.5 4.5 0 0 1 7 12z" fill="rgba(255,255,255,.16)" />
-      <path d="M12 12V6.5" />
-      <circle cx="12" cy="4.8" r="2" fill="#fff" stroke="none" />
-      <path d="M7.4 14.4v2.6M6.1 15.7h2.6" />
-      <circle cx="15.4" cy="14.8" r=".9" fill="#fff" stroke="none" />
-      <circle cx="17.2" cy="16.6" r=".9" fill="#fff" stroke="none" />
+      <rect x="3" y="9" width="18" height="8.5" rx="4.25" fill="rgba(255,255,255,.16)" stroke="#fff" />
+      <path d="M7.6 11.4v3M6.1 12.9h3" />
+      <circle cx="15.4" cy="12.2" r=".9" fill="#fff" stroke="none" />
+      <circle cx="17.2" cy="14" r=".9" fill="#fff" stroke="none" />
+      <polygon points="13.2,3 9.6,11 11.9,11 10.8,17.5 14.8,9.5 12.4,9.5" fill="#ffd319" stroke="#fff" strokeWidth={1.2} />
     </svg>
   );
 }

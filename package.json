@@ -20,6 +20,7 @@
     "tumba": "bash ./bin/dale --tumba",
     "salud": "bash ./bin/dale --salud",
     "test": "node scripts/chequeo.mjs && node scripts/auditoria-juegos.mjs",
+    "iconos": "node scripts/generar-iconos.mjs",
     "publicar": "node scripts/publicar.mjs"
   },
   "devDependencies": {

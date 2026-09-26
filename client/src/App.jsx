@@ -289,8 +289,10 @@ export default function App() {
         </button>
 
         <div className="lat-instalar">
-          <span className="lat-instalar-ico" aria-hidden><Icono n="descargar" size={22} /></span>
-          <span className="lat-instalar-txt"><b>Llévame contigo</b><small>Sin conexión · pantalla completa</small></span>
+          <div className="lat-instalar-fila">
+            <span className="lat-instalar-ico" aria-hidden><Icono n="descargar" size={22} /></span>
+            <span className="lat-instalar-txt"><b>Llévame contigo</b><small>Sin conexión · pantalla completa</small></span>
+          </div>
           <BotonInstalar variante="lateral" />
         </div>
 
