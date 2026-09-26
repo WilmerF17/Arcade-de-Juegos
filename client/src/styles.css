@@ -80,26 +80,68 @@ body {
   color: var(--texto);
   min-height: 100vh;
 }
-/* Fondos con diseños: capa de textura sobre el color del tema */
+/* Fondos con diseños: textura (::before) + detalle global (::after) */
 body::before {
   content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
 }
+body[data-fondo="aurora"]::before {
+  background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,.035) 50%, transparent 58%);
+}
 body[data-fondo="rejilla"]::before {
   background-image:
-    linear-gradient(color-mix(in srgb, var(--texto) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--texto) 6%, transparent) 1px, transparent 1px);
-  background-size: 34px 34px;
+    linear-gradient(color-mix(in srgb, var(--texto) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--texto) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--texto) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--texto) 5%, transparent) 1px, transparent 1px);
+  background-size: 170px 170px, 170px 170px, 34px 34px, 34px 34px;
   -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
   mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
 }
 body[data-fondo="puntos"]::before {
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--texto) 10%, transparent) 1.3px, transparent 1.4px);
-  background-size: 22px 22px;
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, var(--texto) 12%, transparent) 1.4px, transparent 1.5px),
+    radial-gradient(circle, color-mix(in srgb, var(--texto) 7%, transparent) 1px, transparent 1.1px);
+  background-size: 24px 24px, 24px 24px;
+  background-position: 0 0, 12px 12px;
   -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
   mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
 }
 body[data-fondo="ondas"]::before {
-  background-image: repeating-radial-gradient(circle at 50% 130%, transparent 0 30px, color-mix(in srgb, var(--texto) 6%, transparent) 30px 32px);
+  background-image:
+    repeating-radial-gradient(circle at 50% 130%, transparent 0 30px, color-mix(in srgb, var(--texto) 7%, transparent) 30px 32px),
+    repeating-radial-gradient(circle at 50% -30%, transparent 0 42px, color-mix(in srgb, var(--texto) 5%, transparent) 42px 44px);
+}
+/* Detalle global: estrellas, vetas de luz y viñeta para dar profundidad */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(1.6px 1.6px at 8% 12%, rgba(255,255,255,.75), transparent 100%),
+    radial-gradient(1.2px 1.2px at 22% 7%, rgba(255,255,255,.5), transparent 100%),
+    radial-gradient(1.8px 1.8px at 35% 17%, rgba(255,255,255,.65), transparent 100%),
+    radial-gradient(1.2px 1.2px at 48% 5%, rgba(255,255,255,.55), transparent 100%),
+    radial-gradient(1.5px 1.5px at 63% 13%, rgba(255,255,255,.6), transparent 100%),
+    radial-gradient(1.2px 1.2px at 78% 8%, rgba(255,255,255,.5), transparent 100%),
+    radial-gradient(1.7px 1.7px at 90% 19%, rgba(255,255,255,.7), transparent 100%),
+    radial-gradient(1.3px 1.3px at 14% 36%, rgba(255,255,255,.45), transparent 100%),
+    radial-gradient(1.5px 1.5px at 86% 34%, rgba(255,255,255,.5), transparent 100%),
+    radial-gradient(1.2px 1.2px at 70% 27%, rgba(255,255,255,.45), transparent 100%),
+    repeating-linear-gradient(115deg, transparent 0 110px, rgba(255,255,255,.016) 110px 112px),
+    radial-gradient(120% 100% at 50% 28%, transparent 55%, rgba(0,0,0,.34) 100%);
+}
+body[data-tema="claro"]::after, body[data-tema="playa"]::after {
+  background:
+    radial-gradient(1.6px 1.6px at 8% 12%, rgba(0,0,0,.22), transparent 100%),
+    radial-gradient(1.2px 1.2px at 22% 7%, rgba(0,0,0,.16), transparent 100%),
+    radial-gradient(1.8px 1.8px at 35% 17%, rgba(0,0,0,.2), transparent 100%),
+    radial-gradient(1.2px 1.2px at 48% 5%, rgba(0,0,0,.16), transparent 100%),
+    radial-gradient(1.5px 1.5px at 63% 13%, rgba(0,0,0,.18), transparent 100%),
+    radial-gradient(1.2px 1.2px at 78% 8%, rgba(0,0,0,.16), transparent 100%),
+    radial-gradient(1.7px 1.7px at 90% 19%, rgba(0,0,0,.22), transparent 100%),
+    radial-gradient(1.3px 1.3px at 14% 36%, rgba(0,0,0,.14), transparent 100%),
+    radial-gradient(1.5px 1.5px at 86% 34%, rgba(0,0,0,.16), transparent 100%),
+    radial-gradient(1.2px 1.2px at 70% 27%, rgba(0,0,0,.14), transparent 100%),
+    repeating-linear-gradient(115deg, transparent 0 110px, rgba(0,0,0,.02) 110px 112px),
+    radial-gradient(120% 100% at 50% 28%, transparent 60%, rgba(0,0,0,.12) 100%);
 }
 body[data-tema="retro"] { background: radial-gradient(900px 500px at 50% -10%, rgba(255,106,213,.25), transparent 60%), repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 2px, transparent 2px 4px), var(--bg); }
 body[data-tema="claro"] { background: radial-gradient(1000px 500px at 20% 0%, rgba(99,102,241,.12), transparent 60%), var(--bg); }
