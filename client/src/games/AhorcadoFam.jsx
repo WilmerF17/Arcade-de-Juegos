@@ -100,3 +100,6 @@ export const AhorOficios = AH("Ahorcado: Oficios", "🧰",
 export const AhorDeportes = AH("Ahorcado: Deportes", "⚽",
   ["futbol", "tenis", "natacion", "ciclismo", "boxeo", "esqui", "ajedrez", "rugby", "baloncesto", "voleibol", "karate", "surf"],
   "Adivina el deporte", "linear-gradient(135deg,#f59e0b,#ef4444)", "linear-gradient(135deg,#f59e0b,#ef4444)");
+export const AhorMusica = AH("Ahorcado: Música", "🎵",
+  ["guitarra", "piano", "violin", "trompeta", "bateria", "flauta", "saxofon", "arpa", "acordeon", "trombon", "clarinete", "ukelele"],
+  "Adivina el instrumento", "linear-gradient(135deg,#7c3aed,#ec4899)", "linear-gradient(135deg,#7c3aed,#ec4899)");

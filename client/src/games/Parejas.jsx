@@ -108,3 +108,7 @@ export const ParejasNavidad = P("Parejas de Navidad", "🎄", ["🎄", "🎅", "
   "linear-gradient(135deg,#166534,#ef4444)", "linear-gradient(135deg,#166534,#ef4444)");
 export const ParejasHalloween = P("Parejas de Halloween", "🎃", ["🎃", "👻", "🦇", "🕷️", "🍬", "🌙", "🔮", "💀"],
   "linear-gradient(135deg,#7c2d12,#a855f7)", "linear-gradient(135deg,#7c2d12,#a855f7)");
+export const ParejasDinos = P("Parejas de Dinos", "🦕", ["🦕", "🦖", "🦴", "🥚", "🌋", "🌴", "🦎", "🐾"],
+  "linear-gradient(135deg,#166534,#a3e635)", "linear-gradient(135deg,#166534,#a3e635)");
+export const ParejasOceano = P("Parejas del Océano", "🐙", ["🐙", "🦈", "🐬", "🐢", "🦀", "🐠", "🦑", "🪸"],
+  "linear-gradient(135deg,#0369a1,#22d3ee)", "linear-gradient(135deg,#0369a1,#22d3ee)");

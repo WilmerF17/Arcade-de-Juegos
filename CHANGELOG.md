@@ -1,5 +1,18 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.9.0 (2026-09-26) — Peleas, disparos, administración y remaster total
+- **+6 juegos de acción (274)**: Pelea Neón/Turbo (vs IA) y Pelea Duelo (2P local
+  con puños, patadas y bloqueo); Tiroteo/Tiroteo Nocturno (bandidos +10, civiles
+  −15, recarga con R) y Duelo al Amanecer (dispara tras el ¡YA!, al mejor de 5).
+- **+6 contenidos en familias**: Quiz Cocina y Quiz Fútbol, Parejas de Dinos y
+  del Océano, Ahorcado de Música y Emoji de Oficios.
+- **Remaster GameShell v3 en los 274 juegos**: banner con franja degradada e
+  icono en medalla, baja solo hasta el resultado y celebra el NIVEL UP con brillo
+  (respeta movimiento reducido). Retoques en hero y pie de la app.
+- **Administración 🛠️** (nueva sección): estado de la plataforma, lo más jugado,
+  exportar/importar respaldo, limpiar caché y borrar progreso por perfil.
+- PWA SW `aplm-v16` (fuerza actualización), versión visible 2.9.0.
+
 ## v2.8.0 (2026-09-26) — Perfiles: cada persona guarda su progreso
 - **Perfiles locales 👥** (nueva sección): hasta 8 jugadores por aparato, cada
   uno con su XP, niveles, fichas, tienda y favoritos. Sin cuentas ni internet.

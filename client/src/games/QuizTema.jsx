@@ -248,3 +248,21 @@ export const QuizOceanos = T("Quiz Océanos", "🌊", [
   Q("¿Arrecife famoso de Australia?", "*Gran Barrera", "Rojo", "Florida", "Belice"),
   Q("¿Qué tiburón es el mayor?", "*Tiburón ballena", "Blanco", "Tigre", "Martillo"),
 ], "linear-gradient(135deg,#0369a1,#22d3ee)", "linear-gradient(135deg,#0369a1,#22d3ee)");
+
+export const QuizCocina = T("Quiz Cocina", "🍳", [
+  Q("¿Ingrediente base de la tortilla española?", "Arroz", "*Huevo", "Maíz", "Queso"),
+  Q("¿La paella es típica de…?", "Galicia", "*Valencia", "Asturias", "Canarias"),
+  Q("¿Qué país inventó la pizza?", "Francia", "Grecia", "*Italia", "EE.UU."),
+  Q("¿El guacamole lleva…?", "Tomate frito", "*Aguacate", "Patata", "Remolacha"),
+  Q("¿Cómo se llama el pan japonés esponjoso al vapor?", "Naan", "*Bao", "Focaccia", "Arepa"),
+  Q("¿Especia amarilla del curry?", "Pimentón", "*Cúrcuma", "Comino", "Orégano"),
+], "linear-gradient(135deg,#ea580c,#facc15)", "linear-gradient(135deg,#ea580c,#facc15)");
+
+export const QuizFutbol = T("Quiz Fútbol", "⚽", [
+  Q("¿Cuántos jugadores por equipo en cancha?", "9", "10", "*11", "12"),
+  Q("¿Cada cuánto es el Mundial?", "2 años", "*4 años", "3 años", "5 años"),
+  Q("¿Qué país tiene más mundiales?", "Alemania", "Argentina", "*Brasil", "Italia"),
+  Q("¿Duración de un partido reglamentario?", "80 min", "*90 min", "100 min", "70 min"),
+  Q("¿Qué es un hat-trick?", "3 rojas", "*3 goles", "3 penaltis", "3 cambios"),
+  Q("¿Desde dónde se tira un penalti?", "6 metros", "9 metros", "*11 metros", "16 metros"),
+], "linear-gradient(135deg,#16a34a,#eab308)", "linear-gradient(135deg,#16a34a,#eab308)");

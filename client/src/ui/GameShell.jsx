@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { registrar } from "../api";
 import { cobrar } from "../suite/billetera";
 import { cargarProgreso, sumarPartida } from "../suite/progreso";
@@ -151,13 +151,23 @@ export function Stats({ items = [] }) {
   );
 }
 
-/** Banner de resultado reutilizable con mini-confeti en récords. */
+/** Banner de resultado v3: entra con animación, baja solo hasta él y celebra
+ *  el NIVEL UP con brillo propio. Llega a todos los juegos sin tocar su lógica. */
 const ICONO_RESULTADO = { record: "🏆", victoria: "✅", derrota: "💪", perdida: "💪", empate: "🤝" };
 export function Resultado({ mensaje, tipo }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!mensaje || !ref.current) return;
+    try {
+      const suave = !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      ref.current.scrollIntoView({ behavior: suave ? "smooth" : "auto", block: "nearest" });
+    } catch { /* noop */ }
+  }, [mensaje]);
   if (!mensaje) return null;
   const esRecord = tipo === "record";
+  const subio = mensaje.includes("NIVEL UP");
   return (
-    <div className={`mensaje-final ${tipo || ""}`} role="status" style={{ position: "relative" }}>
+    <div ref={ref} className={`mensaje-final v3 ${tipo || ""}${subio ? " subio" : ""}`} role="status" style={{ position: "relative" }}>
       {esRecord && (
         <span className="confeti" aria-hidden>
           {["✦", "●", "▲", "✦", "●", "▲"].map((e, i) => (
@@ -165,7 +175,9 @@ export function Resultado({ mensaje, tipo }) {
           ))}
         </span>
       )}
-      <span className="mf-icono" aria-hidden>{ICONO_RESULTADO[tipo] || "🎮"}</span> {mensaje}
+      <span className="mf-icono" aria-hidden>{ICONO_RESULTADO[tipo] || "🎮"}</span>
+      <span className="mf-texto">{mensaje}</span>
+      {subio && <span className="mf-nivel" aria-hidden>🎆</span>}
     </div>
   );
 }

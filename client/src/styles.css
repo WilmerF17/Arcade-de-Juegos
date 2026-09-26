@@ -716,11 +716,33 @@ canvas { height: auto; }
 /* Resultado v2: entrada deslizante + icono + resplandor por tipo */
 .mensaje-final { animation: mf-entra .28s ease; align-items: center; }
 .mensaje-final .mf-icono { font-size: 1.1em; }
-@keyframes mf-entra { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
 .mensaje-final.record { box-shadow: 0 0 0 1px rgba(245,158,11,.55), 0 8px 28px rgba(245,158,11,.35); }
 .mensaje-final.victoria { box-shadow: 0 0 0 1px rgba(34,197,94,.45), 0 8px 24px rgba(34,197,94,.22); }
 .mensaje-final.derrota, .mensaje-final.perdida { box-shadow: 0 0 0 1px rgba(239,68,68,.4), 0 8px 24px rgba(239,68,68,.18); }
 .mensaje-final.empate { box-shadow: 0 0 0 1px rgba(245,158,11,.4), 0 8px 24px rgba(245,158,11,.18); }
+
+/* Resultado v3 (remaster): franja degradada, icono en medalla y fiesta de nivel */
+@keyframes mf-entra { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+.mensaje-final.v3 { display: flex; gap: 10px; overflow: hidden; }
+.mensaje-final.v3::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: linear-gradient(180deg, var(--principal), var(--principal-2));
+}
+.mensaje-final.v3.record::before { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+.mensaje-final.v3.victoria::before { background: linear-gradient(180deg, #4ade80, #16a34a); }
+.mensaje-final.v3.derrota::before, .mensaje-final.v3.perdida::before { background: linear-gradient(180deg, #f87171, #dc2626); }
+.mensaje-final.v3 .mf-icono {
+  font-size: 1.5rem; width: 42px; height: 42px; flex-shrink: 0;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--bg-soft); border: 1px solid var(--border);
+}
+.mensaje-final.v3 .mf-texto { flex: 1; }
+.mensaje-final.v3 .mf-nivel { font-size: 1.4rem; animation: mf-pop .6s ease infinite alternate; }
+@keyframes mf-pop { from { transform: scale(1) rotate(-8deg); } to { transform: scale(1.25) rotate(8deg); } }
+.mensaje-final.v3.subio {
+  border-color: var(--aviso);
+  box-shadow: 0 0 0 1px rgba(245,158,11,.6), 0 8px 32px rgba(245,158,11,.4);
+}
 
 /* Ayuda plegable unificada */
 .ayuda-juego {
@@ -788,6 +810,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: none; bo
 @media (prefers-reduced-motion: reduce) {
   .gameshell::after, .esqueleto { animation: none; }
   .mensaje-final { animation: none; }
+  .mensaje-final.v3 .mf-nivel { animation: none; }
   .shell-icono { animation: none; }
 }
 

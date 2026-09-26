@@ -12,6 +12,7 @@ import ErrorJuego from "./ui/ErrorJuego";
 import Tienda from "./ui/Tienda";
 import Privacidad from "./ui/Privacidad";
 import Perfiles from "./ui/Perfiles";
+import Admin from "./ui/Admin";
 import { asegurarPerfiles, perfilActivo } from "./suite/perfiles";
 import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
 import { ProveedorTemaJuego } from "./ui/GameShell";
@@ -355,6 +356,9 @@ export default function App() {
         <button className={`nav-item ${activo === "perfiles" ? "activo" : ""}`} onClick={() => ir("perfiles")}>
           <span style={{ fontSize: "1.1rem" }}>👥</span> Perfiles <span className="flecha">→</span>
         </button>
+        <button className={`nav-item ${activo === "admin" ? "activo" : ""}`} onClick={() => ir("admin")}>
+          <span style={{ fontSize: "1.1rem" }}>🛠️</span> Administración <span className="flecha">→</span>
+        </button>
 
         <p className="cat">Categorías</p>
         <div className="chips-cat">
@@ -419,6 +423,8 @@ export default function App() {
           <span aria-hidden>·</span>
           <button className="enlace-pie" onClick={() => ir("tienda")}>🛍️ Tienda</button>
           <span aria-hidden>·</span>
+          <button className="enlace-pie" onClick={() => ir("admin")}>🛠️ Admin</button>
+          <span aria-hidden>·</span>
           <a className="enlace-pie" href="https://github.com/WilmerF17/Arcade-de-Juegos" target="_blank" rel="noopener">Código</a>
         </footer>
       </aside>
@@ -431,7 +437,7 @@ export default function App() {
               <div className="hero-txt">
                 <span className="pill"><Icono n="mando" size={13} /> {totalJuegos} juegos · modo RGB · XP y niveles · sonidos</span>
                 <h2>Tu arcade pa' lo muchacho, <em>modo turbo</em></h2>
-                <p>{totalJuegos} juegos: clásicos, casino, tableros, arcade puro y mente. Luces RGB, progresión con XP, rachas, logros y desafío diario con doble XP. Todo con teclado (flechas/WASD) + ratón + táctil. Atajos: <b>/</b> buscar · <b>Esc</b> inicio · <b>G</b> aleatorio.</p>
+                <p>{totalJuegos} juegos: clásicos, casino, peleas, tiroteo, tableros, arcade puro y mente. Luces RGB, progresión con XP, rachas, logros y desafío diario con doble XP. Todo con teclado (flechas/WASD) + ratón + táctil. Atajos: <b>/</b> buscar · <b>Esc</b> inicio · <b>G</b> aleatorio.</p>
                 <div className="hero-btns">
                   <button className="btn-principal" onClick={aleatorio}><Icono n="aleatorio" size={15} /> Juego aleatorio (G)</button>
                   {prog.desafio?.juego && !prog.desafio.hecho && (
@@ -492,7 +498,7 @@ export default function App() {
             </section>
           </div>
         )}
-        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo === "privacidad" ? <Privacidad /> : activo === "perfiles" ? <Perfiles /> : activo !== "inicio" && (() => {
+        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo === "privacidad" ? <Privacidad /> : activo === "perfiles" ? <Perfiles /> : activo === "admin" ? <Admin /> : activo !== "inicio" && (() => {
           if (!juego) {
             return (
               <div className="gameshell">

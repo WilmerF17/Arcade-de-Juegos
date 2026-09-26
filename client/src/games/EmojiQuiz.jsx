@@ -115,3 +115,9 @@ export const EmojiViajes = EQ("Emoji: Viajes", "✈️", [
   ["⛵", "el velero"], ["🚁", "el helicóptero"], ["🚀", "el cohete"], ["🗺️", "el mapa"],
   ["🏨", "el hotel"], ["🎒", "la mochila"], ["📷", "la cámara"], ["🧳", "la maleta"],
 ], "linear-gradient(135deg,#0ea5e9,#6366f1)", "linear-gradient(135deg,#0ea5e9,#6366f1)");
+
+export const EmojiOficios = EQ("Emoji: Oficios", "🧰", [
+  ["👨‍🍳", "el cocinero"], ["👩‍⚕️", "la doctora"], ["👨‍🚒", "el bombero"], ["👩‍🏫", "la maestra"],
+  ["👨‍✈️", "el piloto"], ["👩‍🌾", "la granjera"], ["👨‍🎨", "el pintor"], ["👩‍🔬", "la científica"],
+  ["👨‍💻", "el programador"], ["👩‍🎤", "la cantante"], ["👨‍🔧", "el mecánico"], ["🧑‍⚖️", "el juez"],
+], "linear-gradient(135deg,#64748b,#0ea5e9)", "linear-gradient(135deg,#64748b,#0ea5e9)");
