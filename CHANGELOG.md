@@ -17,8 +17,8 @@
   Se genera con `npm run iconos`. Tarjeta de instalar reestructurada.
 - **Fondos con diseños 🌌**: 4 fondos elegibles (Aurora, Rejilla, Puntos, Ondas)
   que se combinan con tu tema, más un tercer resplandor en el fondo base.
-  Detalle global: cielo de estrellas, vetas de luz en diagonal y viñeta con
-  profundidad (versión suave en temas claros).
+  Detalle global: cielo de estrellas y viñeta con profundidad
+  (versión suave en temas claros).
 - PWA SW `aplm-v22` (fuerza actualización), versión visible 2.10.0.
 
 ## v2.9.0 (2026-09-26) — Peleas, disparos, administración y remaster total
