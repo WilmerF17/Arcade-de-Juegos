@@ -13,6 +13,7 @@ import Tienda from "./ui/Tienda";
 import Privacidad from "./ui/Privacidad";
 import Perfiles from "./ui/Perfiles";
 import Admin from "./ui/Admin";
+import Bienvenida, { necesitaBienvenida } from "./ui/Bienvenida";
 import { asegurarPerfiles, perfilActivo } from "./suite/perfiles";
 import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
 import { ProveedorTemaJuego } from "./ui/GameShell";
@@ -44,6 +45,7 @@ export default function App() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [bannerOff, setBannerOff] = useState(false);
   const [perfil] = useState(() => perfilActivo());
+  const [bienvenida, setBienvenida] = useState(() => necesitaBienvenida());
   // La tienda avisa con "aplm-tienda": re-render para temas y potenciadores
   const [, setTickTienda] = useState(0);
   useEffect(() => {
@@ -465,6 +467,19 @@ export default function App() {
               </div>
             </header>
 
+            {(prog.ultimos || []).filter(id => JUEGOS[id]).length > 0 && (
+              <section className="seccion-cartas">
+                <h3>🕘 Sigue jugando</h3>
+                <div className="chips-cat">
+                  {(prog.ultimos || []).filter(id => JUEGOS[id]).map(id => (
+                    <button key={id} className="chip-cat" onClick={() => ir(id)}>
+                      <IconoJuego id={id} size={14} /> {JUEGOS[id].nombre}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
+
             <section className="seccion-cartas">
               <h3>{filtroCat === "todas" ? "Todos los juegos" : filtroCat === "favs" ? "⭐ Favoritos" : CATEGORIAS.find(c => c.id === filtroCat)?.nombre} <small>({filtrados.length})</small></h3>
               <div className="grid-cartas">
@@ -537,6 +552,13 @@ export default function App() {
         })()}
       </main>
       {toast && <div className="toast-logro"><Icono n="estrella-llena" size={15} /> {toast}</div>}
+      {activo === "inicio" && bienvenida && (
+        <Bienvenida
+          onJugar={() => { setBienvenida(false); aleatorio(); }}
+          onPerfiles={() => { setBienvenida(false); ir("perfiles"); }}
+          onCerrar={() => setBienvenida(false)}
+        />
+      )}
       {/* Nav inferior móvil: pulgar, 4 destinos, siempre visible */}
       <nav className="nav-movil" aria-label="Navegación principal">
         <button className={activo === "inicio" ? "on" : ""} onClick={() => ir("inicio")} aria-label="Inicio">

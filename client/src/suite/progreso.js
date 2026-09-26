@@ -14,7 +14,7 @@ function ayer() {
 }
 
 export function estadoInicial() {
-  return { xp: 0, ultimaJugada: "", racha: 0, logros: [], desafio: { fecha: "", juego: "", hecho: false }, misiones: { fecha: "", jugadas: 0, victorias: 0, cobradas: [] } };
+  return { xp: 0, ultimaJugada: "", racha: 0, logros: [], desafio: { fecha: "", juego: "", hecho: false }, misiones: { fecha: "", jugadas: 0, victorias: 0, cobradas: [] }, ultimos: [] };
 }
 
 export function cargarProgreso() {
@@ -114,8 +114,9 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
   else prog.racha = 1;
   prog.ultimaJugada = h;
 
-  // conteo por juego
+  // conteo por juego + recientes para "Sigue jugando"
   prog.porJuego[juegoId] = (prog.porJuego[juegoId] || 0) + 1;
+  prog.ultimos = [juegoId, ...((prev.ultimos || []).filter(x => x !== juegoId))].slice(0, 8);
 
   if (esDesafio) {
     prog.desafio = { ...(prev.desafio || {}), hecho: true };

@@ -266,3 +266,21 @@ export const QuizFutbol = T("Quiz Fútbol", "⚽", [
   Q("¿Qué es un hat-trick?", "3 rojas", "*3 goles", "3 penaltis", "3 cambios"),
   Q("¿Desde dónde se tira un penalti?", "6 metros", "9 metros", "*11 metros", "16 metros"),
 ], "linear-gradient(135deg,#16a34a,#eab308)", "linear-gradient(135deg,#16a34a,#eab308)");
+
+export const QuizVideojuegos = T("Quiz Videojuegos", "🎮", [
+  Q("¿El fontanero más famoso es…?", "*Mario", "Sonic", "Link", "Pikachu"),
+  Q("¿Qué come Pac-Man?", "Fantasmas", "*Puntos y frutas", "Monedas", "Hongos"),
+  Q("¿En Minecraft el enemigo verde explota: es…?", "Zombie", "Araña", "*Creeper", "Slime"),
+  Q("¿De qué color es Sonic?", "Rojo", "*Azul", "Verde", "Amarillo"),
+  Q("¿Qué objeto te hace grande en Mario?", "Flor", "Estrella", "*Champiñón", "Pluma"),
+  Q("¿Cómo se llama la princesa de Zelda?", "Peach", "Daisy", "*Zelda", "Rosalina"),
+], "linear-gradient(135deg,#7c3aed,#22d3ee)", "linear-gradient(135deg,#7c3aed,#22d3ee)");
+
+export const QuizRedes = T("Quiz Redes", "📱", [
+  Q("¿Qué red es de videos cortos verticales?", "LinkedIn", "*TikTok", "Pinterest", "Reddit"),
+  Q("¿El 'me gusta' con corazón es de…?", "X", "Facebook", "*Instagram", "YouTube"),
+  Q("¿Qué significa 'viral'?", "Con virus", "*Que se comparte muchísimo", "Que es falso", "Que es viejo"),
+  Q("¿Antes de publicar, conviene…?", "Dar tu dirección", "*Pensar si te representa", "Pasar tu clave", "Borrar tu nombre"),
+  Q("¿Qué es un 'influencer'?", "Un virus", "*Alguien que influye con su contenido", "Un robot", "Un anuncio"),
+  Q("¿Si alguien te molesta en línea debes…?", "Responder igual", "*Bloquear y contar a un adulto", "Dar tus datos", "Borrar todo"),
+], "linear-gradient(135deg,#ec4899,#7c3aed)", "linear-gradient(135deg,#ec4899,#7c3aed)");

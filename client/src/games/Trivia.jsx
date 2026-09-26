@@ -29,6 +29,17 @@ const PREGUNTAS = [
   { p: "¿Cuál es el animal más grande del mundo?", o: ["Elefante", "Tiburón blanco", "Ballena azul", "Calamar"], r: 2, c: "Naturaleza" },
   { p: "¿Qué unidad mide la corriente eléctrica?", o: ["Voltio", "Amperio", "Ohmio", "Vatio"], r: 1, c: "Ciencia" },
   { p: "¿Quién escribió 'Cien años de soledad'?", o: ["García Márquez", "Borges", "Vargas Llosa", "Cortázar"], r: 0, c: "Literatura" },
+  { p: "¿Qué planeta tiene anillos visibles?", o: ["Marte", "Venus", "Saturno", "Mercurio"], r: 2, c: "Ciencia" },
+  { p: "¿En qué país está la Torre Eiffel?", o: ["Italia", "España", "Francia", "Bélgica"], r: 2, c: "Geografía" },
+  { p: "¿Qué civilización construyó Machu Picchu?", o: ["Azteca", "Maya", "Inca", "Egipcia"], r: 2, c: "Historia" },
+  { p: "¿Qué aparato mide la temperatura?", o: ["Barómetro", "Termómetro", "Reloj", "Brújula"], r: 1, c: "Ciencia" },
+  { p: "¿Cuál es el idioma más hablado del mundo?", o: ["Inglés", "Hindi", "Chino mandarín", "Español"], r: 2, c: "Geografía" },
+  { p: "¿Quién fue el primer presidente de EE.UU.?", o: ["Lincoln", "Washington", "Jefferson", "Adams"], r: 1, c: "Historia" },
+  { p: "¿Qué red social es de fotos y reels?", o: ["LinkedIn", "Instagram", "Wikipedia", "Telegram"], r: 1, c: "Tecnología" },
+  { p: "¿Quién escribió 'Romeo y Julieta'?", o: ["Cervantes", "Shakespeare", "Dante", "Homero"], r: 1, c: "Literatura" },
+  { p: "¿En qué deporte se usa un bate?", o: ["Fútbol", "Tenis", "Béisbol", "Natación"], r: 2, c: "Deporte" },
+  { p: "¿Qué animal pone huevos y nada?", o: ["Ballena", "Tiburón", "Pato", "Delfín"], r: 2, c: "Naturaleza" },
+  { p: "¿Qué pintor cortó parte de su oreja?", o: ["Picasso", "Van Gogh", "Dalí", "Monet"], r: 1, c: "Arte" },
 ];
 
 const CATEGORIAS = ["Mezcla", "Ciencia", "Historia", "Geografía", "Tecnología", "Literatura", "Deporte", "Naturaleza", "Arte"];
