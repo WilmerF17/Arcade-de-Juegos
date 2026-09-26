@@ -80,22 +80,20 @@ body {
   color: var(--texto);
   min-height: 100vh;
 }
-/* Fondos con diseños: textura (::before) + detalle global (::after) */
+/* Fondos ambientales (sin líneas): textura (::before) + detalle global (::after) */
+html { background: var(--bg); }
 body::before {
   content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
 }
 body[data-fondo="aurora"]::before {
   background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,.035) 50%, transparent 58%);
 }
-body[data-fondo="rejilla"]::before {
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--texto) 9%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--texto) 9%, transparent) 1px, transparent 1px),
-    linear-gradient(color-mix(in srgb, var(--texto) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--texto) 5%, transparent) 1px, transparent 1px);
-  background-size: 170px 170px, 170px 170px, 34px 34px, 34px 34px;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
-  mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+body[data-fondo="nebulosa"]::before {
+  background:
+    radial-gradient(420px 320px at 12% 18%, color-mix(in srgb, var(--principal) 17%, transparent), transparent 70%),
+    radial-gradient(480px 360px at 88% 72%, color-mix(in srgb, var(--info) 15%, transparent), transparent 70%),
+    radial-gradient(380px 300px at 72% 12%, color-mix(in srgb, #a855f7 13%, transparent), transparent 70%),
+    radial-gradient(400px 320px at 25% 85%, color-mix(in srgb, var(--principal-2) 12%, transparent), transparent 70%);
 }
 body[data-fondo="puntos"]::before {
   background-image:
@@ -103,18 +101,20 @@ body[data-fondo="puntos"]::before {
     radial-gradient(circle, color-mix(in srgb, var(--texto) 7%, transparent) 1px, transparent 1.1px);
   background-size: 24px 24px, 24px 24px;
   background-position: 0 0, 12px 12px;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
-  mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
 }
-body[data-fondo="ondas"]::before {
-  background-image:
-    repeating-radial-gradient(circle at 50% 130%, transparent 0 30px, color-mix(in srgb, var(--texto) 7%, transparent) 30px 32px),
-    repeating-radial-gradient(circle at 50% -30%, transparent 0 42px, color-mix(in srgb, var(--texto) 5%, transparent) 42px 44px);
+body[data-fondo="burbujas"]::before {
+  background:
+    radial-gradient(110px 110px at 10% 25%, color-mix(in srgb, var(--principal) 10%, transparent), transparent 70%),
+    radial-gradient(70px 70px at 82% 15%, color-mix(in srgb, var(--info) 10%, transparent), transparent 70%),
+    radial-gradient(140px 140px at 78% 68%, color-mix(in srgb, #a855f7 9%, transparent), transparent 70%),
+    radial-gradient(80px 80px at 22% 72%, color-mix(in srgb, var(--principal-2) 9%, transparent), transparent 70%),
+    radial-gradient(60px 60px at 55% 45%, color-mix(in srgb, var(--texto) 6%, transparent), transparent 70%);
 }
-/* Detalle global: estrellas, vetas de luz y viñeta para dar profundidad */
+/* Detalle global: estrellas, grano anti-bandas y viñeta para dar profundidad */
 body::after {
   content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"),
     radial-gradient(1.6px 1.6px at 8% 12%, rgba(255,255,255,.75), transparent 100%),
     radial-gradient(1.2px 1.2px at 22% 7%, rgba(255,255,255,.5), transparent 100%),
     radial-gradient(1.8px 1.8px at 35% 17%, rgba(255,255,255,.65), transparent 100%),
@@ -129,6 +129,7 @@ body::after {
 }
 body[data-tema="claro"]::after, body[data-tema="playa"]::after {
   background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
     radial-gradient(1.6px 1.6px at 8% 12%, rgba(0,0,0,.22), transparent 100%),
     radial-gradient(1.2px 1.2px at 22% 7%, rgba(0,0,0,.16), transparent 100%),
     radial-gradient(1.8px 1.8px at 35% 17%, rgba(0,0,0,.2), transparent 100%),

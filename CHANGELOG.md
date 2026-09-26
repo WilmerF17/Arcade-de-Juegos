@@ -15,9 +15,8 @@
 - **Icono nuevo 🎮⚡**: mando coral con rayo y aro degradado en favicon, app
   instalada, Apple, portadas y logo interno (sin número para no caducar nunca).
   Se genera con `npm run iconos`. Tarjeta de instalar reestructurada.
-- **Fondos con diseños 🌌**: 4 fondos elegibles (Aurora, Rejilla, Puntos, Ondas)
-  que se combinan con tu tema, más un tercer resplandor en el fondo base.
-  Detalle global: cielo de estrellas y viñeta con profundidad
+- **Fondos ambientales 🌌**: Aurora, Nebulosa, Puntos y Burbujas (sin líneas
+  ni cortes), cielo de estrellas, grano anti-bandas y viñeta con profundidad
   (versión suave en temas claros).
 - PWA SW `aplm-v22` (fuerza actualización), versión visible 2.10.0.
 

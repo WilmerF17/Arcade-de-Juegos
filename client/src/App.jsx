@@ -31,7 +31,10 @@ export default function App() {
   const [busqueda, setBusqueda] = useState("");
   const [filtroCat, setFiltroCat] = useState("todas");
   const [tema, setTema] = useState(() => localStorage.getItem("arcade-tema") || "neon");
-  const [fondo, setFondo] = useState(() => localStorage.getItem("arcade-fondo") || "aurora");
+  const [fondo, setFondo] = useState(() => {
+    const g = localStorage.getItem("arcade-fondo") || "aurora";
+    return ["aurora", "nebulosa", "puntos", "burbujas"].includes(g) ? g : "aurora";
+  });
   const [rgb, setRgb] = useState(() => localStorage.getItem("arcade-rgb") !== "off");
   const [sonido, setSonido] = useState(() => sonidoActivado());
   const [stats, setStats] = useState({});
@@ -443,7 +446,7 @@ export default function App() {
           </div>
           <p className="cat" style={{ marginTop: 10 }}>Fondo</p>
           <div className="tema-btns">
-            {[["aurora", "✨", "Aurora"], ["rejilla", "🔲", "Rejilla"], ["puntos", "🔘", "Puntos"], ["ondas", "🌊", "Ondas"]].map(([id, icono, nombre]) => (
+            {[["aurora", "✨", "Aurora"], ["nebulosa", "🌌", "Nebulosa"], ["puntos", "🔘", "Puntos"], ["burbujas", "🫧", "Burbujas"]].map(([id, icono, nombre]) => (
               <button key={id} title={nombre}
                 className={fondo === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setFondo(id); sfx.clic(); }}><span style={{ fontSize: "1.05rem" }}>{icono}</span></button>
