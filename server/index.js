@@ -46,7 +46,7 @@ app.use(cors({
     if (FRONTEND_URLS.includes(origen)) return cb(null, true);
     return cb(new Error("Origen no permitido"));
   },
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE"],
   allowedHeaders: ["Content-Type"],
   maxAge: 86400,
 }));
@@ -59,6 +59,10 @@ const apiGeneral = rateLimit({
 const scoresLimit = rateLimit({
   windowMs: 60_000, max: 60, standardHeaders: true, legacyHeaders: false,
   message: { error: "Demasiadas puntuaciones, espera un minuto" },
+});
+const borradoLimit = rateLimit({
+  windowMs: 60_000, max: 5, standardHeaders: true, legacyHeaders: false,
+  message: { error: "Espera un minuto antes de borrar otra vez" },
 });
 app.use("/api/", apiGeneral);
 
@@ -147,6 +151,17 @@ app.post("/api/scores", scoresLimit, (req, res) => {
     return res.status(500).json({ error: "No se pudo guardar la puntuación" });
   }
   res.json({ juego, ...actual, nuevoRecord });
+});
+
+// Borra el ranking global (partidas, victorias y récords). Lo usa el botón
+// "Borrar progreso" para que no queden partidas contadas de ese perfil.
+app.delete("/api/stats", borradoLimit, (_req, res) => {
+  try {
+    guardarDatos({});
+  } catch {
+    return res.status(500).json({ error: "No se pudo borrar el ranking" });
+  }
+  res.json({ ok: true });
 });
 
 // 404 JSON para API desconocida

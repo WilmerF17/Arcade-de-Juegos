@@ -340,8 +340,10 @@ export default function App() {
 
         <div className="buscador">
           <Icono n="buscar" size={16} />
-          <input ref={buscarRef} value={busqueda} onChange={e => setBusqueda(e.target.value)} placeholder="Buscar juego... ( / )" />
-          {busqueda && <button className="chip-cat" onClick={() => setBusqueda("")}>✕</button>}
+          <input ref={buscarRef} type="search" value={busqueda} onChange={e => setBusqueda(e.target.value)}
+            placeholder="Buscar juego... ( / )" aria-label="Buscar juego" autoComplete="off" />
+          {busqueda && <button className="buscar-limpiar" onClick={() => { setBusqueda(""); buscarRef.current?.focus(); }}
+            aria-label="Limpiar búsqueda">✕</button>}
         </div>
 
         <button className={`nav-item ${activo === "inicio" ? "activo" : ""}`} onClick={() => ir("inicio")}>

@@ -11,7 +11,10 @@
   (respeta movimiento reducido). Retoques en hero y pie de la app.
 - **Administración 🛠️** (nueva sección): estado de la plataforma, lo más jugado,
   exportar/importar respaldo, limpiar caché y borrar progreso por perfil.
-- PWA SW `aplm-v16` (fuerza actualización), versión visible 2.9.0.
+- **Arreglos**: buscador con diseño corregido (ya no se desborda, foco visible,
+  botón ✕ propio y sin zoom en iOS) y "Borrar progreso" también borra las
+  partidas y récords contados en el servidor.
+- PWA SW `aplm-v17` (fuerza actualización), versión visible 2.9.0.
 
 ## v2.8.0 (2026-09-26) — Perfiles: cada persona guarda su progreso
 - **Perfiles locales 👥** (nueva sección): hasta 8 jugadores por aparato, cada

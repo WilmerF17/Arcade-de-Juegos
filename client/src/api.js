@@ -24,3 +24,8 @@ export async function registrar(juego, puntos = 0, ganadas = 0, jugadas = 1) {
     body: JSON.stringify({ juego, puntos, ganadas, jugadas }),
   });
 }
+
+/** Borra el ranking global (partidas, victorias y récords). Mejor esfuerzo. */
+export async function borrarStats() {
+  return peticion("/stats", { method: "DELETE" });
+}

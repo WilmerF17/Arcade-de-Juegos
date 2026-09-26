@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell from "./GameShell";
 import { JUEGOS } from "../games/GAMES";
-import { getStats } from "../api";
+import { getStats, borrarStats } from "../api";
 import { listarPerfiles, perfilActivo } from "../suite/perfiles";
 import { sfx } from "../suite/sonido";
 
@@ -106,16 +106,21 @@ export default function Admin() {
     }
   }
   function borrarProgreso() {
-    if (!window.confirm(`¿Borrar el progreso de ${activo.nombre}? (XP, fichas, tienda y favoritos de este perfil)`)) return;
+    if (!window.confirm(`¿Borrar el progreso de ${activo.nombre}? Se pierden su XP, fichas, tienda, favoritos y también sus partidas y récords contados.`)) return;
     try {
       for (const k of ["arcade-progreso-v1", "aplm-billetera-v1", "aplm-tienda-v1", "arcade-favs"]) {
         localStorage.removeItem(k);
       }
-      decir(true, "✅ Perfil limpio. Recargando…");
-      setTimeout(recargar, 900);
     } catch {
       decir(false, "⛔ No se pudo borrar.");
+      return;
     }
+    // Mejor esfuerzo: también las partidas del servidor (si no hay conexión, igual se borró lo local)
+    borrarStats().catch(() => {}).finally(() => {
+      setTop([]);
+      decir(true, "✅ Perfil y partidas borrados. Recargando…");
+      setTimeout(recargar, 900);
+    });
   }
 
   const version = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "?";
