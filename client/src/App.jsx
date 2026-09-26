@@ -31,6 +31,7 @@ export default function App() {
   const [busqueda, setBusqueda] = useState("");
   const [filtroCat, setFiltroCat] = useState("todas");
   const [tema, setTema] = useState(() => localStorage.getItem("arcade-tema") || "neon");
+  const [fondo, setFondo] = useState(() => localStorage.getItem("arcade-fondo") || "aurora");
   const [rgb, setRgb] = useState(() => localStorage.getItem("arcade-rgb") !== "off");
   const [sonido, setSonido] = useState(() => sonidoActivado());
   const [stats, setStats] = useState({});
@@ -63,6 +64,11 @@ export default function App() {
     document.body.dataset.tema = tema;
     localStorage.setItem("arcade-tema", tema);
   }, [tema]);
+
+  useEffect(() => {
+    document.body.dataset.fondo = fondo;
+    localStorage.setItem("arcade-fondo", fondo);
+  }, [fondo]);
 
   useEffect(() => {
     document.body.dataset.rgb = rgb ? "on" : "off";
@@ -433,6 +439,14 @@ export default function App() {
               <button key={id} title={nombre}
                 className={tema === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setTema(id); sfx.clic(); }}><Icono n={icon} size={20} /></button>
+            ))}
+          </div>
+          <p className="cat" style={{ marginTop: 10 }}>Fondo</p>
+          <div className="tema-btns">
+            {[["aurora", "✨", "Aurora"], ["rejilla", "🔲", "Rejilla"], ["puntos", "🔘", "Puntos"], ["ondas", "🌊", "Ondas"]].map(([id, icono, nombre]) => (
+              <button key={id} title={nombre}
+                className={fondo === id ? "tema-btn on" : "tema-btn"}
+                onClick={() => { setFondo(id); sfx.clic(); }}><span style={{ fontSize: "1.05rem" }}>{icono}</span></button>
             ))}
           </div>
           <div className="interruptores">

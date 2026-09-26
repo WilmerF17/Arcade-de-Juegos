@@ -15,7 +15,9 @@
 - **Icono nuevo 🎮⚡**: mando coral con rayo y aro degradado en favicon, app
   instalada, Apple, portadas y logo interno (sin número para no caducar nunca).
   Se genera con `npm run iconos`. Tarjeta de instalar reestructurada.
-- PWA SW `aplm-v21` (fuerza actualización), versión visible 2.10.0.
+- **Fondos con diseños 🌌**: 4 fondos elegibles (Aurora, Rejilla, Puntos, Ondas)
+  que se combinan con tu tema, más un tercer resplandor en el fondo base.
+- PWA SW `aplm-v22` (fuerza actualización), versión visible 2.10.0.
 
 ## v2.9.0 (2026-09-26) — Peleas, disparos, administración y remaster total
 - **+6 juegos de acción (274)**: Pelea Neón/Turbo (vs IA) y Pelea Duelo (2P local

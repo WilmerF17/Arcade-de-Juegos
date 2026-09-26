@@ -75,9 +75,31 @@ body {
   background:
     radial-gradient(1200px 600px at 20% -10%, rgba(255, 61, 90, 0.22), transparent 60%),
     radial-gradient(1000px 500px at 90% 0%, rgba(255, 154, 61, 0.16), transparent 55%),
+    radial-gradient(900px 500px at 50% 110%, rgba(168, 85, 247, 0.14), transparent 60%),
     var(--bg);
   color: var(--texto);
   min-height: 100vh;
+}
+/* Fondos con diseños: capa de textura sobre el color del tema */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+body[data-fondo="rejilla"]::before {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--texto) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--texto) 6%, transparent) 1px, transparent 1px);
+  background-size: 34px 34px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+}
+body[data-fondo="puntos"]::before {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--texto) 10%, transparent) 1.3px, transparent 1.4px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
+}
+body[data-fondo="ondas"]::before {
+  background-image: repeating-radial-gradient(circle at 50% 130%, transparent 0 30px, color-mix(in srgb, var(--texto) 6%, transparent) 30px 32px);
 }
 body[data-tema="retro"] { background: radial-gradient(900px 500px at 50% -10%, rgba(255,106,213,.25), transparent 60%), repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 2px, transparent 2px 4px), var(--bg); }
 body[data-tema="claro"] { background: radial-gradient(1000px 500px at 20% 0%, rgba(99,102,241,.12), transparent 60%), var(--bg); }
