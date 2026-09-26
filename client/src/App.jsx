@@ -271,37 +271,63 @@ export default function App() {
       </header>
       {menuAbierto && <div className="fondo-menu" onClick={() => setMenuAbierto(false)} aria-hidden />}
       <aside className={`lateral${menuAbierto ? " abierto" : ""}`}>
-        <div className="logo" onClick={() => ir("inicio")} style={{ cursor: "pointer" }}>
+        <div className="lat-identidad" onClick={() => ir("inicio")} role="button" tabIndex={0}
+          onKeyDown={e => { if (e.key === "Enter") ir("inicio"); }}>
           <div className="logo-orb"><LogoArcade size={34} /></div>
-          <h1>PaLoMuchacho</h1>
-          <p>{totalJuegos} juegos · {totalPartidas} partidas</p>
+          <div className="lat-identidad-txt">
+            <h1>PaLoMuchacho</h1>
+            <div className="lat-mini-stats">
+              <span>🎮 <b>{totalJuegos}</b></span>
+              <span>🏆 <b>{totalPartidas}</b></span>
+            </div>
+          </div>
         </div>
-        <button className="nav-item" onClick={() => ir("perfiles")} title="Cambiar de jugador">
-          <span style={{ fontSize: "1.1rem" }}>{perfil.emoji}</span> {perfil.nombre} <span className="flecha">→</span>
+        <button className="lat-jugador" onClick={() => ir("perfiles")} title="Cambiar de jugador">
+          <span className="lat-avatar" aria-hidden>{perfil.emoji}</span>
+          <span className="lat-jugador-txt"><b>{perfil.nombre}</b><small>Nivel {nivel} · {prog.xp || 0} XP</small></span>
+          <span className="flecha" aria-hidden>→</span>
         </button>
 
-        <div className="caja-instalar">
-          <span className="caja-instalar-txt">📲 <b>Llévame contigo</b><small>Juega sin conexión · pantalla completa</small></span>
+        <div className="lat-instalar">
+          <span className="lat-instalar-ico" aria-hidden><Icono n="descargar" size={22} /></span>
+          <span className="lat-instalar-txt"><b>Llévame contigo</b><small>Sin conexión · pantalla completa</small></span>
           <BotonInstalar variante="lateral" />
         </div>
 
-        <div className="progreso-box">
-          <span className="nivel"><Icono n="nivel" size={15} /> Nivel {nivel}</span>
-          <span style={{ color: "var(--texto-suave)", fontSize: ".78rem" }}> · {prog.xp || 0} XP · <Icono n="fuego" size={13} /> racha {prog.racha || 0}</span>
+        <section className="lat-progreso" aria-label="Tu progreso">
+          <div className="lat-nivel-fila">
+            <span className="lat-nivel"><Icono n="nivel" size={15} /> Nivel {nivel}</span>
+            <span className="lat-racha" title="Días seguidos jugando">🔥 {prog.racha || 0}</span>
+          </div>
           <div className="xp-bar"><div style={{ width: `${Math.round((enNivel / need) * 100)}%` }} /></div>
-          <small style={{ color: "var(--texto-suave)" }}>{enNivel}/{need} XP para el nivel {nivel + 1} · 🎮 {probados}/{totalJuegos} probados</small>
+          <p className="lat-xp-txt">{enNivel}/{need} XP para el nivel {nivel + 1}</p>
+          <div className="lat-medidor">
+            <span>🎮 Probados <b>{probados}/{totalJuegos}</b></span>
+            <div className="xp-bar fina"><div style={{ width: `${Math.round((probados / totalJuegos) * 100)}%` }} /></div>
+          </div>
           {prog.desafio?.juego && (
-            <div className="desafio-box">
-              <Icono n="desafio" size={14} /> Desafío del día: <b>{desafioJuego?.nombre || prog.desafio.juego}</b> {prog.desafio.hecho ? "✅ (¡doble XP conseguido!)" : "· ¡doble XP! ⚡"}
-              {!prog.desafio.hecho && <button className="switch" style={{ marginLeft: 8 }} onClick={() => ir(prog.desafio.juego)}>Jugar →</button>}
+            <div className="lat-desafio">
+              <div className="lat-desafio-txt">
+                <small>Desafío del día</small>
+                <b>{desafioJuego?.nombre || prog.desafio.juego}</b>
+                {prog.desafio.hecho
+                  ? <span className="chip">✅ ¡doble XP conseguido!</span>
+                  : <span className="chip">¡doble XP! ⚡</span>}
+              </div>
+              {!prog.desafio.hecho && (
+                <button className="btn-principal lat-jugar" onClick={() => ir(prog.desafio.juego)}>Jugar →</button>
+              )}
             </div>
           )}
-          <div className="desafio-box" style={{ marginTop: 6 }}>
-            <Icono n="desafio" size={14} /> <b>Misiones de hoy</b> 🎯
+          <div className="lat-misiones">
+            <p className="lat-misiones-titulo"><b>Misiones de hoy</b> 🎯</p>
             {misionesDelDia(prog).map(m => (
-              <div key={m.id} style={{ fontSize: ".78rem", marginTop: 4 }}>
-                <span>{m.hecha ? "✅" : "·"} {m.nombre} ({m.actual}/{m.meta}) <small style={{ color: "var(--texto-suave)" }}>+{m.premio}🪙</small></span>
-                <div className="xp-bar" style={{ height: 5, marginTop: 2 }}><div style={{ width: `${Math.round((m.actual / m.meta) * 100)}%` }} /></div>
+              <div className="lat-mision" key={m.id}>
+                <div className="lat-mision-fila">
+                  <span>{m.hecha ? "✅" : "·"} {m.nombre}</span>
+                  <span>{m.actual}/{m.meta} · +{m.premio}🪙</span>
+                </div>
+                <div className="xp-bar fina"><div style={{ width: `${Math.round((m.actual / m.meta) * 100)}%` }} /></div>
               </div>
             ))}
           </div>
@@ -312,7 +338,7 @@ export default function App() {
               </span>
             ))}
           </div>
-        </div>
+        </section>
 
         <div className="billetera-box">
           <span className="nivel">{MONEDA} {billetera.saldo}</span>

@@ -484,6 +484,76 @@ body[data-tema="claro"] .xp-bar { background: #e2e6f2; }
 .switch { font-size: .78rem; padding: 6px 10px; border-radius: 999px; }
 .switch.on { background: linear-gradient(135deg, #ff004c, #a855f7); color: #fff; font-weight: 800; }
 .logros-lista { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+/* Remake lateral superior: identidad, jugador, instalar y progreso en tarjetas */
+.lat-identidad {
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  padding: 4px 2px 10px;
+}
+.lat-identidad-txt h1 {
+  font-size: 1.55rem; margin: 0; letter-spacing: .14em;
+  background: linear-gradient(90deg, var(--info), var(--principal), var(--principal-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.lat-mini-stats { display: flex; gap: 10px; margin-top: 2px; color: var(--texto-suave); font-size: .8rem; }
+.lat-mini-stats b { color: var(--texto); font-variant-numeric: tabular-nums; }
+.lat-jugador {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px;
+  padding: 8px 10px; margin-bottom: 10px;
+}
+.lat-jugador:hover { background: var(--bg-hover); box-shadow: none; }
+.lat-avatar {
+  width: 38px; height: 38px; flex-shrink: 0; display: grid; place-items: center;
+  font-size: 1.4rem; border-radius: 50%;
+  background: linear-gradient(135deg, var(--principal), var(--principal-2));
+}
+.lat-jugador-txt { flex: 1; min-width: 0; display: grid; }
+.lat-jugador-txt b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lat-jugador-txt small { color: var(--texto-suave); font-size: .74rem; }
+.lat-jugador .flecha { color: var(--texto-suave); }
+.lat-instalar {
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, rgba(34,197,94,.14), rgba(34,197,94,.05)), var(--bg-soft);
+  border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
+}
+.lat-instalar-ico {
+  width: 40px; height: 40px; flex-shrink: 0; display: grid; place-items: center;
+  border-radius: 12px; color: #fff;
+  background: linear-gradient(135deg, var(--exito), #16a34a);
+  box-shadow: 0 4px 14px rgba(34,197,94,.35);
+}
+.lat-instalar-txt { flex: 1; min-width: 0; display: grid; font-size: .9rem; }
+.lat-instalar-txt small { color: var(--texto-suave); font-size: .74rem; }
+.lat-progreso {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px; margin-bottom: 10px; display: grid; gap: 8px;
+}
+.lat-nivel-fila { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.lat-nivel { font-weight: 800; display: inline-flex; align-items: center; gap: 5px; }
+.lat-racha {
+  font-size: .8rem; font-weight: 700; color: var(--aviso);
+  background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.4);
+  border-radius: 999px; padding: 3px 10px; white-space: nowrap;
+}
+.lat-xp-txt { margin: 0; color: var(--texto-suave); font-size: .76rem; }
+.lat-medidor { display: grid; gap: 4px; font-size: .8rem; color: var(--texto-suave); }
+.lat-medidor b { color: var(--texto); }
+.xp-bar.fina { height: 6px; margin-top: 0; }
+.lat-desafio {
+  display: grid; gap: 8px; padding: 10px 12px; border-radius: 12px;
+  background: rgba(245,158,11,.1); border: 1px dashed var(--aviso);
+}
+.lat-desafio-txt { display: grid; gap: 2px; font-size: .84rem; }
+.lat-desafio-txt small { color: var(--texto-suave); text-transform: uppercase; letter-spacing: .1em; font-size: .68rem; }
+.lat-desafio-txt b { font-size: .95rem; }
+.lat-desafio-txt .chip { justify-self: start; margin-top: 2px; }
+.lat-jugar { width: 100%; }
+.lat-misiones { display: grid; gap: 6px; }
+.lat-misiones-titulo { margin: 0; font-size: .84rem; }
+.lat-mision { display: grid; gap: 3px; font-size: .78rem; }
+.lat-mision-fila { display: flex; justify-content: space-between; gap: 8px; }
+.lat-mision-fila span:last-child { color: var(--texto-suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .logro { font-size: .72rem; padding: 4px 9px; border-radius: 999px; background: var(--bg-hover); border: 1px solid var(--border); }
 .logro.on { background: rgba(245,158,11,.2); border-color: var(--aviso); }
 .toast-logro { position: fixed; bottom: 18px; right: 18px; z-index: 50; background: var(--bg-card); border: 1px solid var(--aviso); border-radius: 14px; padding: 12px 16px; box-shadow: 0 12px 40px rgba(245,158,11,.35); animation: entra .3s ease; max-width: 320px; }
