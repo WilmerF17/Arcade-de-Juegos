@@ -1,5 +1,6 @@
-/* Sistema de progresión local de la suite: XP, niveles, racha y logros. */
+/* Sistema de progresión local de la suite: XP, niveles, racha, logros y misiones diarias. */
 import { cargarTienda, consumirEscudo } from "./tienda";
+import { cobrar } from "./billetera";
 
 const CLAVE = "arcade-progreso-v1";
 
@@ -13,7 +14,7 @@ function ayer() {
 }
 
 export function estadoInicial() {
-  return { xp: 0, ultimaJugada: "", racha: 0, logros: [], desafio: { fecha: "", juego: "", hecho: false } };
+  return { xp: 0, ultimaJugada: "", racha: 0, logros: [], desafio: { fecha: "", juego: "", hecho: false }, misiones: { fecha: "", jugadas: 0, victorias: 0, cobradas: [] } };
 }
 
 export function cargarProgreso() {
@@ -60,6 +61,25 @@ export function desafioDelDia(ids) {
   const semilla = d.getFullYear() * 1000 + diaDelAno(d);
   return ids[semilla % ids.length];
 }
+
+/* Misiones diarias (tendencia 2026: retención por objetivos cortos).
+   Se reinician cada día y pagan fichas automáticamente al completarse. */
+export const MISIONES = [
+  { id: "juega3", nombre: "Calentamiento", desc: "Juega 3 partidas hoy", meta: 3, campo: "jugadas", premio: 100 },
+  { id: "gana1", nombre: "Sabor a victoria", desc: "Gana 1 partida hoy", meta: 1, campo: "victorias", premio: 150 },
+  { id: "racha5", nombre: "En racha", desc: "Juega 5 partidas hoy", meta: 5, campo: "jugadas", premio: 200 },
+];
+
+export function misionesDelDia(prog) {
+  const h = hoy();
+  const m = prog?.misiones?.fecha === h
+    ? prog.misiones
+    : { fecha: h, jugadas: 0, victorias: 0, cobradas: [] };
+  return MISIONES.map(mis => {
+    const actual = Math.min(mis.meta, m[mis.campo] || 0);
+    return { ...mis, actual, hecha: (m.cobradas || []).includes(mis.id) || actual >= mis.meta };
+  });
+}
 function diaDelAno(d) {
   const ini = new Date(d.getFullYear(), 0, 0);
   return Math.floor((d - ini) / 864e5);
@@ -102,6 +122,22 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
     prog.desafiosCompletados = (prev.desafiosCompletados || 0) + 1;
   }
 
+  // misiones diarias: conteo del día + pago automático de fichas
+  const pm = prev.misiones?.fecha === h
+    ? { ...prev.misiones, cobradas: [...(prev.misiones.cobradas || [])] }
+    : { fecha: h, jugadas: 0, victorias: 0, cobradas: [] };
+  pm.jugadas += 1;
+  if (victoria) pm.victorias += 1;
+  prog.misiones = pm;
+  const misionesNuevas = [];
+  for (const mis of MISIONES) {
+    if (!pm.cobradas.includes(mis.id) && (pm[mis.campo] || 0) >= mis.meta) {
+      pm.cobradas.push(mis.id);
+      try { cobrar(mis.premio); } catch { /* noop */ }
+      misionesNuevas.push(mis);
+    }
+  }
+
   const nuevosLogros = [];
   for (const l of LOGROS) {
     if (!prog.logros.includes(l.id)) {
@@ -114,5 +150,5 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
     }
   }
   guardarProgreso(prog);
-  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado, dobleXp, escudoUsado };
+  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado, dobleXp, escudoUsado, misionesNuevas };
 }

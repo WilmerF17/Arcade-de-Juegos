@@ -35,7 +35,7 @@ banner() {
   echo -e "${ROJO}  ██║  ██║██╔══██║${AMARILLO}██║     ██║   ██║${VERDE}██║╚██╔╝██║██║   ██║██║     ██╔══██║██╔══██║██║     ██╔══██║██║   ██║${RESET}"
   echo -e "${ROJO}  ██████╔╝██║  ██║${AMARILLO}███████╗╚██████╔╝${VERDE}██║ ╚═╝ ██║╚██████╔╝╚██████╗██║  ██║██║  ██║╚██████╗██║  ██║╚██████╔╝${RESET}"
   echo -e "${CIAN}  ╚═════╝ ╚═╝  ╚═╝${AMARILLO}╚══════╝ ╚═════╝ ${VERDE}╚═╝     ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ${RESET}"
-  echo -e "${MAGENTA}                    🔥 250 minijuegos · XP · logros · instalable 🔥${RESET}"
+  echo -e "${MAGENTA}                    🔥 262 minijuegos · XP · logros · instalable 🔥${RESET}"
   echo ""
 }
 
@@ -128,7 +128,7 @@ salud() {
   grep -q 'barra-movil' "$DIR/client/src/App.jsx" 2>/dev/null && ok "Navegación móvil (drawer)" || no "Sin drawer móvil"
   grep -q 'banner-instalar' "$DIR/client/src/App.jsx" 2>/dev/null && ok "Banner de instalación" || no "Sin banner"
   grep -q 'BASE_URL}sw.js' "$DIR/client/src/main.jsx" 2>/dev/null && ok "SW se registra en raíz y subruta" || no "Registro SW fijo a /"
-  grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "250 juegos con carga perezosa" || no "Sin code-splitting"
+  grep -q 'lazy(() => import' "$DIR/client/src/games/GAMES.js" 2>/dev/null && ok "262 juegos con carga perezosa" || no "Sin code-splitting"
   echo ""
   echo -e "${BLANCO}[ Buscable en Google ]${RESET}"
   grep -q '<link rel="canonical"' "$DIR/client/index.html" 2>/dev/null && ok "Canonical presente" || no "Sin canonical"

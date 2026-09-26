@@ -1017,6 +1017,22 @@ body[data-tema="oceano"] {
 body[data-tema="oceano"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(34,211,238,.16), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(14,165,233,.16), transparent 60%), var(--bg); }
 body[data-tema="dorado"] .lateral { background: rgba(20, 16, 7, .85); }
 body[data-tema="oceano"] .lateral { background: rgba(4, 18, 31, .85); }
+body[data-tema="atardecer"] {
+  --bg: #1c0f1e; --bg-soft: #2a1530; --bg-card: #351a3c; --bg-hover: #47234f;
+  --border: #6d3460; --texto: #ffe9d6; --texto-suave: #d9a08a;
+  --principal: #fb7185; --principal-2: #f59e0b; --exito: #4ade80; --aviso: #fbbf24;
+  --sombra: 0 10px 30px rgba(251, 113, 133, 0.25);
+}
+body[data-tema="atardecer"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(251,113,133,.22), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(245,158,11,.14), transparent 60%), var(--bg); }
+body[data-tema="atardecer"] .lateral { background: rgba(28, 15, 30, .85); }
+body[data-tema="bosque"] {
+  --bg: #07130d; --bg-soft: #0b1f14; --bg-card: #10281a; --bg-hover: #163824;
+  --border: #1f5c3a; --texto: #dcf5e3; --texto-suave: #86b894;
+  --principal: #34d399; --principal-2: #a3e635; --exito: #4ade80; --aviso: #fbbf24;
+  --sombra: 0 10px 30px rgba(52, 211, 153, 0.22);
+}
+body[data-tema="bosque"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(52,211,153,.16), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(163,230,53,.10), transparent 60%), var(--bg); }
+body[data-tema="bosque"] .lateral { background: rgba(7, 19, 13, .85); }
 
 /* Selector de apuesta */
 .apuesta-fila { align-items: center; }

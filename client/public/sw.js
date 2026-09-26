@@ -5,7 +5,7 @@
    - Assets propios (JS/CSS/imgs, incluidos los juegos lazy): stale-while-revalidate,
      así cada juego jugado una vez queda disponible offline.
    - /api: solo red (las puntuaciones nunca se cachean; el XP local sigue funcionando). */
-const VERSION = "aplm-v13";
+const VERSION = "aplm-v14";
 const SHELL = ["./", "./index.html", "./favicon.svg", "./icon-48.png", "./icon-192.png", "./icon-512.png", "./maskable-512.png", "./apple-touch-icon.png", "./site.webmanifest"];
 
 // Núcleo arrancable offline: shell + assets que index.html necesita (JS/CSS con hash).

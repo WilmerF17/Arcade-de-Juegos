@@ -15,7 +15,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // React + vendor aparte: se cachea y no se re-descarga en cada versión.
-        // Los 237 juegos ya van en chunks perezosos (lazy) por juego.
+        // Los 262 juegos ya van en chunks perezosos (lazy) por juego.
         // (Vite 8/rolldown exige forma de función.)
         manualChunks: id => {
           if (id.includes("node_modules/react")) return "vendor";

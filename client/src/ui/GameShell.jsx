@@ -43,7 +43,7 @@ export function useRegistro(nombreJuego, juegoId = null) {
       const prev = cargarProgreso();
       const esDesafio = prev.desafio?.juego === id && !prev.desafio?.hecho;
       const r = sumarPartida(prev, { juegoId: id, puntos, victoria: ganadas > 0, esDesafio });
-      extra = { xpGanado: r.xpGanado, subioNivel: r.subioNivel, nuevosLogros: r.nuevosLogros, dobleXp: r.dobleXp, escudoUsado: r.escudoUsado };
+      extra = { xpGanado: r.xpGanado, subioNivel: r.subioNivel, nuevosLogros: r.nuevosLogros, dobleXp: r.dobleXp, escudoUsado: r.escudoUsado, misionesNuevas: r.misionesNuevas };
       window.dispatchEvent(new CustomEvent("arcade-progreso", { detail: r.prog }));
     } catch { /* noop */ }
     // Economía: cada partida paga fichas para la tienda (+5, +15 si ganas)
@@ -52,7 +52,9 @@ export function useRegistro(nombreJuego, juegoId = null) {
     const trozoXp = extra ? ` · +${extra.xpGanado} XP⚡${extra.dobleXp ? " (×2)" : ""}${extra.subioNivel ? " · ¡NIVEL UP! 🎆" : ""}${extra.escudoUsado ? " · 🛡️ escudo usado" : ""}` : "";
     const trozoLogros = extra?.nuevosLogros?.length
       ? ` · 🏅 ${extra.nuevosLogros.map(l => l.nombre).join(", ")}` : "";
-    const mensajeBase = `${nombreJuego}: ${puntos} puntos${ganadas ? " · victoria ✅" : ""}${trozoXp}${trozoLogros}`;
+    const trozoMisiones = extra?.misionesNuevas?.length
+      ? ` · 🎯 ${extra.misionesNuevas.map(m => `${m.nombre} (+${m.premio}🪙)`).join(", ")}` : "";
+    const mensajeBase = `${nombreJuego}: ${puntos} puntos${ganadas ? " · victoria ✅" : ""}${trozoXp}${trozoLogros}${trozoMisiones}`;
 
     // Muestra el resultado al instante con lo local; el récord se añade si el servidor lo confirma
     setEstado(prev => ({ ...prev, mensaje: mensajeBase, tipo: ganadas ? "victoria" : "derrota", xp: extra }));

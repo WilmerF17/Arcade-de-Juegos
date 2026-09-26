@@ -7,7 +7,7 @@
 
 ## Arquitectura
 
-- Frontend Vite + PWA (`client/`), 250 juegos con carga perezosa.
+- Frontend Vite + PWA (`client/`), 262 juegos con carga perezosa.
 - API serverless en Vercel (`api/`): puntuaciones globales en Upstash Redis.
 - Sin llaves en el código: `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`
   viven en Vercel → Settings → Environment Variables (All Environments).

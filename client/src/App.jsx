@@ -2,7 +2,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { JUEGOS, CATEGORIAS, TEMAS } from "./games/GAMES";
 import Marcador from "./games/Marcador";
 import { getStats } from "./api";
-import { cargarProgreso, guardarProgreso, nivelDe, desafioDelDia, LOGROS } from "./suite/progreso";
+import { cargarProgreso, guardarProgreso, nivelDe, desafioDelDia, LOGROS, misionesDelDia } from "./suite/progreso";
 import { cargarBilletera, bonusDiario, bonusDisponible, rescate, MONEDA } from "./suite/billetera";
 import { sonidoActivado, cambiarSonido, sfx } from "./suite/sonido";
 import { Icono, IconoJuego, LogoArcade } from "./ui/Iconos";
@@ -283,6 +283,15 @@ export default function App() {
               {!prog.desafio.hecho && <button className="switch" style={{ marginLeft: 8 }} onClick={() => ir(prog.desafio.juego)}>Jugar →</button>}
             </div>
           )}
+          <div className="desafio-box" style={{ marginTop: 6 }}>
+            <Icono n="desafio" size={14} /> <b>Misiones de hoy</b> 🎯
+            {misionesDelDia(prog).map(m => (
+              <div key={m.id} style={{ fontSize: ".78rem", marginTop: 4 }}>
+                <span>{m.hecha ? "✅" : "·"} {m.nombre} ({m.actual}/{m.meta}) <small style={{ color: "var(--texto-suave)" }}>+{m.premio}🪙</small></span>
+                <div className="xp-bar" style={{ height: 5, marginTop: 2 }}><div style={{ width: `${Math.round((m.actual / m.meta) * 100)}%` }} /></div>
+              </div>
+            ))}
+          </div>
           <div className="logros-lista">
             {LOGROS.map(l => (
               <span key={l.id} title={l.desc} className={`logro ${prog.logros?.includes(l.id) ? "on" : ""}`}>
@@ -373,7 +382,9 @@ export default function App() {
           <div className="tema-btns">
             {[["neon", "luna", "Neón"], ["retro", "retro", "Retro"], ["claro", "sol", "Claro"], ["playa", "playa", "Playa"],
               ...(tienes("tema-dorado") ? [["dorado", "estrella-llena", "Dorado 👑"]] : []),
-              ...(tienes("tema-oceano") ? [["oceano", "pesca", "Océano 🌊"]] : [])].map(([id, icon, nombre]) => (
+              ...(tienes("tema-oceano") ? [["oceano", "pesca", "Océano 🌊"]] : []),
+              ...(tienes("tema-atardecer") ? [["atardecer", "sol", "Atardecer 🌅"]] : []),
+              ...(tienes("tema-bosque") ? [["bosque", "estrella", "Bosque 🌲"]] : [])].map(([id, icon, nombre]) => (
               <button key={id} title={nombre}
                 className={tema === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setTema(id); sfx.clic(); }}><Icono n={icon} size={20} /></button>

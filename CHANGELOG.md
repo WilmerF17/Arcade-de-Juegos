@@ -1,5 +1,18 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.7.0 (2026-09-26) — 262 juegos + misiones y SEO automático
+- **+12 juegos de tendencia (262)**: Crash Cohete/Turbo/Luna (estilo Aviator),
+  Fusión Neón/Frutas/Gemas (merge), Aim Pro/Reflejo Neón/Diana Tranquila
+  (aim-trainer táctil) y Anagrama Flash/Palabra Relámpago/Turbo (sprint 60s).
+  Tres dificultades por familia, 100% táctil, con ayuda y banner de resultado.
+- **Misiones diarias 🎯** (tendencia retención 2026): 3 objetivos cortos en el
+  lateral con barra de progreso que pagan fichas solos (+100/+150/+200).
+- **Tienda ×2**: Tema Atardecer 🌅 y Tema Bosque 🌲 (900), Doble XP Plus 60 min
+  (900) y Pack 3 escudos (700).
+- **SEO automático**: `scripts/generar-seo.mjs` regenera título, descripciones,
+  JSON-LD y sitemap desde GAMES.js (adiós edición manual de 262 entradas).
+- PWA SW `aplm-v14` (fuerza actualización), versión visible 2.7.0.
+
 ## v2.6.5 (2026-09-22) — Instalación PWA en PC
 - **Adiós al portable**: en PC el botón Instalar vuelve a la instalación
   PWA directa (icono, offline y auto-actualización). Android sigue con APK.

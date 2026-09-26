@@ -18,6 +18,22 @@ export const TIENDA_ITEMS = [
     id: "escudo", tipo: "escudo", nombre: "Escudo de racha", icono: "🛡️", precio: 300,
     desc: "Si un día no juegas, tu racha diaria no se rompe (se consume solo).",
   },
+  {
+    id: "tema-atardecer", tipo: "tema", nombre: "Tema Atardecer", icono: "🌅", precio: 900,
+    desc: "Naranjas y morados de puesta de sol para jugar al anochecer.",
+  },
+  {
+    id: "tema-bosque", tipo: "tema", nombre: "Tema Bosque", icono: "🌲", precio: 900,
+    desc: "Verdes profundos de bosque nocturno, descanso visual.",
+  },
+  {
+    id: "boost-xp-plus", tipo: "boost", nombre: "Doble XP Plus ⏳", icono: "🚀", precio: 900,
+    desc: "Doble XP durante 60 minutos (se suma al tiempo que tengas).",
+  },
+  {
+    id: "escudo-pack", tipo: "escudo", nombre: "Pack 3 escudos", icono: "🛡️", precio: 700,
+    desc: "Tres escudos de racha: 3 días de perdón si no juegas.",
+  },
 ];
 
 const CLAVE = "aplm-tienda-v1";
@@ -66,9 +82,10 @@ export function comprar(id, cobrarDeBilletera) {
   if (!cobro.ok) return { ok: false, motivo: cobro.motivo || "Sin fichas suficientes" };
   if (item.tipo === "boost") {
     const ahora = Date.now();
-    t.boosterXpHasta = Math.max(ahora, t.boosterXpHasta || 0) + BOOST_MS;
+    const extra = id === "boost-xp-plus" ? 2 * BOOST_MS : BOOST_MS;
+    t.boosterXpHasta = Math.max(ahora, t.boosterXpHasta || 0) + extra;
   } else if (item.tipo === "escudo") {
-    t.escudos = (t.escudos || 0) + 1;
+    t.escudos = (t.escudos || 0) + (id === "escudo-pack" ? 3 : 1);
   } else if (!t.comprados.includes(id)) {
     t.comprados.push(id);
   }
