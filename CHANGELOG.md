@@ -1,5 +1,13 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.8.0 (2026-09-26) — Perfiles: cada persona guarda su progreso
+- **Perfiles locales 👥** (nueva sección): hasta 8 jugadores por aparato, cada
+  uno con su XP, niveles, fichas, tienda y favoritos. Sin cuentas ni internet.
+- Tu progreso actual se convierte solo en el perfil "Jugador": no se pierde nada.
+- Cambiar de perfil guarda la partida actual y recarga con la del otro.
+- El tema visual y el sonido son del aparato y se comparten.
+- PWA SW `aplm-v15` (fuerza actualización), versión visible 2.8.0.
+
 ## v2.7.0 (2026-09-26) — 262 juegos + misiones y SEO automático
 - **+12 juegos de tendencia (262)**: Crash Cohete/Turbo/Luna (estilo Aviator),
   Fusión Neón/Frutas/Gemas (merge), Aim Pro/Reflejo Neón/Diana Tranquila

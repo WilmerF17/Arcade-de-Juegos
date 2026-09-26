@@ -11,8 +11,13 @@ import BotonInstalar from "./ui/Instalar";
 import ErrorJuego from "./ui/ErrorJuego";
 import Tienda from "./ui/Tienda";
 import Privacidad from "./ui/Privacidad";
+import Perfiles from "./ui/Perfiles";
+import { asegurarPerfiles, perfilActivo } from "./suite/perfiles";
 import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
 import { ProveedorTemaJuego } from "./ui/GameShell";
+
+// El progreso existente pasa al perfil "Jugador" antes del primer render.
+asegurarPerfiles();
 
 function leerFavs() {
   try { return JSON.parse(localStorage.getItem("arcade-favs") || "[]"); } catch { return []; }
@@ -37,6 +42,7 @@ export default function App() {
   );
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [bannerOff, setBannerOff] = useState(false);
+  const [perfil] = useState(() => perfilActivo());
   // La tienda avisa con "aplm-tienda": re-render para temas y potenciadores
   const [, setTickTienda] = useState(0);
   useEffect(() => {
@@ -266,6 +272,9 @@ export default function App() {
           <h1>PaLoMuchacho</h1>
           <p>{totalJuegos} juegos · {totalPartidas} partidas</p>
         </div>
+        <button className="nav-item" onClick={() => ir("perfiles")} title="Cambiar de jugador">
+          <span style={{ fontSize: "1.1rem" }}>{perfil.emoji}</span> {perfil.nombre} <span className="flecha">→</span>
+        </button>
 
         <div className="caja-instalar">
           <span className="caja-instalar-txt">📲 <b>Llévame contigo</b><small>Juega sin conexión · pantalla completa</small></span>
@@ -342,6 +351,9 @@ export default function App() {
         </button>
         <button className={`nav-item ${activo === "tienda" ? "activo" : ""}`} onClick={() => ir("tienda")}>
           <span style={{ fontSize: "1.1rem" }}>🛍️</span> Tienda <span className="flecha">→</span>
+        </button>
+        <button className={`nav-item ${activo === "perfiles" ? "activo" : ""}`} onClick={() => ir("perfiles")}>
+          <span style={{ fontSize: "1.1rem" }}>👥</span> Perfiles <span className="flecha">→</span>
         </button>
 
         <p className="cat">Categorías</p>
@@ -480,7 +492,7 @@ export default function App() {
             </section>
           </div>
         )}
-        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo === "privacidad" ? <Privacidad /> : activo !== "inicio" && (() => {
+        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo === "privacidad" ? <Privacidad /> : activo === "perfiles" ? <Perfiles /> : activo !== "inicio" && (() => {
           if (!juego) {
             return (
               <div className="gameshell">
