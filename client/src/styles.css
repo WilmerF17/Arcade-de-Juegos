@@ -66,6 +66,7 @@ input[type="range"]::-moz-range-track { height: 10px; border-radius: 6px;
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+html[data-fuente="grande"] { font-size: 18px; }
 html, body { overflow-x: clip; overscroll-behavior-y: none; }
 body, button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 

@@ -53,7 +53,15 @@ export const LOGROS = [
   { id: "centenario", nombre: "Centenario", desc: "Acumula 500 XP", test: p => (p.xp || 0) >= 500 },
   { id: "leyenda", nombre: "Leyenda", desc: "Acumula 2000 XP", test: p => (p.xp || 0) >= 2000 },
   { id: "racha3", nombre: "Constante", desc: "Juega 3 días seguidos", test: p => (p.racha || 0) >= 3 },
+  { id: "rachasiete", nombre: "Semana de fuego", desc: "Juega 7 días seguidos", test: p => (p.racha || 0) >= 7 },
   { id: "desafio", nombre: "Reto diario", desc: "Completa el desafío del día", test: p => (p.desafiosCompletados || 0) >= 1 },
+  { id: "cazadesafios", nombre: "Cazadesafíos", desc: "Completa 3 desafíos diarios", test: p => (p.desafiosCompletados || 0) >= 3 },
+  { id: "ganador", nombre: "Sabor a victoria", desc: "Gana 5 partidas", test: p => (p.victorias || 0) >= 5 },
+  { id: "imparable", nombre: "Imparable", desc: "Gana 25 partidas", test: p => (p.victorias || 0) >= 25 },
+  { id: "maraton", nombre: "Maratonista", desc: "Juega 100 partidas", test: p => (p.partidas || 0) >= 100 },
+  { id: "todoterreno", nombre: "Todo terreno", desc: "Prueba 8 juegos distintos", test: p => (p.ultimos || []).length >= 8 },
+  { id: "cumplidor", nombre: "Cumplidor", desc: "Completa las 3 misiones de un día", test: p => (p.misiones?.cobradas || []).length >= 3 },
+  { id: "fiebreoro", nombre: "Fiebre del oro", desc: "Acumula 5000 XP", test: p => (p.xp || 0) >= 5000 },
 ];
 
 export function desafioDelDia(ids) {
@@ -92,6 +100,7 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
     porJuego: { ...(prev.porJuego || {}) },
     logros: [...(prev.logros || [])],
     partidas: (prev.partidas || 0) + 1,
+    victorias: (prev.victorias || 0) + (victoria ? 1 : 0),
   };
   let xpGanado = 5 + Math.min(60, Math.max(0, Math.round(puntos / 2))) + (victoria ? 15 : 0);
   if (esDesafio && !prev.desafio?.hecho) xpGanado *= 2;

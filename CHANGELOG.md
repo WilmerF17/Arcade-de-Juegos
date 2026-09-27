@@ -1,5 +1,17 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.11.0 (2026-09-27) — Familia, copa, logros y avisos
+- **Tabla Familiar 🏠**: ranking por XP entre tus perfiles (medallas, nivel,
+  victorias, racha y fichas). Pique sano en casa.
+- **Copa Familiar 🏆**: torneo de 3 o 5 rondas entre 2 jugadores, cada ronda un
+  juego sorpresa sin repetir. Gana quien más rondas se lleve.
+- **+8 logros (18)**: Semana de fuego, Cazadesafíos, Sabor a victoria,
+  Imparable, Maratonista, Todo terreno, Cumplidor y Fiebre del oro.
+- **Avisos del desafío 🔔**: notificación local una vez al día si el desafío
+  sigue pendiente (se activa en el lateral, sin servidor).
+- **Música ambiental 🎵** procedural en bucle + **texto grande 🔠** (accesibilidad).
+- TWA lista para 2.11.0 (código 6). PWA SW `aplm-v27`.
+
 ## v2.10.0 (2026-09-26) — Bienvenida, sigue jugando y más contenido
 - **Bienvenida 🎉**: los nuevos ven un cartel de primera visita con lo esencial
   (perfil, desafío diario, instalar) y botones para jugar ya o crear su perfil.

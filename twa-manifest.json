@@ -17,8 +17,8 @@
     "path": "./android.keystore",
     "alias": "android"
   },
-  "appVersion": "2.6.4",
-  "appVersionCode": 5,
+  "appVersion": "2.11.0",
+  "appVersionCode": 6,
   "minSdkVersion": 23,
   "targetSdkVersion": 34,
   "fallbackType": "customtabs",

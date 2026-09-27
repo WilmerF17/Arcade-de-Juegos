@@ -153,12 +153,16 @@ export function borrarPerfil(id) {
   return { ok: true };
 }
 
-/** Resumen para la vista (XP y fichas del snapshot, sin tocar lo cargado). */
+/** Resumen para vistas (progreso y fichas del snapshot, sin tocar lo cargado). */
 export function resumenPerfil(id) {
   const e = cargarEstado();
   const foto = id === e.activo ? fotoActual() : e.datos[id] || {};
-  let xp = 0, saldo = 0;
-  try { xp = JSON.parse(foto["arcade-progreso-v1"] || "{}").xp || 0; } catch { /* noop */ }
+  let xp = 0, saldo = 0, partidas = 0, victorias = 0, racha = 0, logros = 0;
+  try {
+    const pr = JSON.parse(foto["arcade-progreso-v1"] || "{}");
+    xp = pr.xp || 0; partidas = pr.partidas || 0; victorias = pr.victorias || 0;
+    racha = pr.racha || 0; logros = (pr.logros || []).length;
+  } catch { /* noop */ }
   try { saldo = JSON.parse(foto["aplm-billetera-v1"] || "{}").saldo ?? 0; } catch { /* noop */ }
-  return { xp, saldo };
+  return { xp, saldo, partidas, victorias, racha, logros };
 }

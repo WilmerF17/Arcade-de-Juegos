@@ -50,3 +50,42 @@ export const sfx = {
 export function nota(freq, dur = 0.4) {
   tono(freq, 0, dur, "sine", 0.09);
 }
+
+/* Música ambiental procedural (sin archivos): arpegio pentatónico suave en bucle. */
+const ESCALA = [261.6, 293.7, 329.6, 392, 440, 523.3, 587.3];
+let musicaTimer = null;
+let pasoMusica = 0;
+
+export function musicaEncendida() {
+  try { return localStorage.getItem("arcade-musica") === "on"; } catch { return false; }
+}
+
+function sonarMusica() {
+  if (!musicaEncendida() || !activado) return;
+  const n = ESCALA[pasoMusica % ESCALA.length];
+  tono(n, 0, 1.4, "sine", 0.025);
+  if (pasoMusica % 4 === 0) tono(n / 2, 0, 1.8, "triangle", 0.02);
+  pasoMusica += Math.random() < 0.7 ? 1 : 2;
+}
+
+export function cambiarMusica() {
+  const on = !musicaEncendida();
+  try { localStorage.setItem("arcade-musica", on ? "on" : "off"); } catch { /* noop */ }
+  if (on && !musicaTimer) {
+    pasoMusica = Math.floor(Math.random() * ESCALA.length);
+    sonarMusica();
+    musicaTimer = setInterval(sonarMusica, 900);
+  } else if (!on && musicaTimer) {
+    clearInterval(musicaTimer);
+    musicaTimer = null;
+  }
+  return on;
+}
+
+/** Retoma la música si estaba encendida (llamar tras un clic del usuario). */
+export function retomarMusica() {
+  if (musicaEncendida() && !musicaTimer) {
+    sonarMusica();
+    musicaTimer = setInterval(sonarMusica, 900);
+  }
+}

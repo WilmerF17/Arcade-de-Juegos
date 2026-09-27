@@ -4,7 +4,7 @@ import Marcador from "./games/Marcador";
 import { getStats } from "./api";
 import { cargarProgreso, guardarProgreso, nivelDe, desafioDelDia, LOGROS, misionesDelDia } from "./suite/progreso";
 import { cargarBilletera, bonusDiario, bonusDisponible, rescate, MONEDA } from "./suite/billetera";
-import { sonidoActivado, cambiarSonido, sfx } from "./suite/sonido";
+import { sonidoActivado, cambiarSonido, musicaEncendida, cambiarMusica, sfx } from "./suite/sonido";
 import { Icono, IconoJuego, LogoArcade } from "./ui/Iconos";
 import BotonesCompartir from "./ui/Compartir";
 import BotonInstalar from "./ui/Instalar";
@@ -16,7 +16,10 @@ import Admin from "./ui/Admin";
 import Bienvenida, { necesitaBienvenida } from "./ui/Bienvenida";
 import Buscador from "./ui/Buscador";
 import FondoDeco from "./ui/FondoDeco";
+import Familia from "./ui/Familia";
+import Copa from "./ui/Copa";
 import { asegurarPerfiles, perfilActivo } from "./suite/perfiles";
+import { avisoActivado, cambiarAviso, revisarAviso } from "./suite/recordatorio";
 import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
 import { ProveedorTemaJuego } from "./ui/GameShell";
 
@@ -38,6 +41,9 @@ export default function App() {
   });
   const [rgb, setRgb] = useState(() => localStorage.getItem("arcade-rgb") !== "off");
   const [sonido, setSonido] = useState(() => sonidoActivado());
+  const [musica, setMusica] = useState(() => musicaEncendida());
+  const [letraGrande, setLetraGrande] = useState(() => { try { return localStorage.getItem("arcade-fuente") === "grande"; } catch { return false; } });
+  const [avisoOn, setAvisoOn] = useState(() => avisoActivado());
   const [stats, setStats] = useState({});
   const [prog, setProg] = useState(() => cargarProgreso());
   const [toast, setToast] = useState("");
@@ -73,6 +79,16 @@ export default function App() {
     document.body.dataset.fondo = fondo;
     localStorage.setItem("arcade-fondo", fondo);
   }, [fondo]);
+
+  useEffect(() => {
+    document.documentElement.dataset.fuente = letraGrande ? "grande" : "";
+    try { localStorage.setItem("arcade-fuente", letraGrande ? "grande" : "normal"); } catch { /* noop */ }
+  }, [letraGrande]);
+
+  // Aviso del desafío: una vez al día si sigue pendiente
+  useEffect(() => {
+    revisarAviso(prog);
+  }, [prog]);
 
   useEffect(() => {
     document.body.dataset.rgb = rgb ? "on" : "off";
@@ -396,6 +412,12 @@ export default function App() {
         <button className={`nav-item ${activo === "perfiles" ? "activo" : ""}`} onClick={() => ir("perfiles")}>
           <span style={{ fontSize: "1.1rem" }}>👥</span> Perfiles <span className="flecha">→</span>
         </button>
+        <button className={`nav-item ${activo === "familia" ? "activo" : ""}`} onClick={() => ir("familia")}>
+          <span style={{ fontSize: "1.1rem" }}>🏠</span> Familia <span className="flecha">→</span>
+        </button>
+        <button className={`nav-item ${activo === "copa" ? "activo" : ""}`} onClick={() => ir("copa")}>
+          <span style={{ fontSize: "1.1rem" }}>🏆</span> Copa <span className="flecha">→</span>
+        </button>
         <button className={`nav-item ${activo === "admin" ? "activo" : ""}`} onClick={() => ir("admin")}>
           <span style={{ fontSize: "1.1rem" }}>🛠️</span> Administración <span className="flecha">→</span>
         </button>
@@ -460,6 +482,20 @@ export default function App() {
             </button>
             <button className={`switch ${sonido ? "on" : ""}`} onClick={() => setSonido(cambiarSonido())}>
               <Icono n={sonido ? "sonido" : "silencio"} size={13} /> {sonido ? "Sonido" : "Mudo"}
+            </button>
+            <button className={`switch ${musica ? "on" : ""}`} onClick={() => setMusica(cambiarMusica())}>
+              🎵 {musica ? "Música" : "Sin música"}
+            </button>
+            <button className={`switch ${avisoOn ? "on" : ""}`} onClick={async () => {
+              const r = await cambiarAviso();
+              setAvisoOn(r === "si");
+              if (r === "bloqueado") { setToast("🔔 Permite las notificaciones en tu navegador"); setTimeout(() => setToast(""), 3000); }
+              sfx.clic();
+            }}>
+              🔔 {avisoOn ? "Avisos" : "Sin avisos"}
+            </button>
+            <button className={`switch ${letraGrande ? "on" : ""}`} onClick={() => { setLetraGrande(!letraGrande); sfx.clic(); }}>
+              🔠 {letraGrande ? "Texto grande" : "Texto normal"}
             </button>
           </div>
           <p style={{ color: "var(--texto-suave)", fontSize: ".72rem", margin: "10px 0 0" }}>
@@ -559,7 +595,7 @@ export default function App() {
             </section>
           </div>
         )}
-        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo === "privacidad" ? <Privacidad /> : activo === "perfiles" ? <Perfiles /> : activo === "admin" ? <Admin /> : activo !== "inicio" && (() => {
+        {activo === "marcador" ? <Marcador /> : activo === "tienda" ? <Tienda /> : activo === "privacidad" ? <Privacidad /> : activo === "perfiles" ? <Perfiles /> : activo === "familia" ? <Familia onIr={ir} /> : activo === "copa" ? <Copa onIr={ir} /> : activo === "admin" ? <Admin /> : activo !== "inicio" && (() => {
           if (!juego) {
             return (
               <div className="gameshell">
