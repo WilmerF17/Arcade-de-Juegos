@@ -470,7 +470,10 @@ export default function App() {
               ...(tienes("tema-dorado") ? [["dorado", "estrella-llena", "Dorado 👑"]] : []),
               ...(tienes("tema-oceano") ? [["oceano", "pesca", "Océano 🌊"]] : []),
               ...(tienes("tema-atardecer") ? [["atardecer", "sol", "Atardecer 🌅"]] : []),
-              ...(tienes("tema-bosque") ? [["bosque", "estrella", "Bosque 🌲"]] : [])].map(([id, icon, nombre]) => (
+              ...(tienes("tema-bosque") ? [["bosque", "estrella", "Bosque 🌲"]] : []),
+              ...(tienes("tema-volcan") ? [["volcan", "fuego", "Volcán 🌋"]] : []),
+              ...(tienes("tema-galaxia") ? [["galaxia", "estrella-llena", "Galaxia 🌌"]] : []),
+              ...(tienes("tema-dulce") ? [["dulce", "estrella", "Dulce 🍬"]] : [])].map(([id, icon, nombre]) => (
               <button key={id} title={nombre}
                 className={tema === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setTema(id); sfx.clic(); }}><Icono n={icon} size={20} /></button>

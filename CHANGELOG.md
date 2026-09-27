@@ -1,5 +1,15 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.13.0 (2026-09-27) — Apuestas v2, Quiniela y tienda rehecha
+- **Apuestas v2 🎰**: racha con bonus (+50% cada 3 victorias seguidas), límite
+  diario de pérdidas configurable (juego responsable) e historial de últimas
+  12 apuestas (visible en Administración). Vale para los 20 juegos de casino.
+- **Quiniela Relámpago 📋 (277)**: 3 partidos con cuotas, pleno hasta ×20.
+- **Tienda rehecha 🛍️** (14 artículos): pestañas Temas/Boosts/Diversión,
+  Caja misteriosa (50–500), Pack +500 XP, Fichas ×2 (doble por partida 1h) y
+  sección de juego responsable. 3 temas nuevos: Volcán, Galaxia y Dulce.
+- PWA SW `aplm-v29`.
+
 ## v2.12.0 (2026-09-27) — Renovación total: maestría, rachas y temporada
 - **Maestría por juego 💎**: Bronce (1), Plata (5), Oro (15) y Diamante (30
   partidas) con medalla en cada carta. Renueva los 276 juegos sin tocarlos.

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import GameShell from "./GameShell";
 import { JUEGOS } from "../games/GAMES";
 import { getStats, borrarStats } from "../api";
+import { cargarBilletera } from "../suite/billetera";
 import { listarPerfiles, perfilActivo } from "../suite/perfiles";
 import { sfx } from "../suite/sonido";
 
@@ -17,6 +18,7 @@ export default function Admin() {
   const fileRef = useRef(null);
   const perfiles = listarPerfiles();
   const activo = perfilActivo();
+  const historial = (cargarBilletera().historialApuestas || []).slice().reverse();
 
   useEffect(() => {
     getStats().then(s => {
@@ -160,6 +162,16 @@ export default function Admin() {
         <button className="btn-suave" onClick={() => fileRef.current?.click()}>⬆️ Importar respaldo</button>
         <input ref={fileRef} type="file" accept="application/json" hidden onChange={importar} aria-label="Importar respaldo" />
       </div>
+      {historial.length > 0 && (
+        <>
+          <h4 style={{ marginTop: 12 }}>🎰 Últimas apuestas</h4>
+          <div className="fila-botones">
+            {historial.slice(0, 8).map((h, i) => (
+              <span key={i} className="chip">{h.gano ? "✅" : "❌"} {h.apuesta}→{h.premio}</span>
+            ))}
+          </div>
+        </>
+      )}
       <h4 style={{ marginTop: 12 }}>🧹 Mantenimiento</h4>
       <div className="fila-botones">
         <button className="btn-suave" onClick={limpiarCache}>🗑️ Limpiar caché y actualizar</button>

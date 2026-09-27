@@ -1,7 +1,7 @@
-/* Apuestas compartidas de la suite: selector + saldo en vivo + cobro con registro.
-   Todos los juegos de casino/apuestas usan esto para no duplicar lógica. */
+/* Apuestas v2: selector + saldo en vivo + cobro con registro, racha con bonus,
+   límite diario de pérdidas e historial. Todos los juegos de casino la usan. */
 import { useEffect, useState } from "react";
-import { cargarBilletera, apostar, cobrar } from "./billetera";
+import { cargarBilletera, apostar, cobrar, resolverApuesta, bonusRacha } from "./billetera";
 import { sfx } from "./sonido";
 
 export const APUESTAS = [10, 25, 50, 100, 250];
@@ -34,20 +34,24 @@ export function apostarConAviso(cantidad, setAviso) {
 }
 
 /**
- * Resuelve una apuesta ganada: cobra el premio, suena moneda y registra puntos.
- * premio = total a cobrar (incluye la apuesta). Devuelve el saldo nuevo.
+ * Resuelve una apuesta ganada: cobra el premio (+bonus de racha cada 3
+ * victorias seguidas), suena moneda y registra puntos.
+ * premio = total a cobrar (incluye la apuesta). Devuelve {saldo, bonus}.
  */
 export function cobrarPremio(premio, apuesta, registrarPunt, setSaldo) {
-  const p = Math.floor(premio);
+  const racha = resolverApuesta(apuesta, premio);
+  const extra = bonusRacha(apuesta, racha);
+  const p = Math.floor(premio) + extra;
   const saldo = cobrar(p);
   setSaldo?.(saldo);
   sfx.moneda();
   registrarPunt?.(Math.max(0, p - apuesta), 1);
-  return saldo;
+  return { saldo, bonus: extra, racha };
 }
 
-/** Pierde una apuesta: sonido + registro a cero. */
-export function perderApuesta(registrarPunt) {
+/** Pierde una apuesta: rompe la racha, cuenta al límite diario y registra a cero. */
+export function perderApuesta(registrarPunt, apuesta = 0) {
+  resolverApuesta(apuesta, 0);
   sfx.mal();
   registrarPunt?.(0, 0);
 }

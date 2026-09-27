@@ -1252,6 +1252,30 @@ body[data-tema="bosque"] {
 }
 body[data-tema="bosque"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(52,211,153,.16), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(163,230,53,.10), transparent 60%), var(--bg); }
 body[data-tema="bosque"] .lateral { background: rgba(7, 19, 13, .85); }
+body[data-tema="volcan"] {
+  --bg: #120607; --bg-soft: #1e0a08; --bg-card: #2a0e0a; --bg-hover: #3a130d;
+  --border: #7c2d12; --texto: #ffe9e0; --texto-suave: #d9a08a;
+  --principal: #ef4444; --principal-2: #f59e0b; --exito: #4ade80; --aviso: #fbbf24;
+  --sombra: 0 10px 30px rgba(239, 68, 68, 0.25);
+}
+body[data-tema="volcan"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(239,68,68,.20), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(245,158,11,.12), transparent 60%), var(--bg); }
+body[data-tema="volcan"] .lateral { background: rgba(18, 6, 7, .85); }
+body[data-tema="galaxia"] {
+  --bg: #0d0618; --bg-soft: #170b2b; --bg-card: #1f1040; --bg-hover: #2c1760;
+  --border: #4c2a9e; --texto: #ece6ff; --texto-suave: #b3a3e6;
+  --principal: #a855f7; --principal-2: #22d3ee; --exito: #4ade80; --aviso: #fbbf24;
+  --sombra: 0 10px 30px rgba(168, 85, 247, 0.28);
+}
+body[data-tema="galaxia"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(168,85,247,.22), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(34,211,238,.12), transparent 60%), var(--bg); }
+body[data-tema="galaxia"] .lateral { background: rgba(13, 6, 24, .85); }
+body[data-tema="dulce"] {
+  --bg: #fff0f6; --bg-soft: #fff7fb; --bg-card: #ffffff; --bg-hover: #ffe0ee;
+  --border: #f5b8d4; --texto: #571b38; --texto-suave: #a3618a;
+  --principal: #ec4899; --principal-2: #14b8a6; --exito: #16a34a; --aviso: #d97706;
+  --sombra: 0 10px 30px rgba(236, 72, 153, 0.20);
+}
+body[data-tema="dulce"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(236,72,153,.14), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(20,184,166,.12), transparent 60%), var(--bg); }
+body[data-tema="dulce"] .lateral { background: rgba(255, 240, 246, .85); }
 
 /* Selector de apuesta */
 .apuesta-fila { align-items: center; }
@@ -1303,6 +1327,17 @@ body[data-tema="bosque"] .lateral { background: rgba(7, 19, 13, .85); }
 .tienda-card.owned { border-color: var(--exito); }
 .tienda-card h4 { margin: 2px 0; }
 .tienda-card p { margin: 0 0 6px; color: var(--texto-suave); font-size: .82rem; }
+.tienda-responsable {
+  margin-top: 16px; padding: 14px; border-radius: 12px;
+  background: var(--bg-soft); border: 1px dashed var(--aviso);
+}
+.tienda-responsable h4 { margin: 0 0 4px; }
+.tienda-responsable p { margin: 0 0 8px; color: var(--texto-suave); font-size: .86rem; }
+.quiniela-partido {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 12px; margin-top: 10px;
+}
+.quiniela-partido p { margin: 4px 0; }
 .tienda-icono { font-size: 2.4rem; }
 
 /* ============================================================
