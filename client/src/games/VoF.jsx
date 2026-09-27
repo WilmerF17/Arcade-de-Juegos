@@ -160,3 +160,21 @@ export const VoFComida = VF("Verdad: Comida", "🍽️", [
   ["La leche sale de la vaca", true], ["El azúcar es salado", false],
   ["Hay que lavarse las manos", true], ["Comer rápido es ideal", false],
 ], "linear-gradient(135deg,#ea580c,#facc15)", "linear-gradient(135deg,#ea580c,#facc15)");
+
+export const VoFEspacio = VF("Verdad: Espacio", "🚀", [
+  ["La Tierra es redonda", true], ["El Sol gira alrededor de la Tierra", false],
+  ["Marte es rojo", true], ["Júpiter es el planeta más grande", true],
+  ["La Luna tiene luz propia", false], ["Hay 8 planetas", true],
+  ["Los astronautas flotan sin gravedad", true], ["Saturno no tiene anillos", false],
+  ["El espacio es silencioso", true], ["Venus es el planeta más caliente", true],
+  ["Las estrellas fugaces son estrellas", false], ["La Vía Láctea es una galaxia", true],
+], "linear-gradient(135deg,#0f172a,#7c3aed)", "linear-gradient(135deg,#0f172a,#7c3aed)");
+
+export const VoFTecno = VF("Verdad: Tecnología", "💻", [
+  ["Internet usa cables submarinos", true], ["El wifi funciona sin electricidad", false],
+  ["Un byte son 8 bits", true], ["El primer móvil pesaba 1 kg", true],
+  ["Python es un lenguaje", true], ["Borrar un archivo lo destruye al instante", false],
+  ["Las contraseñas largas protegen más", true], ["El bluetooth necesita internet", false],
+  ["Los robots siguen programas", true], ["La nube está en el cielo", false],
+  ["Actualizar protege tu móvil", true], ["Compartir tu clave es seguro", false],
+], "linear-gradient(135deg,#0ea5e9,#6366f1)", "linear-gradient(135deg,#0ea5e9,#6366f1)");

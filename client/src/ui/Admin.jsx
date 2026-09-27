@@ -7,7 +7,9 @@ import { listarPerfiles, perfilActivo } from "../suite/perfiles";
 import { sfx } from "../suite/sonido";
 
 const CLAVES_DATOS = ["arcade-progreso-v1", "aplm-billetera-v1", "aplm-tienda-v1",
-  "arcade-favs", "arcade-perfiles-v1", "arcade-tema", "arcade-rgb", "arcade-sonido"];
+  "arcade-favs", "arcade-perfiles-v1", "arcade-tema", "arcade-fondo", "arcade-rgb",
+  "arcade-sonido", "arcade-musica", "arcade-fuente", "arcade-lateral-v1",
+  "arcade-aviso-desafio", "arcade-aviso-fecha", "arcade-bienvenida-v1"];
 
 /** Administración: estado de la plataforma, datos y mantenimiento. Todo en local. */
 export default function Admin() {

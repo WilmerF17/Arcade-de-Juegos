@@ -1,5 +1,12 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.14.0 (2026-09-27) — Más contenido y casa limpia
+- **+2 juegos (279)**: Verdad Espacio 🚀 y Verdad Tecnología 💻.
+- **Respaldo completo**: exportar/importar ahora incluye fondo, música,
+  fuente, avisos y preferencias del lateral (antes se perdían).
+- **Limpieza**: CSS muerto eliminado (~40 líneas menos).
+- PWA SW `aplm-v32`.
+
 ## v2.13.0 (2026-09-27) — Apuestas v2, Quiniela y tienda rehecha
 - **Apuestas v2 🎰**: racha con bonus (+50% cada 3 victorias seguidas) e
   historial de últimas 12 apuestas (visible en Administración). Vale para
