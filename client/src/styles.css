@@ -193,7 +193,8 @@ body[data-tema="claro"] .lateral { background: rgba(255,255,255,.8); }
 .logo h1 { font-size: 1.7rem; margin: 8px 0 2px; letter-spacing: .18em; background: linear-gradient(90deg, var(--info), var(--principal), var(--principal-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .logo p { margin: 0; color: var(--texto-suave); font-size: 0.82rem; }
 
-.buscador-wrap { position: relative; margin: 6px 2px 10px; }
+.buscador-wrap { position: sticky; top: -18px; z-index: 5; margin: 6px -2px 10px; padding: 10px 2px 8px;
+  background: color-mix(in srgb, var(--bg-soft) 88%, transparent); backdrop-filter: blur(8px); }
 .buscador { display: flex; align-items: center; gap: 8px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px; padding: 6px 6px 6px 12px; transition: border-color .15s ease, box-shadow .15s ease; }
 .buscador:focus-within, .buscador.con-resultados { border-color: var(--principal); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25); }
 .buscador svg { flex-shrink: 0; }
@@ -604,6 +605,27 @@ body[data-tema="claro"] .xp-bar { background: #e2e6f2; }
   border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
 }
 .lat-instalar-fila { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.lat-cerrar {
+  background: transparent; color: var(--texto-suave); flex-shrink: 0;
+  min-width: 30px; min-height: 30px; padding: 0; border-radius: 50%;
+  display: grid; place-items: center; font-size: .8rem;
+}
+.lat-cerrar:hover { background: var(--bg-hover); color: var(--texto); box-shadow: none; }
+.lat-logros { margin-top: 8px; }
+.lat-logros summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px;
+  font-size: .84rem; min-height: 36px; color: var(--texto-suave);
+}
+.lat-logros summary::-webkit-details-marker { display: none; }
+.lat-logros summary b { color: var(--texto); }
+.lat-logros summary:hover { color: var(--texto); }
+/* Lateral compacto: menos aire, mismos bloques */
+.lat-identidad { padding-bottom: 6px; }
+.lat-progreso { padding: 10px; }
+.billetera-box { padding: 10px; }
+.nav-item { padding: 7px 10px; }
+.logros-lista { gap: 4px; }
+.chips-cat { gap: 5px; }
 .lat-instalar-ico {
   width: 40px; height: 40px; flex-shrink: 0; display: grid; place-items: center;
   border-radius: 12px; color: #fff;

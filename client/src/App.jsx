@@ -44,6 +44,18 @@ export default function App() {
   const [musica, setMusica] = useState(() => musicaEncendida());
   const [letraGrande, setLetraGrande] = useState(() => { try { return localStorage.getItem("arcade-fuente") === "grande"; } catch { return false; } });
   const [avisoOn, setAvisoOn] = useState(() => avisoActivado());
+  // Espacios del lateral: qué secciones se muestran (persiste por aparato)
+  const [latPref, setLatPref] = useState(() => {
+    try { return { instalarOff: false, logros: false, ...JSON.parse(localStorage.getItem("arcade-lateral-v1") || "{}") }; }
+    catch { return { instalarOff: false, logros: false }; }
+  });
+  function guardaLat(parche) {
+    setLatPref(p => {
+      const n = { ...p, ...parche };
+      try { localStorage.setItem("arcade-lateral-v1", JSON.stringify(n)); } catch { /* noop */ }
+      return n;
+    });
+  }
   const [stats, setStats] = useState({});
   const [prog, setProg] = useState(() => cargarProgreso());
   const [toast, setToast] = useState("");
@@ -321,13 +333,16 @@ export default function App() {
           <span className="flecha" aria-hidden>→</span>
         </button>
 
+        {!latPref.instalarOff && (
         <div className="lat-instalar">
           <div className="lat-instalar-fila">
             <span className="lat-instalar-ico" aria-hidden><Icono n="descargar" size={22} /></span>
             <span className="lat-instalar-txt"><b>Llévame contigo</b><small>Sin conexión · pantalla completa</small></span>
+            <button className="lat-cerrar" onClick={() => { guardaLat({ instalarOff: true }); sfx.clic(); }} aria-label="Ocultar aviso de instalación">✕</button>
           </div>
           <BotonInstalar variante="lateral" />
         </div>
+        )}
 
         <section className="lat-progreso" aria-label="Tu progreso">
           <div className="lat-nivel-fila">
@@ -366,13 +381,16 @@ export default function App() {
               </div>
             ))}
           </div>
-          <div className="logros-lista">
-            {LOGROS.map(l => (
-              <span key={l.id} title={l.desc} className={`logro ${prog.logros?.includes(l.id) ? "on" : ""}`}>
-                <Icono n={prog.logros?.includes(l.id) ? "estrella-llena" : "estrella"} size={11} /> {l.nombre}
-              </span>
-            ))}
-          </div>
+          <details className="lat-logros" open={!!latPref.logros} onToggle={e => guardaLat({ logros: e.currentTarget.open })}>
+            <summary>🏅 Logros <b>{prog.logros?.length || 0}/{LOGROS.length}</b></summary>
+            <div className="logros-lista">
+              {LOGROS.map(l => (
+                <span key={l.id} title={l.desc} className={`logro ${prog.logros?.includes(l.id) ? "on" : ""}`}>
+                  <Icono n={prog.logros?.includes(l.id) ? "estrella-llena" : "estrella"} size={11} /> {l.nombre}
+                </span>
+              ))}
+            </div>
+          </details>
         </section>
 
         <div className="billetera-box">

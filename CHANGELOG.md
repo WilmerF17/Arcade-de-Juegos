@@ -11,7 +11,9 @@
 - **Tema Legendario 💎 (15.200)**: la joya de la tienda — fondo animado
   exclusivo, +25% XP para siempre, +5 fichas por partida y corona 👑 en tu
   perfil. Se nota en cada resultado.
-- PWA SW `aplm-v30`.
+- **Lateral ordenado 📐**: aviso de instalar descartable, logros plegables
+  con contador, buscador fijo al desplazar y espaciado compacto.
+- PWA SW `aplm-v31`.
 
 ## v2.12.0 (2026-09-27) — Renovación total: maestría, rachas y temporada
 - **Maestría por juego 💎**: Bronce (1), Plata (5), Oro (15) y Diamante (30
