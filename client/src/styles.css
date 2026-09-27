@@ -256,8 +256,8 @@ body[data-tema="claro"] .lateral { background: rgba(255,255,255,.8); }
 @keyframes mueve { from { transform: translateX(0); } to { transform: translateX(4px); } }
 .nav-txt small { color: var(--aviso); font-weight: 700; }
 .tema-box { margin-top: 16px; padding: 10px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; }
-.tema-btns { display: flex; gap: 8px; }
-.tema-btn { font-size: 1.3rem; width: 46px; height: 42px; border-radius: 10px; background: var(--bg-hover); }
+.tema-btns { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 8px; }
+.tema-btn { font-size: 1.3rem; height: 42px; border-radius: 10px; background: var(--bg-hover); padding: 0; }
 .tema-btn.on { outline: 2px solid var(--principal); }
 
 .contenido { padding: 26px 30px 60px; max-width: 1020px; width: 100%; }
@@ -568,6 +568,8 @@ body[data-tema="claro"] .xp-bar { background: #e2e6f2; }
 .xp-bar > div { height: 100%; background: linear-gradient(90deg, var(--principal), var(--principal-2), var(--info)); background-size: 200% 100%; animation: tira-rgb 3s ease infinite; transition: width .5s ease; }
 .desafio-box { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(245,158,11,.1); border: 1px dashed var(--aviso); font-size: .82rem; }
 .interruptores { display: flex; gap: 8px; margin-top: 10px; }
+.tema-box .interruptores { display: grid; grid-template-columns: 1fr 1fr; }
+.tema-box .switch { justify-content: center; min-height: 40px; }
 .switch { font-size: .78rem; padding: 6px 10px; border-radius: 999px; }
 .switch.on { background: linear-gradient(135deg, #ff004c, #a855f7); color: #fff; font-weight: 800; }
 .logros-lista { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }

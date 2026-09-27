@@ -500,7 +500,7 @@ export default function App() {
           </div>
           <p className="cat" style={{ marginTop: 10 }}>Fondo</p>
           <div className="tema-btns">
-            {[["aurora", "✨", "Aurora"], ["nebulosa", "🌌", "Nebulosa"], ["puntos", "🔘", "Puntos"], ["burbujas", "🫧", "Burbujas"]].map(([id, icono, nombre]) => (
+            {[["aurora", "✨", "Aurora"], ["nebulosa", "🌌", "Nebulosa"], ["puntos", "⚪", "Puntos"], ["burbujas", "🎈", "Burbujas"]].map(([id, icono, nombre]) => (
               <button key={id} title={nombre}
                 className={fondo === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setFondo(id); sfx.clic(); }}><span style={{ fontSize: "1.05rem" }}>{icono}</span></button>
@@ -514,7 +514,7 @@ export default function App() {
               <Icono n={sonido ? "sonido" : "silencio"} size={13} /> {sonido ? "Sonido" : "Mudo"}
             </button>
             <button className={`switch ${musica ? "on" : ""}`} onClick={() => setMusica(cambiarMusica())}>
-              🎵 {musica ? "Música" : "Sin música"}
+              🎵 Música
             </button>
             <button className={`switch ${avisoOn ? "on" : ""}`} onClick={async () => {
               const r = await cambiarAviso();
@@ -522,10 +522,10 @@ export default function App() {
               if (r === "bloqueado") { setToast("🔔 Permite las notificaciones en tu navegador"); setTimeout(() => setToast(""), 3000); }
               sfx.clic();
             }}>
-              🔔 {avisoOn ? "Avisos" : "Sin avisos"}
+              🔔 Avisos
             </button>
             <button className={`switch ${letraGrande ? "on" : ""}`} onClick={() => { setLetraGrande(!letraGrande); sfx.clic(); }}>
-              🔠 {letraGrande ? "Texto grande" : "Texto normal"}
+              🔠 Texto
             </button>
           </div>
           <p style={{ color: "var(--texto-suave)", fontSize: ".72rem", margin: "10px 0 0" }}>
