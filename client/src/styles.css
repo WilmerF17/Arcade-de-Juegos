@@ -303,6 +303,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .carta-emoji { font-size: 2.6rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,.4)); animation: flota 3s ease-in-out infinite; }
 .carta-tag { position: absolute; left: 10px; top: 10px; font-size: .68rem; background: rgba(0,0,0,.45); color: #fff; padding: 3px 9px; border-radius: 999px; }
 .carta-record { position: absolute; right: 10px; top: 10px; font-size: .7rem; background: rgba(0,0,0,.5); color: #ffd75e; padding: 3px 9px; border-radius: 999px; font-weight: 800; }
+.carta-maestria { position: absolute; left: 10px; bottom: 8px; font-size: .95rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+.carta-racha { position: absolute; right: 10px; bottom: 8px; font-size: .7rem; font-weight: 800; background: rgba(0,0,0,.5); color: #ffb03d; padding: 3px 9px; border-radius: 999px; }
 .carta-cuerpo { padding: 12px 14px 14px; }
 .carta-cuerpo h4 { margin: 0 0 4px; font-size: 1rem; }
 .carta-cuerpo p { margin: 0 0 10px; color: var(--texto-suave); font-size: .82rem; min-height: 2.4em; }

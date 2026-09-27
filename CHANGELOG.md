@@ -1,5 +1,18 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.12.0 (2026-09-27) — Renovación total: maestría, rachas y temporada
+- **Maestría por juego 💎**: Bronce (1), Plata (5), Oro (15) y Diamante (30
+  partidas) con medalla en cada carta. Renueva los 276 juegos sin tocarlos.
+- **Rachas de victorias 🔥** por juego (se rompen al no ganar), visibles en
+  cartas, maestría y Marcador.
+- **Temporada semanal**: 5 juegos destacados rotando cada lunes con XP ×2
+  (¡×4 si coincide con el desafío!). Filtro 🔥 ×2 y badge en cartas.
+- **Descubrimiento ✨**: filtro "Sin probar" para completar tu colección.
+- **Marcador renovado**: orden por récord/partidas/winrate/nombre + tu
+  sección de maestría local.
+- **+3 logros**: Manitas de oro, Diamante y Coleccionista de oros (21 total).
+- PWA SW `aplm-v28`.
+
 ## v2.11.0 (2026-09-27) — Familia, copa, logros y avisos
 - **Tabla Familiar 🏠**: ranking por XP entre tus perfiles (medallas, nivel,
   victorias, racha y fichas). Pique sano en casa.

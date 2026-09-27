@@ -14,7 +14,7 @@ function ayer() {
 }
 
 export function estadoInicial() {
-  return { xp: 0, ultimaJugada: "", racha: 0, logros: [], desafio: { fecha: "", juego: "", hecho: false }, misiones: { fecha: "", jugadas: 0, victorias: 0, cobradas: [] }, ultimos: [] };
+  return { xp: 0, ultimaJugada: "", racha: 0, logros: [], desafio: { fecha: "", juego: "", hecho: false }, misiones: { fecha: "", jugadas: 0, victorias: 0, cobradas: [] }, ultimos: [], rachas: {}, temporada: { semana: "", juegos: [] } };
 }
 
 export function cargarProgreso() {
@@ -62,12 +62,51 @@ export const LOGROS = [
   { id: "todoterreno", nombre: "Todo terreno", desc: "Prueba 8 juegos distintos", test: p => (p.ultimos || []).length >= 8 },
   { id: "cumplidor", nombre: "Cumplidor", desc: "Completa las 3 misiones de un día", test: p => (p.misiones?.cobradas || []).length >= 3 },
   { id: "fiebreoro", nombre: "Fiebre del oro", desc: "Acumula 5000 XP", test: p => (p.xp || 0) >= 5000 },
+  { id: "manitas", nombre: "Manitas de oro", desc: "Oro en 1 juego (15 partidas)", test: p => Object.values(p.porJuego || {}).some(n => n >= 15) },
+  { id: "diamante", nombre: "Diamante", desc: "Diamante en 1 juego (30 partidas)", test: p => Object.values(p.porJuego || {}).some(n => n >= 30) },
+  { id: "coleccionista", nombre: "Coleccionista de oros", desc: "Oro en 5 juegos", test: p => Object.values(p.porJuego || {}).filter(n => n >= 15).length >= 5 },
 ];
 
 export function desafioDelDia(ids) {
   const d = new Date();
   const semilla = d.getFullYear() * 1000 + diaDelAno(d);
   return ids[semilla % ids.length];
+}
+
+/* Maestría por juego: Bronce 1 · Plata 5 · Oro 15 · Diamante 30 partidas.
+   Sale gratis del conteo por juego: renueva los 276 sin tocarlos. */
+export const MAESTRIAS = [
+  { id: "diamante", min: 30, nombre: "Diamante", icono: "💎" },
+  { id: "oro", min: 15, nombre: "Oro", icono: "🥇" },
+  { id: "plata", min: 5, nombre: "Plata", icono: "🥈" },
+  { id: "bronce", min: 1, nombre: "Bronce", icono: "🥉" },
+];
+
+export function maestriaDe(jugadas) {
+  for (const m of MAESTRIAS) {
+    if ((jugadas || 0) >= m.min) return m;
+  }
+  return null;
+}
+
+/* Temporada semanal: 5 juegos destacados rotando cada semana con XP ×2.
+   Semilla por semana ISO para que toda la familia juegue lo mismo. */
+export function claveSemana(d = new Date()) {
+  const j = new Date(d.getFullYear(), 0, 1);
+  const sem = Math.ceil((((d - j) / 864e5) + j.getDay() + 1) / 7);
+  return `${d.getFullYear()}-S${sem}`;
+}
+
+export function temporadaJuegos(ids) {
+  if (!ids.length) return [];
+  const d = new Date();
+  const semilla = Number(claveSemana(d).replace(/\D/g, "")) || 1;
+  const res = [];
+  for (let i = 0; i < 5; i++) {
+    const id = ids[(semilla + i * 53) % ids.length];
+    if (!res.includes(id)) res.push(id);
+  }
+  return res;
 }
 
 /* Misiones diarias (tendencia 2026: retención por objetivos cortos).
@@ -104,6 +143,9 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
   };
   let xpGanado = 5 + Math.min(60, Math.max(0, Math.round(puntos / 2))) + (victoria ? 15 : 0);
   if (esDesafio && !prev.desafio?.hecho) xpGanado *= 2;
+  // Temporada semanal: XP ×2 (se acumula con el desafío: ¡×4!)
+  const esTemp = (prev.temporada?.juegos || []).includes(juegoId);
+  if (esTemp) xpGanado *= 2;
   // Potenciador de la tienda: doble XP si está activo
   let dobleXp = false;
   try {
@@ -126,6 +168,12 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
   // conteo por juego + recientes para "Sigue jugando"
   prog.porJuego[juegoId] = (prog.porJuego[juegoId] || 0) + 1;
   prog.ultimos = [juegoId, ...((prev.ultimos || []).filter(x => x !== juegoId))].slice(0, 8);
+
+  // racha de victorias por juego (se rompe al no ganar)
+  const r0 = prev.rachas?.[juegoId]?.actual || 0;
+  const rAct = victoria ? r0 + 1 : 0;
+  prog.rachas = { ...(prev.rachas || {}) };
+  prog.rachas[juegoId] = { actual: rAct, mejor: Math.max(prev.rachas?.[juegoId]?.mejor || 0, rAct) };
 
   if (esDesafio) {
     prog.desafio = { ...(prev.desafio || {}), hecho: true };
@@ -160,5 +208,5 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
     }
   }
   guardarProgreso(prog);
-  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado, dobleXp, escudoUsado, misionesNuevas };
+  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado, dobleXp, escudoUsado, misionesNuevas, tempX2: esTemp };
 }

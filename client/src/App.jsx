@@ -2,7 +2,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { JUEGOS, CATEGORIAS, TEMAS } from "./games/GAMES";
 import Marcador from "./games/Marcador";
 import { getStats } from "./api";
-import { cargarProgreso, guardarProgreso, nivelDe, desafioDelDia, LOGROS, misionesDelDia } from "./suite/progreso";
+import { cargarProgreso, guardarProgreso, nivelDe, desafioDelDia, LOGROS, misionesDelDia, maestriaDe, claveSemana, temporadaJuegos } from "./suite/progreso";
 import { cargarBilletera, bonusDiario, bonusDisponible, rescate, MONEDA } from "./suite/billetera";
 import { sonidoActivado, cambiarSonido, musicaEncendida, cambiarMusica, sfx } from "./suite/sonido";
 import { Icono, IconoJuego, LogoArcade } from "./ui/Iconos";
@@ -95,17 +95,21 @@ export default function App() {
     localStorage.setItem("arcade-rgb", rgb ? "on" : "off");
   }, [rgb]);
 
-  // Desafío del día + escucha de progresión
+  // Desafío del día + temporada semanal + escucha de progresión
   useEffect(() => {
     const ids = Object.keys(JUEGOS);
     const hoy = new Date().toISOString().slice(0, 10);
+    const sem = claveSemana();
     setProg(p => {
+      let n = p;
       if (p.desafio?.fecha !== hoy) {
-        const n = { ...p, desafio: { fecha: hoy, juego: desafioDelDia(ids), hecho: false } };
-        guardarProgreso(n);
-        return n;
+        n = { ...n, desafio: { fecha: hoy, juego: desafioDelDia(ids), hecho: false } };
       }
-      return p;
+      if (n.temporada?.semana !== sem) {
+        n = { ...n, temporada: { semana: sem, juegos: temporadaJuegos(ids) } };
+      }
+      if (n !== p) guardarProgreso(n);
+      return n;
     });
     const fn = e => {
       setProg(e.detail);
@@ -262,6 +266,8 @@ export default function App() {
   const filtrados = useMemo(() => {
     let ids = Object.keys(JUEGOS);
     if (filtroCat === "favs") ids = ids.filter(id => favs.includes(id));
+    else if (filtroCat === "nuevos") ids = ids.filter(id => !(prog.porJuego || {})[id]);
+    else if (filtroCat === "temporada") ids = (prog.temporada?.juegos || []).filter(id => JUEGOS[id]);
     else if (filtroCat !== "todas") {
       const cat = CATEGORIAS.find(c => c.id === filtroCat);
       ids = cat ? cat.juegos : ids;
@@ -273,7 +279,7 @@ export default function App() {
       );
     }
     return ids;
-  }, [busqueda, filtroCat, favs]);
+  }, [busqueda, filtroCat, favs, prog]);
 
   const { nivel, enNivel, need } = nivelDe(prog.xp || 0);
   const famDelJuego = useMemo(() => {
@@ -426,6 +432,8 @@ export default function App() {
         <div className="chips-cat">
           <button className={filtroCat === "todas" ? "chip-cat on" : "chip-cat"} onClick={() => setFiltroCat("todas")}>Todo</button>
           <button className={filtroCat === "favs" ? "chip-cat on" : "chip-cat"} onClick={() => { setFiltroCat("favs"); ir("inicio"); }}><Icono n="estrella" size={12} /> ({favs.length})</button>
+          <button className={filtroCat === "temporada" ? "chip-cat on" : "chip-cat"} onClick={() => { setFiltroCat("temporada"); ir("inicio"); }}>🔥 ×2</button>
+          <button className={filtroCat === "nuevos" ? "chip-cat on" : "chip-cat"} onClick={() => { setFiltroCat("nuevos"); ir("inicio"); }}>✨ Sin probar</button>
           {CATEGORIAS.map(c => (
             <button key={c.id} className={filtroCat === c.id ? "chip-cat on" : "chip-cat"}
               onClick={() => { setFiltroCat(c.id); ir("inicio"); }}><Icono n={c.icono} size={12} /> {c.nombre}</button>
@@ -561,13 +569,16 @@ export default function App() {
             )}
 
             <section className="seccion-cartas">
-              <h3>{filtroCat === "todas" ? "Todos los juegos" : filtroCat === "favs" ? "⭐ Favoritos" : CATEGORIAS.find(c => c.id === filtroCat)?.nombre} <small>({filtrados.length})</small></h3>
+              <h3>{filtroCat === "todas" ? "Todos los juegos" : filtroCat === "favs" ? "⭐ Favoritos" : filtroCat === "nuevos" ? "✨ Sin probar" : filtroCat === "temporada" ? "🔥 Temporada ×2" : CATEGORIAS.find(c => c.id === filtroCat)?.nombre} <small>({filtrados.length})</small></h3>
               <div className="grid-cartas">
                 {filtrados.map(id => {
                   const j = JUEGOS[id];
                   const s = stats[j.nombre];
                   const esDesafio = prog.desafio?.juego === id && !prog.desafio?.hecho;
+                  const esTemp = (prog.temporada?.juegos || []).includes(id);
                   const esFav = favs.includes(id);
+                  const maestria = maestriaDe((prog.porJuego || {})[id] || 0);
+                  const rachaJ = prog.rachas?.[id]?.actual || 0;
                   return (
                     <article key={id} className="carta" onClick={() => ir(id)} tabIndex={0} role="button" aria-label={`Jugar ${j.nombre}`}
                       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ir(id); } }}>
@@ -580,7 +591,11 @@ export default function App() {
                         </button>
                         {esDesafio
                           ? <span className="carta-record"><Icono n="desafio" size={11} /> ×2 XP</span>
-                          : s?.mejor ? <span className="carta-record"><Icono n="estrella-llena" size={11} /> {s.mejor}</span> : null}
+                          : esTemp
+                            ? <span className="carta-record">🔥 ×2</span>
+                            : s?.mejor ? <span className="carta-record"><Icono n="estrella-llena" size={11} /> {s.mejor}</span> : null}
+                        {maestria && <span className="carta-maestria" title={`Maestría ${maestria.nombre}`}>{maestria.icono}</span>}
+                        {rachaJ >= 2 && <span className="carta-racha" title={`${rachaJ} victorias seguidas`}>🔥{rachaJ}</span>}
                       </div>
                       <div className="carta-cuerpo">
                         <h4>{j.nombre}</h4>

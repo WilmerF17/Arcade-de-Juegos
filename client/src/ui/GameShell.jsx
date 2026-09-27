@@ -14,7 +14,7 @@ function juegoIdActual(nombreJuego) {
 /**
  * Tema visual del juego activo (tira de color + familia).
  * App.jsx lo provee automáticamente desde el catálogo (grad/tema),
- * así los 237 juegos heredan identidad propia sin editar cada fichero.
+ * así los 276 juegos heredan identidad propia sin editar cada fichero.
  */
 const TemaJuegoContext = createContext({ tira: null, fam: null });
 export const ProveedorTemaJuego = TemaJuegoContext.Provider;
@@ -43,7 +43,7 @@ export function useRegistro(nombreJuego, juegoId = null) {
       const prev = cargarProgreso();
       const esDesafio = prev.desafio?.juego === id && !prev.desafio?.hecho;
       const r = sumarPartida(prev, { juegoId: id, puntos, victoria: ganadas > 0, esDesafio });
-      extra = { xpGanado: r.xpGanado, subioNivel: r.subioNivel, nuevosLogros: r.nuevosLogros, dobleXp: r.dobleXp, escudoUsado: r.escudoUsado, misionesNuevas: r.misionesNuevas };
+      extra = { xpGanado: r.xpGanado, subioNivel: r.subioNivel, nuevosLogros: r.nuevosLogros, dobleXp: r.dobleXp, escudoUsado: r.escudoUsado, misionesNuevas: r.misionesNuevas, tempX2: r.tempX2 };
       window.dispatchEvent(new CustomEvent("arcade-progreso", { detail: r.prog }));
     } catch { /* noop */ }
     // Economía: cada partida paga fichas para la tienda (+5, +15 si ganas)
@@ -54,7 +54,8 @@ export function useRegistro(nombreJuego, juegoId = null) {
       ? ` · 🏅 ${extra.nuevosLogros.map(l => l.nombre).join(", ")}` : "";
     const trozoMisiones = extra?.misionesNuevas?.length
       ? ` · 🎯 ${extra.misionesNuevas.map(m => `${m.nombre} (+${m.premio}🪙)`).join(", ")}` : "";
-    const mensajeBase = `${nombreJuego}: ${puntos} puntos${ganadas ? " · victoria ✅" : ""}${trozoXp}${trozoLogros}${trozoMisiones}`;
+    const trozoTemp = extra?.tempX2 ? " · 🔥 temporada ×2" : "";
+    const mensajeBase = `${nombreJuego}: ${puntos} puntos${ganadas ? " · victoria ✅" : ""}${trozoXp}${trozoLogros}${trozoMisiones}${trozoTemp}`;
 
     // Muestra el resultado al instante con lo local; el récord se añade si el servidor lo confirma
     setEstado(prev => ({ ...prev, mensaje: mensajeBase, tipo: ganadas ? "victoria" : "derrota", xp: extra }));
