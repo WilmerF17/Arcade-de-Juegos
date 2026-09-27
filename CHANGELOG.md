@@ -16,8 +16,11 @@
   instalada, Apple, portadas y logo interno (sin número para no caducar nunca).
   Se genera con `npm run iconos`. Tarjeta de instalar reestructurada.
 - **Fondos ambientales 🌌**: Aurora, Nebulosa, Puntos y Burbujas (sin líneas
-  ni cortes), cielo de estrellas, grano anti-bandas y viñeta con profundidad
-  (versión suave en temas claros).
+  ni cortes), cielo de estrellas, grano anti-bandas, viñeta con profundidad
+  e iconos de juegos flotando suave (versión tenue en temas claros).
+- **Modo eléctrico ⚡**: fondo más lleno (12 iconos neón con brillo, 3 rayos
+  parpadeantes, auroras grandes que cambian de color con RGB ON y resplandor
+  superior).
 - PWA SW `aplm-v22` (fuerza actualización), versión visible 2.10.0.
 
 ## v2.9.0 (2026-09-26) — Peleas, disparos, administración y remaster total

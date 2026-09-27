@@ -73,6 +73,7 @@ body {
   margin: 0;
   font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
   background:
+    radial-gradient(700px 260px at 50% -8%, rgba(255, 61, 90, 0.30), transparent 65%),
     radial-gradient(1200px 600px at 20% -10%, rgba(255, 61, 90, 0.22), transparent 60%),
     radial-gradient(1000px 500px at 90% 0%, rgba(255, 154, 61, 0.16), transparent 55%),
     radial-gradient(900px 500px at 50% 110%, rgba(168, 85, 247, 0.14), transparent 60%),
@@ -522,13 +523,32 @@ body[data-rgb="on"] .shell-icono { animation: rgb-hue 5s linear infinite; }
 body[data-rgb="on"] .carta-emoji { animation: salto-emoji 2s ease-in-out infinite; }
 
 /* auroras de fondo */
-.aurora { position: fixed; border-radius: 50%; filter: blur(90px); opacity: .35; pointer-events: none; z-index: 0; animation: aurora 9s ease-in-out infinite; }
-.aurora.a1 { width: 420px; height: 420px; left: -120px; top: -120px; background: #6366f1; }
-.aurora.a2 { width: 380px; height: 380px; right: -100px; top: 20%; background: #a855f7; animation-delay: 2s; }
-.aurora.a3 { width: 300px; height: 300px; left: 30%; bottom: -120px; background: #22d3ee; animation-delay: 4s; }
-body[data-rgb="on"] .aurora { opacity: .5; animation-duration: 6s; }
+.aurora { position: fixed; border-radius: 50%; filter: blur(70px); opacity: .5; pointer-events: none; z-index: 0; animation: aurora 9s ease-in-out infinite; }
+.aurora.a1 { width: 520px; height: 520px; left: -140px; top: -140px; background: #6366f1; }
+.aurora.a2 { width: 460px; height: 460px; right: -120px; top: 18%; background: #a855f7; animation-delay: 2s; }
+.aurora.a3 { width: 380px; height: 380px; left: 28%; bottom: -140px; background: #22d3ee; animation-delay: 4s; }
+body[data-rgb="on"] .aurora { opacity: .65; animation: aurora 5s ease-in-out infinite, rgb-hue 6s linear infinite; }
 body[data-tema="claro"] .aurora { opacity: .18; }
 .app, .contenido, .lateral { position: relative; z-index: 1; }
+
+/* Decoración ambiental eléctrica: iconos neón flotando + chispas */
+.decor { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.decor span {
+  position: absolute; opacity: .14;
+  animation: deco-flota 9s ease-in-out infinite alternate;
+}
+@keyframes deco-flota { from { transform: translateY(-10px) rotate(-6deg); } to { transform: translateY(12px) rotate(6deg); } }
+.decor .chispa { animation: deco-flota 7s ease-in-out infinite alternate, chispa 2.2s steps(1) infinite; }
+@keyframes chispa {
+  0%, 100% { opacity: .9; transform: scale(1); }
+  10% { opacity: .25; transform: scale(.92); }
+  20% { opacity: 1; transform: scale(1.08); }
+  35% { opacity: .4; transform: scale(.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  70% { opacity: .3; transform: scale(.93); }
+  85% { opacity: .95; transform: scale(1.02); }
+}
+body[data-tema="claro"] .decor span, body[data-tema="playa"] .decor span { opacity: .07; }
 
 /* flash RGB al conseguir récord */
 @keyframes flash-rgb { 0% { box-shadow: 0 0 0 rgba(255,255,255,0); } 30% { box-shadow: 0 0 45px rgba(245,158,11,.9); } 100% { box-shadow: var(--sombra); } }

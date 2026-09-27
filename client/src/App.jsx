@@ -15,6 +15,7 @@ import Perfiles from "./ui/Perfiles";
 import Admin from "./ui/Admin";
 import Bienvenida, { necesitaBienvenida } from "./ui/Bienvenida";
 import Buscador from "./ui/Buscador";
+import FondoDeco from "./ui/FondoDeco";
 import { asegurarPerfiles, perfilActivo } from "./suite/perfiles";
 import { tienes, dobleXpActivo, escudosRestantes } from "./suite/tienda";
 import { ProveedorTemaJuego } from "./ui/GameShell";
@@ -271,6 +272,7 @@ export default function App() {
       <div className="aurora a1" aria-hidden />
       <div className="aurora a2" aria-hidden />
       <div className="aurora a3" aria-hidden />
+      <FondoDeco />
       <header className="barra-movil">
         <button className="btn-menu btn-suave" onClick={() => setMenuAbierto(true)} aria-label="Abrir menú">☰</button>
         <div className="logo-orb"><LogoArcade size={24} /></div>
