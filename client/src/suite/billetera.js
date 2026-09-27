@@ -13,7 +13,7 @@ function hoy() {
 
 export function estadoInicial() {
   return { saldo: SALDO_INICIAL, ultimoBonus: "", ganado: 0, apostado: 0,
-    rachaApuestas: 0, perdidoHoy: { fecha: "", monto: 0 }, limitePerdida: 1000, historialApuestas: [] };
+    rachaApuestas: 0, historialApuestas: [] };
 }
 
 export function cargarBilletera() {
@@ -35,15 +35,12 @@ function guardar(b) {
   window.dispatchEvent(new CustomEvent("aplm-billetera", { detail: b }));
 }
 
-/** Apuesta fichas. Devuelve {ok} — ok:false si no hay saldo o supera tu límite diario. */
+/** Apuesta fichas. Devuelve {ok} — ok:false si no hay saldo suficiente. */
 export function apostar(cantidad) {
   const c = Math.floor(Number(cantidad) || 0);
   if (c <= 0) return { ok: false, motivo: "Apuesta inválida" };
   const b = cargarBilletera();
   if (c > b.saldo) return { ok: false, motivo: "Sin fichas suficientes" };
-  if ((b.limitePerdida || 0) > 0 && (b.perdidoHoy?.fecha === hoy() ? b.perdidoHoy.monto : 0) + c > b.limitePerdida) {
-    return { ok: false, motivo: `Límite diario de ${b.limitePerdida} alcanzado (juego responsable)` };
-  }
   b.saldo -= c;
   b.apostado += c;
   b.ultimaApuesta = c;
@@ -51,17 +48,12 @@ export function apostar(cantidad) {
   return { ok: true, saldo: b.saldo };
 }
 
-/** Registra el resultado de una apuesta: racha, límite diario e historial. */
+/** Registra el resultado de una apuesta: racha de victorias e historial. */
 export function resolverApuesta(apuesta, premio) {
   const b = cargarBilletera();
   const a = apuesta || b.ultimaApuesta || 0;
   const gano = premio > a;
   b.rachaApuestas = gano ? (b.rachaApuestas || 0) + 1 : 0;
-  if (!gano && premio < a) {
-    const ph = b.perdidoHoy?.fecha === hoy() ? b.perdidoHoy : { fecha: hoy(), monto: 0 };
-    ph.monto += a - premio;
-    b.perdidoHoy = ph;
-  }
   const h = [...(b.historialApuestas || []), {
     fecha: new Date().toISOString(), apuesta: a, premio, gano,
   }].slice(-12);
@@ -74,19 +66,6 @@ export function resolverApuesta(apuesta, premio) {
 export function bonusRacha(apuesta, racha) {
   if (racha > 0 && racha % 3 === 0) return Math.floor(apuesta * 0.5);
   return 0;
-}
-
-/** Cambia tu límite diario de pérdidas (0 = sin límite). */
-export function fijarLimite(monto) {
-  const b = cargarBilletera();
-  b.limitePerdida = Math.max(0, Math.floor(Number(monto) || 0));
-  guardar(b);
-  return b.limitePerdida;
-}
-
-export function perdidoHoy() {
-  const b = cargarBilletera();
-  return b.perdidoHoy?.fecha === hoy() ? b.perdidoHoy.monto : 0;
 }
 
 /** Cobra un premio. Devuelve el saldo nuevo. */

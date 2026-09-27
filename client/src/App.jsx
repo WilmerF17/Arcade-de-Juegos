@@ -317,7 +317,7 @@ export default function App() {
         </div>
         <button className="lat-jugador" onClick={() => ir("perfiles")} title="Cambiar de jugador">
           <span className="lat-avatar" aria-hidden>{perfil.emoji}</span>
-          <span className="lat-jugador-txt"><b>{perfil.nombre}</b><small>Nivel {nivel} · {prog.xp || 0} XP</small></span>
+          <span className="lat-jugador-txt"><b>{perfil.nombre}{tienes("tema-legendario") ? " 👑" : ""}</b><small>Nivel {nivel} · {prog.xp || 0} XP</small></span>
           <span className="flecha" aria-hidden>→</span>
         </button>
 
@@ -473,7 +473,8 @@ export default function App() {
               ...(tienes("tema-bosque") ? [["bosque", "estrella", "Bosque 🌲"]] : []),
               ...(tienes("tema-volcan") ? [["volcan", "fuego", "Volcán 🌋"]] : []),
               ...(tienes("tema-galaxia") ? [["galaxia", "estrella-llena", "Galaxia 🌌"]] : []),
-              ...(tienes("tema-dulce") ? [["dulce", "estrella", "Dulce 🍬"]] : [])].map(([id, icon, nombre]) => (
+              ...(tienes("tema-dulce") ? [["dulce", "estrella", "Dulce 🍬"]] : []),
+              ...(tienes("tema-legendario") ? [["legendario", "estrella-llena", "Legendario 💎"]] : [])].map(([id, icon, nombre]) => (
               <button key={id} title={nombre}
                 className={tema === id ? "tema-btn on" : "tema-btn"}
                 onClick={() => { setTema(id); sfx.clic(); }}><Icono n={icon} size={20} /></button>

@@ -31,6 +31,10 @@ export const TIENDA_ITEMS = [
     desc: "Rosa chicle y menta para jugar feliz.",
   },
   {
+    id: "tema-legendario", tipo: "tema", cat: "Temas", nombre: "Tema Legendario", icono: "💎", precio: 15200,
+    desc: "👑 LA JOYA: tema animado exclusivo +25% XP para siempre, +5 fichas por partida y corona en tu perfil.",
+  },
+  {
     id: "boost-xp", tipo: "boost", cat: "Boosts", nombre: "Doble XP ×2", icono: "⚡", precio: 500,
     desc: "Gana el doble de XP en todos los juegos durante 30 minutos.",
   },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GameShell from "./GameShell";
 import { TIENDA_ITEMS, cargarTienda, comprar, dobleXpActivo, fichasX2Activo, minutosRestantes, escudosRestantes } from "../suite/tienda";
-import { cargarBilletera, apostar, cobrar, fijarLimite, perdidoHoy, MONEDA } from "../suite/billetera";
+import { cargarBilletera, apostar, cobrar, MONEDA } from "../suite/billetera";
 import { cargarProgreso, guardarProgreso } from "../suite/progreso";
 import { sfx } from "../suite/sonido";
 
@@ -20,15 +20,13 @@ export default function Tienda() {
   const [cat, setCat] = useState("Todo");
   const [aviso, setAviso] = useState("");
   const [tipoAviso, setTipoAviso] = useState("");
-  const [limite, setLimite] = useState(() => cargarBilletera().limitePerdida ?? 1000);
-  const [perdido, setPerdido] = useState(() => perdidoHoy());
 
   useEffect(() => {
-    const fb = e => { setSaldo(e.detail.saldo); setPerdido(perdidoHoy()); };
+    const fb = e => setSaldo(e.detail.saldo);
     const ft = e => setInv(e.detail);
     window.addEventListener("aplm-billetera", fb);
     window.addEventListener("aplm-tienda", ft);
-    const id = setInterval(() => { setInv(cargarTienda()); setPerdido(perdidoHoy()); }, 30000);
+    const id = setInterval(() => setInv(cargarTienda()), 30000);
     return () => {
       window.removeEventListener("aplm-billetera", fb);
       window.removeEventListener("aplm-tienda", ft);
@@ -71,12 +69,6 @@ export default function Tienda() {
     else decir(true, `✅ ¡${item.nombre} conseguido! Actívalo en Tema visual.`);
   }
 
-  function guardarLimite() {
-    const v = fijarLimite(limite);
-    setLimite(v);
-    decir(true, v === 0 ? "Límite quitado. Juega con cabeza. 🧠" : `⛔ Límite diario: no podrás perder más de ${v} fichas al día.`);
-  }
-
   const items = TIENDA_ITEMS.filter(i => cat === "Todo" || catDe(i) === cat);
   const xpMin = minutosRestantes("boost-xp");
   const fichasMin = minutosRestantes("boost-fichas");
@@ -107,9 +99,10 @@ export default function Tienda() {
           const activoBoost = item.id === "boost-fichas" ? fichasX2Activo()
             : item.tipo === "boost" ? dobleXpActivo() : false;
           return (
-            <article key={item.id} className={`tienda-card${owned ? " owned" : ""}`}>
+            <article key={item.id} className={`tienda-card${owned ? " owned" : ""}${item.id === "tema-legendario" ? " legendario" : ""}`}>
               <span className="tienda-icono" aria-hidden>{item.icono}</span>
               <h4>{item.nombre}</h4>
+              {item.id === "tema-legendario" && <span className="chip victoria">👑 EDICIÓN LEGENDARIA</span>}
               <p>{item.desc}</p>
               {activoBoost && <span className="chip victoria">⚡ Activo</span>}
               {owned
@@ -120,17 +113,6 @@ export default function Tienda() {
             </article>
           );
         })}
-      </div>
-      <div className="tienda-responsable">
-        <h4>🧠 Juego responsable</h4>
-        <p>Hoy vas <b>{perdido}</b> en pérdidas. Pon tu tope diario:</p>
-        <div className="fila-botones">
-          <input type="number" value={limite} min={0} step={100} max={100000}
-            onChange={e => setLimite(e.target.value)} aria-label="Límite diario de pérdidas"
-            style={{ width: 110, fontSize: "1rem", padding: "8px 10px", borderRadius: 10, textAlign: "center" }} />
-          <button className="btn-suave" onClick={guardarLimite}>Fijar tope</button>
-          <span className="chip">0 = sin tope</span>
-        </div>
       </div>
     </GameShell>
   );

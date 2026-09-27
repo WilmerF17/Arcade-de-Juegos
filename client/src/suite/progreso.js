@@ -146,6 +146,12 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
   // Temporada semanal: XP ×2 (se acumula con el desafío: ¡×4!)
   const esTemp = (prev.temporada?.juegos || []).includes(juegoId);
   if (esTemp) xpGanado *= 2;
+  // Perks legendarios (Tema Legendario de la tienda): +25% XP para siempre
+  let vip = false;
+  try {
+    vip = (cargarTienda().comprados || []).includes("tema-legendario");
+  } catch { /* noop */ }
+  if (vip) xpGanado = Math.ceil(xpGanado * 1.25);
   // Potenciador de la tienda: doble XP si está activo
   let dobleXp = false;
   try {
@@ -208,5 +214,5 @@ export function sumarPartida(prev, { juegoId, puntos = 0, victoria = false, esDe
     }
   }
   guardarProgreso(prog);
-  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado, dobleXp, escudoUsado, misionesNuevas, tempX2: esTemp };
+  return { prog, subioNivel: despues > antes, nuevosLogros, xpGanado, dobleXp, escudoUsado, misionesNuevas, tempX2: esTemp, vip };
 }

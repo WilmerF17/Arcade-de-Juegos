@@ -5,7 +5,7 @@ import { MONEDA } from "../suite/billetera";
 import { sfx } from "../suite/sonido";
 import {
   listarPerfiles, perfilActivo, crearPerfil, cambiarPerfil,
-  renombrarPerfil, borrarPerfil, resumenPerfil, EMOJIS, MAX_PERFILES,
+  renombrarPerfil, borrarPerfil, resumenPerfil, tieneEnPerfil, EMOJIS, MAX_PERFILES,
 } from "../suite/perfiles";
 
 /** Recarga la app en el inicio con el perfil ya cambiado. */
@@ -90,7 +90,7 @@ export default function Perfiles() {
                 </>
               ) : (
                 <>
-                  <h4>{p.nombre} {esActivo && <span className="chip">✅ Jugando</span>}</h4>
+                  <h4>{p.nombre}{tieneEnPerfil(p.id, "tema-legendario") ? " 👑" : ""} {esActivo && <span className="chip">✅ Jugando</span>}</h4>
                   <p>Nivel {nivel} · {res.xp} XP · {MONEDA} {res.saldo}</p>
                   <div className="fila-botones">
                     {!esActivo && <button className="btn-principal" onClick={() => entrar(p.id)}>▶️ Jugar</button>}

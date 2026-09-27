@@ -153,6 +153,18 @@ export function borrarPerfil(id) {
   return { ok: true };
 }
 
+/** ¿Tiene ese perfil (activo o guardado) un artículo de la tienda? */
+export function tieneEnPerfil(idPerfil, itemId) {
+  try {
+    const e = cargarEstado();
+    const foto = idPerfil === e.activo ? fotoActual() : e.datos[idPerfil] || {};
+    const t = JSON.parse(foto["aplm-tienda-v1"] || "{}");
+    return (t.comprados || []).includes(itemId);
+  } catch {
+    return false;
+  }
+}
+
 /** Resumen para vistas (progreso y fichas del snapshot, sin tocar lo cargado). */
 export function resumenPerfil(id) {
   const e = cargarEstado();

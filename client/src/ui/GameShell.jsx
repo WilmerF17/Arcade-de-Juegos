@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { registrar } from "../api";
 import { cobrar } from "../suite/billetera";
-import { fichasX2Activo } from "../suite/tienda";
+import { fichasX2Activo, tienes } from "../suite/tienda";
 import { cargarProgreso, sumarPartida } from "../suite/progreso";
 import { sfx } from "../suite/sonido";
 import { Icono, iconoDeTitulo } from "./Iconos";
@@ -47,13 +47,14 @@ export function useRegistro(nombreJuego, juegoId = null) {
       extra = { xpGanado: r.xpGanado, subioNivel: r.subioNivel, nuevosLogros: r.nuevosLogros, dobleXp: r.dobleXp, escudoUsado: r.escudoUsado, misionesNuevas: r.misionesNuevas, tempX2: r.tempX2 };
       window.dispatchEvent(new CustomEvent("arcade-progreso", { detail: r.prog }));
     } catch { /* noop */ }
-    // Economía: cada partida paga fichas para la tienda (+5, +15 si ganas; ×2 con el boost)
-    let fichasX2 = false;
+    // Economía: cada partida paga fichas (+5, +15 si ganas; ×2 con boost; +5 si eres legendario)
+    let fichasX2 = false, esVip = false;
     try { fichasX2 = fichasX2Activo(); } catch { /* noop */ }
-    if (extra) extra.fichasX2 = fichasX2;
-    try { cobrar((5 + (ganadas > 0 ? 10 : 0)) * (fichasX2 ? 2 : 1)); } catch { /* noop */ }
+    try { esVip = tienes("tema-legendario"); } catch { /* noop */ }
+    if (extra) { extra.fichasX2 = fichasX2; extra.vip = esVip || extra.vip; }
+    try { cobrar((5 + (ganadas > 0 ? 10 : 0) + (esVip ? 5 : 0)) * (fichasX2 ? 2 : 1)); } catch { /* noop */ }
 
-    const trozoXp = extra ? ` · +${extra.xpGanado} XP⚡${extra.dobleXp ? " (×2)" : ""}${extra.subioNivel ? " · ¡NIVEL UP! 🎆" : ""}${extra.escudoUsado ? " · 🛡️ escudo usado" : ""}${extra.fichasX2 ? " · 🪙×2" : ""}` : "";
+    const trozoXp = extra ? ` · +${extra.xpGanado} XP⚡${extra.dobleXp ? " (×2)" : ""}${extra.subioNivel ? " · ¡NIVEL UP! 🎆" : ""}${extra.escudoUsado ? " · 🛡️ escudo usado" : ""}${extra.fichasX2 ? " · 🪙×2" : ""}${extra.vip ? " · 💎 +25%" : ""}` : "";
     const trozoLogros = extra?.nuevosLogros?.length
       ? ` · 🏅 ${extra.nuevosLogros.map(l => l.nombre).join(", ")}` : "";
     const trozoMisiones = extra?.misionesNuevas?.length

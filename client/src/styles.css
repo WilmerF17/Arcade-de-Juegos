@@ -1276,6 +1276,30 @@ body[data-tema="dulce"] {
 }
 body[data-tema="dulce"] { background: radial-gradient(1000px 500px at 80% -10%, rgba(236,72,153,.14), transparent 60%), radial-gradient(900px 500px at 10% 0%, rgba(20,184,166,.12), transparent 60%), var(--bg); }
 body[data-tema="dulce"] .lateral { background: rgba(255, 240, 246, .85); }
+/* Tema Legendario (15.200): fondo animado de joya con destellos */
+body[data-tema="legendario"] {
+  --bg: #0a0618; --bg-soft: #150c30; --bg-card: #1c1040; --bg-hover: #2a1660;
+  --border: #8b5cf6; --texto: #f5efff; --texto-suave: #c4b0f0;
+  --principal: #f0abfc; --principal-2: #ffd319; --exito: #4ade80; --aviso: #ffd319;
+  --sombra: 0 10px 36px rgba(240, 171, 252, 0.35);
+  background:
+    radial-gradient(800px 340px at 50% -10%, rgba(240,171,252,.28), transparent 65%),
+    radial-gradient(1000px 520px at 85% 110%, rgba(255,211,25,.14), transparent 60%),
+    radial-gradient(900px 520px at 8% 100%, rgba(34,211,238,.14), transparent 60%),
+    linear-gradient(135deg, #0a0618, #1c1040 50%, #0a0618);
+  background-size: auto, auto, auto, 220% 220%;
+  animation: leg-fondo 14s ease infinite;
+}
+@keyframes leg-fondo { 0%,100% { background-position: 0 0, 0 0, 0 0, 0% 40%; } 50% { background-position: 0 0, 0 0, 0 0, 100% 60%; } }
+body[data-tema="legendario"] .lateral { background: rgba(10, 6, 24, .88); border-color: #8b5cf6; }
+body[data-tema="legendario"] .logo-orb { box-shadow: 0 0 24px rgba(255,211,25,.55); }
+body[data-tema="legendario"] .lat-avatar { background: linear-gradient(135deg, #f0abfc, #ffd319); }
+/* Card legendaria en la tienda */
+.tienda-card.legendario {
+  border: 2px solid #ffd319;
+  background: linear-gradient(135deg, rgba(255,211,25,.12), rgba(240,171,252,.10)), var(--bg-soft);
+  box-shadow: 0 0 22px rgba(255,211,25,.25);
+}
 
 /* Selector de apuesta */
 .apuesta-fila { align-items: center; }
