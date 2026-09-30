@@ -19,6 +19,7 @@ export default defineConfig({
         // (Vite 8/rolldown exige forma de función.)
         manualChunks: id => {
           if (id.includes("node_modules/react")) return "vendor";
+          if (id.includes("/src/suite/")) return "suite";
           return undefined;
         },
       },

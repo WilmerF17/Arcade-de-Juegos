@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { JUEGOS, CATEGORIAS, TEMAS } from "./games/GAMES";
 import Marcador from "./games/Marcador";
 import { getStats } from "./api";
@@ -33,7 +33,14 @@ function leerFavs() {
 export default function App() {
   const [activo, setActivo] = useState(() => window.location.hash.replace("#", "") || "inicio");
   const [busqueda, setBusqueda] = useState("");
+  const busquedaDiferida = useDeferredValue(busqueda);
   const [filtroCat, setFiltroCat] = useState("todas");
+  const [ordenCartas, setOrdenCartas] = useState("relevancia");
+  const [limite, setLimite] = useState(48);
+  const [compacta, setCompacta] = useState(() => {
+    try { return localStorage.getItem("arcade-vista") === "compacta"; } catch { return false; }
+  });
+  const [verArriba, setVerArriba] = useState(false);
   const [tema, setTema] = useState(() => localStorage.getItem("arcade-tema") || "neon");
   const [fondo, setFondo] = useState(() => {
     const g = localStorage.getItem("arcade-fondo") || "aurora";
@@ -151,8 +158,10 @@ export default function App() {
   function ir(id) {
     setActivo(id);
     setMenuAbierto(false);
+    setLimite(48);
     sfx.clic();
     window.location.hash = id === "inicio" ? "" : id;
+    if (id === "inicio") window.scrollTo({ top: 0 });
   }
 
   function toggleFav(id, e) {
@@ -265,9 +274,33 @@ export default function App() {
 
   // Hash externo (atrás/adelante del navegador)
   useEffect(() => {
-    const fn = () => setActivo(window.location.hash.replace("#", "") || "inicio");
+    const fn = () => { setActivo(window.location.hash.replace("#", "") || "inicio"); setLimite(48); };
     window.addEventListener("hashchange", fn);
     return () => window.removeEventListener("hashchange", fn);
+  }, []);
+
+  // Título por juego (detalle PC/móvil + SEO de pestaña)
+  useEffect(() => {
+    const j = JUEGOS[activo];
+    document.title = j
+      ? `${j.nombre} · ArcadePaLoMuchacho`
+      : activo === "marcador"
+        ? "Marcador · ArcadePaLoMuchacho"
+        : `ArcadePaLoMuchacho · ${totalJuegos} minijuegos gratis en español`;
+  }, [activo, totalJuegos]);
+
+  // Vista compacta persistente + botón "volver arriba" (móvil y PC)
+  useEffect(() => {
+    try { localStorage.setItem("arcade-vista", compacta ? "compacta" : "amplia"); } catch { /* noop */ }
+  }, [compacta]);
+  useEffect(() => {
+    setLimite(48);
+  }, [filtroCat, busquedaDiferida]);
+  useEffect(() => {
+    const fn = () => setVerArriba(window.scrollY > 600);
+    fn();
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
   }, []);
 
   const totalPartidas = useMemo(
@@ -275,7 +308,8 @@ export default function App() {
     [stats]
   );
 
-  const filtrados = useMemo(() => {
+  // Búsqueda diferida: escribir no bloquea el render de las 285 cartas (PC y móvil)
+  const filtradosBase = useMemo(() => {
     let ids = Object.keys(JUEGOS);
     if (filtroCat === "favs") ids = ids.filter(id => favs.includes(id));
     else if (filtroCat === "nuevos") ids = ids.filter(id => !(prog.porJuego || {})[id]);
@@ -284,14 +318,27 @@ export default function App() {
       const cat = CATEGORIAS.find(c => c.id === filtroCat);
       ids = cat ? cat.juegos : ids;
     }
-    if (busqueda.trim()) {
-      const b = busqueda.toLowerCase();
+    if (busquedaDiferida.trim()) {
+      const b = busquedaDiferida.toLowerCase();
       ids = ids.filter(id =>
         JUEGOS[id].nombre.toLowerCase().includes(b) || JUEGOS[id].tag.toLowerCase().includes(b)
       );
     }
     return ids;
-  }, [busqueda, filtroCat, favs, prog]);
+  }, [busquedaDiferida, filtroCat, favs, prog]);
+
+  // Orden de cartas (relevancia = orden del catálogo)
+  const filtrados = useMemo(() => {
+    const ids = [...filtradosBase];
+    if (ordenCartas === "az") ids.sort((a, b) => JUEGOS[a].nombre.localeCompare(JUEGOS[b].nombre, "es"));
+    else if (ordenCartas === "record") ids.sort((a, b) => ((stats[JUEGOS[b].nombre]?.mejor) || 0) - ((stats[JUEGOS[a].nombre]?.mejor) || 0));
+    else if (ordenCartas === "recientes") {
+      const pos = new Map((prog.ultimos || []).map((id, i) => [id, i]));
+      ids.sort((a, b) => (pos.has(a) ? pos.get(a) : 999) - (pos.has(b) ? pos.get(b) : 999));
+    }
+    return ids;
+  }, [filtradosBase, ordenCartas, stats, prog]);
+  const visibles = useMemo(() => filtrados.slice(0, limite), [filtrados, limite]);
 
   const { nivel, enNivel, need } = nivelDe(prog.xp || 0);
   const famDelJuego = useMemo(() => {
@@ -566,6 +613,7 @@ export default function App() {
                   <div><b>{CATEGORIAS.length}</b><span>categorías</span></div>
                   <div><b>{totalPartidas}</b><span>partidas</span></div>
                   <div><b>Nv.{nivel}</b><span>{prog.xp || 0} XP</span></div>
+                  <div><b>{Math.round((probados / totalJuegos) * 100)}%</b><span>{probados}/{totalJuegos} probados</span></div>
                 </div>
               </div>
               <div className="hero-art" aria-hidden>
@@ -592,8 +640,22 @@ export default function App() {
 
             <section className="seccion-cartas">
               <h3>{filtroCat === "todas" ? "Todos los juegos" : filtroCat === "favs" ? "⭐ Favoritos" : filtroCat === "nuevos" ? "✨ Sin probar" : filtroCat === "temporada" ? "🔥 Temporada ×2" : CATEGORIAS.find(c => c.id === filtroCat)?.nombre} <small>({filtrados.length})</small></h3>
-              <div className="grid-cartas">
-                {filtrados.map(id => {
+              <div className="barra-herramientas" role="toolbar" aria-label="Orden y vista de juegos">
+                <label className="chip">Orden:{" "}
+                  <select value={ordenCartas} onChange={e => setOrdenCartas(e.target.value)} aria-label="Ordenar juegos">
+                    <option value="relevancia">Relevancia</option>
+                    <option value="az">A → Z</option>
+                    <option value="record">Récord</option>
+                    <option value="recientes">Recientes</option>
+                  </select>
+                </label>
+                <button className={`chip-cat${compacta ? " on" : ""}`} onClick={() => setCompacta(!compacta)} aria-pressed={compacta} title="Vista compacta: más juegos por pantalla">
+                  {compacta ? "🔍 Vista amplia" : "🗂️ Vista compacta"}
+                </button>
+                <span className="chip">Mostrando <b>{visibles.length}/{filtrados.length}</b></span>
+              </div>
+              <div className={`grid-cartas${compacta ? " compacta" : ""}`}>
+                {visibles.map(id => {
                   const j = JUEGOS[id];
                   const s = stats[j.nombre];
                   const esDesafio = prog.desafio?.juego === id && !prog.desafio?.hecho;
@@ -628,7 +690,14 @@ export default function App() {
                   );
                 })}
               </div>
-              {filtrados.length === 0 && <p className="aviso info">{filtroCat === "favs" ? "Sin favoritos todavía: pulsa ☆ en cualquier juego." : `Sin resultados para “${busqueda}”.`}</p>}
+              {filtrados.length === 0 && <p className="aviso info">{filtroCat === "favs" ? "Sin favoritos todavía: pulsa ☆ en cualquier juego." : `Sin resultados para “${busquedaDiferida}”.`}</p>}
+              {visibles.length < filtrados.length && (
+                <div className="fila-botones" style={{ justifyContent: "center", marginTop: 14 }}>
+                  <button className="btn-suave" onClick={() => setLimite(l => l + 48)}>
+                    Mostrar más ({filtrados.length - visibles.length} restantes)
+                  </button>
+                </div>
+              )}
             </section>
           </div>
         )}
@@ -678,19 +747,24 @@ export default function App() {
       )}
       {/* Nav inferior móvil: pulgar, 4 destinos, siempre visible */}
       <nav className="nav-movil" aria-label="Navegación principal">
-        <button className={activo === "inicio" ? "on" : ""} onClick={() => ir("inicio")} aria-label="Inicio">
-          <span className="ico">🏠</span>Inicio
+        <button className={activo === "inicio" ? "on" : ""} onClick={() => ir("inicio")} aria-label="Ir al inicio" aria-current={activo === "inicio" ? "page" : undefined}>
+          <span className="ico" aria-hidden>🏠</span>Inicio
         </button>
-        <button onClick={aleatorio} aria-label="Juego aleatorio">
-          <span className="ico">🎲</span>Azar
+        <button onClick={aleatorio} aria-label="Jugar un juego aleatorio">
+          <span className="ico" aria-hidden>🎲</span>Azar
         </button>
-        <button onClick={irABuscar} aria-label="Buscar juego">
-          <span className="ico">🔍</span>Buscar
+        <button onClick={irABuscar} aria-label="Buscar un juego">
+          <span className="ico" aria-hidden>🔍</span>Buscar
         </button>
-        <button className={activo === "marcador" ? "on" : ""} onClick={() => ir("marcador")} aria-label="Marcador">
-          <span className="ico">🏆</span>Récords
+        <button className={activo === "marcador" ? "on" : ""} onClick={() => ir("marcador")} aria-label="Ver marcador y récords" aria-current={activo === "marcador" ? "page" : undefined}>
+          <span className="ico" aria-hidden>🏆</span>Récords
         </button>
       </nav>
+      {verArriba && (
+        <button className="btn-arriba" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Volver arriba">
+          ↑
+        </button>
+      )}
       {mostrarBannerAuto && (
         <div className="banner-instalar">
           <span style={{ fontSize: "1.6rem" }}>📲</span>

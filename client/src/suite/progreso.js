@@ -64,7 +64,9 @@ export const LOGROS = [
   { id: "fiebreoro", nombre: "Fiebre del oro", desc: "Acumula 5000 XP", test: p => (p.xp || 0) >= 5000 },
   { id: "manitas", nombre: "Manitas de oro", desc: "Oro en 1 juego (15 partidas)", test: p => Object.values(p.porJuego || {}).some(n => n >= 15) },
   { id: "diamante", nombre: "Diamante", desc: "Diamante en 1 juego (30 partidas)", test: p => Object.values(p.porJuego || {}).some(n => n >= 30) },
-  { id: "coleccionista", nombre: "Coleccionista de oros", desc: "Oro en 5 juegos", test: p => Object.values(p.porJuego || {}).filter(n => n >= 15).length >= 5 },
+  { id: "coleccionista-oros", nombre: "Coleccionista de oros", desc: "Oro en 5 juegos", test: p => Object.values(p.porJuego || {}).filter(n => n >= 15).length >= 5 },
+  { id: "erudito", nombre: "Erudito", desc: "Prueba 80 juegos distintos", test: p => Object.keys(p.porJuego || {}).length >= 80 },
+  { id: "ultra", nombre: "Súper arcade", desc: "Juega 250 partidas", test: p => (p.partidas || 0) >= 250 },
 ];
 
 export function desafioDelDia(ids) {

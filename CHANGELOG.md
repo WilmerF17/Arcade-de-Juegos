@@ -1,5 +1,20 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.15.0 (2026-09-30) — Más rápido, más contenido e interfaces al día
+- **+6 juegos (285)**: Quiz Mates ➗, Quiz Inglés 🇬🇧 y Quiz Código 💻;
+  Verdad Arte 🎨, Verdad Cine 🎬 y Verdad Naturaleza 🌿.
+- **Optimización**: búsqueda diferida (escribir no congela las 285 cartas),
+  paginación de 48 en 48, suite en chunk propio cacheable y animaciones
+  pesadas apagadas en móvil (menos tirones y batería).
+- **Interfaces PC y móvil**: barra de orden (relevancia/A-Z/récord/recientes),
+  vista compacta persistente, contador visible, botón volver-arriba ↑,
+  título por juego en la pestaña, % probado en el hero y nav inferior
+  con estado accesible.
+- **Detalles**: logro duplicado `coleccionista` corregido
+  (ahora `coleccionista-oros`) + 2 logros nuevos: Erudito (80 juegos)
+  y Súper arcade (250 partidas). Manifiesto a 285.
+- PWA SW `aplm-v33`.
+
 ## v2.14.0 (2026-09-27) — Más contenido y casa limpia
 - **+2 juegos (279)**: Verdad Espacio 🚀 y Verdad Tecnología 💻.
 - **Respaldo completo**: exportar/importar ahora incluye fondo, música,

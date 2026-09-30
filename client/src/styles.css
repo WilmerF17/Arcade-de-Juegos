@@ -1462,3 +1462,78 @@ body[data-tema="legendario"] .lat-avatar { background: linear-gradient(135deg, #
 .bj-pips { display: flex; gap: 5px; }
 .bj-pip { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); }
 .bj-pip.on { background: var(--aviso); border-color: var(--aviso); box-shadow: 0 0 8px var(--aviso); }
+
+/* ============================================================
+   v2.15 — Orden, vista compacta, paginación y pulido PC/Móvil
+   ============================================================ */
+.barra-herramientas {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: 0 0 12px;
+}
+.barra-herramientas .chip select {
+  background: transparent; color: inherit; border: none; font: inherit;
+  cursor: pointer; max-width: 130px;
+}
+.barra-herramientas .chip select option { color: #111; }
+
+/* Vista compacta: más juegos por pantalla (PC y móvil) */
+.grid-cartas.compacta { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.grid-cartas.compacta .carta-banner { height: 64px; }
+.grid-cartas.compacta .carta-emoji { font-size: 1.7rem; }
+.grid-cartas.compacta .carta-cuerpo { padding: 8px 10px 10px; }
+.grid-cartas.compacta .carta-cuerpo h4 { font-size: 0.82rem; }
+.grid-cartas.compacta .carta-cuerpo p { display: none; }
+.grid-cartas.compacta .carta-jugar { font-size: 0.74rem; }
+
+/* Botón volver arriba (pulgar en móvil, ratón en PC) */
+.btn-arriba {
+  position: fixed; right: 16px; bottom: 92px; z-index: 56;
+  width: 48px; height: 48px; border-radius: 50%; padding: 0;
+  font-size: 1.3rem; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, var(--principal), var(--principal-2));
+  color: #fff; box-shadow: 0 10px 28px rgba(0,0,0,.45);
+}
+.btn-arriba:hover { filter: brightness(1.12); }
+@media (min-width: 901px) {
+  .btn-arriba { bottom: 24px; }
+}
+
+/* ---- PC: respiro extra en pantallas grandes ---- */
+@media (min-width: 901px) {
+  .contenido { max-width: 1120px; }
+  .barra-herramientas { position: sticky; top: 0; z-index: 4; padding: 8px 0;
+    background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); }
+  .grid-cartas.compacta { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+}
+@media (min-width: 1400px) {
+  .contenido { max-width: 1320px; }
+  .grid-cartas.compacta { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+
+/* ---- Móvil: barra de herramientas fija, GPU aliviada ---- */
+@media (max-width: 900px) {
+  .barra-herramientas {
+    position: sticky; top: 60px; z-index: 40;
+    padding: 8px 2px; margin: 0 -2px 10px;
+    background: color-mix(in srgb, var(--bg-soft) 92%, transparent);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  /* El blur fijo funde la GPU gama baja: fondo opaco en el cajón y barras */
+  .lateral, .barra-movil, .nav-movil { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .lateral { background: var(--bg-soft); }
+  .grid-cartas.compacta { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .grid-cartas.compacta .carta-banner { height: 58px; }
+  .grid-cartas.compacta .carta-cuerpo h4 { font-size: 0.72rem; }
+  /* Brillos animados apagados en móvil: ahorran batería y evitan tirones */
+  .gameshell::after, .hero-btns .btn-principal::after, .hero-btns .btn-exito::after,
+  .btn-descargar::after { animation: none; opacity: 0; }
+  /* Nav inferior con estado activo más claro (pulgar) */
+  .nav-movil button.on { box-shadow: inset 0 2px 0 var(--principal); }
+}
+@media (max-width: 380px) {
+  .grid-cartas.compacta { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .barra-herramientas .chip { font-size: 0.74rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-arriba { transition: none; }
+}
