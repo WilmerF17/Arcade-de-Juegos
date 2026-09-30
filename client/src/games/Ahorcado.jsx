@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const PALABRAS = {
   animales: ["elefante", "murcielago", "tortuga", "jirafa", "rinoceronte", "mariposa", "delfin", "canguro", "aguilucho"],
@@ -17,12 +18,14 @@ export default function Ahorcado() {
   const [letra, setLetra] = useState("");
   const [usadas, setUsadas] = useState([]);
   const [pista, setPista] = useState("");
+  const [mejor, setMejor] = useState(null);
   const juegoRef = useRef(null);
   const usadasRef = useRef([]);
   juegoRef.current = juego;
   usadasRef.current = usadas;
 
   function empezar() {
+    sfx.clic();
     const cats = Object.keys(PALABRAS);
     const cat = cats[Math.floor(Math.random() * cats.length)];
     const lista = PALABRAS[cat];
@@ -42,6 +45,7 @@ export default function Ahorcado() {
     const l = (lRaw || "").replace(/ñ/g, "n").toLowerCase().slice(0, 1);
     if (!j || j.fin || !l || !/[a-z]/.test(l)) return;
     if (usadasAhora.includes(l)) return;
+    sfx.clic();
     if (j.secreto.includes(l)) {
       const nuevas = [...usadasAhora, l];
       usadasRef.current = nuevas;
@@ -50,6 +54,8 @@ export default function Ahorcado() {
       if (todas) {
         const p = Math.max(50 - 5 * j.fallos, 10);
         registrarPunt(p, 1);
+        sfx.bien();
+        setMejor(m => (m == null || j.fallos < m ? j.fallos : m));
         const fin = { ...j, fin: true, ganado: true };
         juegoRef.current = fin;
         setJuego(fin);
@@ -68,6 +74,7 @@ export default function Ahorcado() {
         juegoRef.current = nj;
         setJuego(nj);
         registrarPunt(0, 0);
+        sfx.mal();
       } else {
         juegoRef.current = nj;
         setJuego(nj);
@@ -82,9 +89,12 @@ export default function Ahorcado() {
     if (v.length > 1) {
       const j = juegoRef.current;
       if (!j || j.fin) return;
+      sfx.clic();
       if (v === j.secreto) {
         const p = Math.max(50 - 5 * j.fallos, 10);
         registrarPunt(p, 1);
+        sfx.bien();
+        setMejor(m => (m == null || j.fallos < m ? j.fallos : m));
         const fin = { ...j, fin: true, ganado: true };
         juegoRef.current = fin;
         setJuego(fin);
@@ -97,6 +107,7 @@ export default function Ahorcado() {
           juegoRef.current = nj;
           setJuego(nj);
           registrarPunt(0, 0);
+          sfx.mal();
         } else {
           juegoRef.current = nj;
           setJuego(nj);
@@ -109,11 +120,19 @@ export default function Ahorcado() {
 
   const probarRef = useRef(probarLetra);
   probarRef.current = probarLetra;
+  const empezarRef = useRef(empezar);
+  empezarRef.current = empezar;
 
-  // Teclado físico directo (cuando no se escribe en el input)
+  // Teclado físico directo (cuando no se escribe en el input) + ENTER/ESPACIO nueva partida
   useEffect(() => {
     const fn = e => {
-      if (escribiendo() || !juegoRef.current || juegoRef.current.fin) return;
+      if (escribiendo()) return;
+      if ((e.key === "Enter" || e.key === " ") && (!juegoRef.current || juegoRef.current.fin)) {
+        e.preventDefault();
+        empezarRef.current();
+        return;
+      }
+      if (!juegoRef.current || juegoRef.current.fin) return;
       if (/^[a-zA-ZñÑ]$/.test(e.key)) probarRef.current(e.key);
     };
     window.addEventListener("keydown", fn);
@@ -123,18 +142,34 @@ export default function Ahorcado() {
 
   const dibujos = ["", "   ___", "   ___ \n     |", "   ___ \n     |\n     O", "   ___ \n     |\n     O\n    /|\\", "   ___ \n     |\n     O\n    /|\\\n    /", "   ___ \n     |\n     O\n    /|\\\n    / \\"];
   const fallos = juego?.fallos ?? 0;
+  const descubiertas = juego ? juego.secreto.split("").filter(l => usadas.includes(l.replace(/ñ/g, "n"))).length : 0;
+  const totalLetras = juego ? juego.secreto.length : 0;
+  const pctPalabra = totalLetras ? Math.round((descubiertas / totalLetras) * 100) : 0;
+  const resultadoBanner = juego?.fin ? { mensaje: juego.ganado ? mensaje : `Era "${juego.secreto}". ${mensaje}`, tipo } : null;
 
   return (
     <GameShell titulo="Ahorcado" emoji="💀"
-      descripcion="Teclado físico o en pantalla · adivina antes de 6 fallos.">
-      <div className="fila-botones">
-        <button className="btn-exito" onClick={empezar}>{juego ? "Reiniciar" : "Empezar"}</button>
-      </div>
+      descripcion="Teclado físico o en pantalla · adivina antes de 6 fallos."
+      stats={[
+        { icono: "❌", etiqueta: "Fallos", valor: juego ? `${fallos}/${maxFallos}` : "—" },
+        { icono: "🔤", etiqueta: "Letras", valor: usadas.length },
+        { icono: "📚", etiqueta: "Categoría", valor: juego ? juego.cat : "—" },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : `${mejor} fallos` },
+      ]}
+      acciones={<button className="btn-exito" onClick={empezar}>{juego ? "↻ Reiniciar (ENTER)" : "▶ Empezar"}</button>}
+      resultado={resultadoBanner}
+      ayuda={<>
+        <p><b>Objetivo:</b> adivina la palabra secreta antes de acumular <b>6 fallos</b>. Cada fallo dibuja una parte del ahorcado.</p>
+        <p><b>Controles:</b> escribe con el <b>teclado físico</b> (<kbd>A</kbd>–<kbd>Z</kbd>, <kbd>Ñ</kbd>) o clica las teclas en pantalla. Escribe una palabra completa en el cuadro y pulsa <kbd>Enter</kbd> para arriesgar. Con <kbd>Enter</kbd>/<kbd>Espacio</kbd> empiezas una partida nueva.</p>
+        <p><b>Puntuación:</b> al ganar obtienes <b>50 − 5 por fallo</b> (mínimo 10). Perder da 0 puntos pero registra la partida.</p>
+        <p><b>Consejo:</b> empieza por las vocales <b>A, E, O</b> y las consonantes frecuentes <b>S, R, N, L</b>; arriesga la palabra entera solo si estás casi seguro.</p>
+      </>}>
       {juego && (
         <div style={{ display: "flex", gap: 26, flexWrap: "wrap" }}>
           <pre style={{ fontSize: "1.05rem", color: "var(--peligro)", fontWeight: 700 }}>{dibujos[juego.fin && !juego.ganado ? 6 : fallos]}</pre>
-          <div>
+          <div style={{ flex: 1, minWidth: 240 }}>
             <p>Categoría: <b>{juego.cat}</b> · Fallos <b style={{ color: "var(--peligro)" }}>{fallos}</b>/{maxFallos}</p>
+            <div className="xp-bar fina" aria-label="Progreso de la palabra"><div style={{ width: `${pctPalabra}%` }} /></div>
             <p style={{ letterSpacing: 6, fontSize: "1.8rem", fontWeight: 800 }}>
               {juego.secreto.split("").map((l, i) => (juego.fin ? l : usadas.includes(l.replace(/ñ/g, "n")) ? l : "_")).join(" ")}
             </p>
@@ -158,7 +193,6 @@ export default function Ahorcado() {
               </div>
             )}
             {pista && <p style={{ marginTop: 14 }}>{pista}</p>}
-            {juego.fin && <div className={`mensaje-final ${tipo}`}>{juego.ganado ? mensaje : `Era "${juego.secreto}". ${mensaje}`}</div>}
           </div>
         </div>
       )}

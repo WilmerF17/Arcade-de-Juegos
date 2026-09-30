@@ -15,6 +15,7 @@ export default function Stack() {
   ptsRef.current = puntos; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     st.current = { niveles: [{ x: W / 2 - 90, w: 180 }], movil: { x: 0, w: 180, dir: 1 }, vel: 3 };
     ptsRef.current = 0; setPuntos(0); setJugando(true);
   }
@@ -97,7 +98,18 @@ export default function Stack() {
   }, []);
 
   return (
-    <GameShell titulo="Torre Stack" emoji="🏗️" descripcion="ESPACIO/clic suelta · centra cada bloque · 8+ niveles = victoria.">
+    <GameShell titulo="Torre Stack" emoji="🏗️" descripcion="ESPACIO/clic suelta · centra cada bloque · 8+ niveles = victoria."
+      stats={[
+        { etiqueta: "Altura", valor: puntos },
+        { icono: "🏆", etiqueta: "Mejor", valor: Math.max(mejor, puntos) },
+        { etiqueta: "Meta", valor: 8 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> apila bloques centrados y llega a 8+ de altura.</span>
+        <span><b>Controles:</b> <kbd>Espacio</kbd>/<kbd>Enter</kbd> o <kbd>clic</kbd>/<kbd>toque</kbd> soltar el bloque.</span>
+        <span><b>Puntos:</b> +1 por piso (×10 en ranking); fallar el corte termina.</span>
+        <span><b>Consejo:</b> suelta cuando el bloque venga hacia el centro, no al borde.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Altura <b>{puntos}</b></span>

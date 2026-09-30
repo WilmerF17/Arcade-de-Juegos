@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
+import { escribiendo } from "../suite/teclado";
 
-/* Motor de ordenación: toca los elementos en orden. 6 rondas. */
+/* Motor de ordenación: toca los elementos en orden. */
+const CONF_DIF = { 1: { rondas: 4, nombre: "Fácil" }, 2: { rondas: 6, nombre: "Normal" }, 3: { rondas: 8, nombre: "Difícil" } };
 function OrdenaVBase({ titulo, emoji, generar, etiqueta, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
   const [items, setItems] = useState([]);
@@ -10,9 +12,11 @@ function OrdenaVBase({ titulo, emoji, generar, etiqueta, tira, iconoFondo }) {
   const [pos, setPos] = useState(0);
   const [ronda, setRonda] = useState(0);
   const [errores, setErrores] = useState(0);
+  const [dif, setDif] = useState(2);
+  const RONDAS = CONF_DIF[dif].rondas;
   const [jugando, setJugando] = useState(false);
-
-  const RONDAS = 6;
+  const jugandoRef = useRef(false);
+  jugandoRef.current = jugando;
 
   function nuevaRonda(nr) {
     const { items: it, orden: od } = generar();
@@ -24,6 +28,19 @@ function OrdenaVBase({ titulo, emoji, generar, etiqueta, tira, iconoFondo }) {
     nuevaRonda(1);
     sfx.clic();
   }
+
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if ((e.key === "Enter" || e.key === " ") && !jugandoRef.current) {
+        e.preventDefault();
+        empezar();
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dif]);
 
   function tocar(v) {
     if (!jugando) return;
@@ -48,18 +65,33 @@ function OrdenaVBase({ titulo, emoji, generar, etiqueta, tira, iconoFondo }) {
     }
   }
 
+  const pct = ronda > 0 ? Math.round(((ronda - 1) / RONDAS) * 100 + (pos / Math.max(1, orden.length) / RONDAS) * 100) : 0;
+
   return (
     <GameShell titulo={titulo} emoji={emoji}
-      descripcion={`${etiqueta} · 6 rondas · los errores restan.`}
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>
-        <span className="chip">Van: <b>{pos}/{orden.length}</b></span>
-        <span className="chip">❌ <b>{errores}</b></span>
-      </div>
+      descripcion={`${etiqueta} · ${RONDAS} rondas · los errores restan.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "🏁", etiqueta: "Ronda", valor: `${ronda}/${RONDAS}` },
+        { icono: "👆", etiqueta: "Van", valor: `${pos}/${orden.length || "–"}` },
+        { icono: "❌", etiqueta: "Fallos", valor: errores },
+        { icono: "🎯", etiqueta: "Dificultad", valor: CONF_DIF[dif].nombre },
+      ]}
+      acciones={!jugando ? <button className="btn-principal" onClick={empezar}>{ronda > 0 ? "↻ Otra vez" : "▶ Empezar"}</button> : null}
+      ayuda={<>
+        <span>Toca los elementos en orden (<b>{etiqueta}</b>). Cada ronda completa avanza; los toques correctos se atenúan.</span>
+        <span>Controles: ratón o dedo sobre cada ficha. <kbd>ENTER</kbd> o <kbd>ESPACIO</kbd> empieza o reintenta.</span>
+        <span>Puntuación: base <b>800 − 40 por error</b> (mínimo 60); con <b>2 o menos errores</b> cuenta como victoria. Dificultad: <b>Fácil 4 rondas</b>, <b>Normal 6</b>, <b>Difícil 8</b>.</span>
+        <span>Consejo: localiza el siguiente antes de tocar para no sumar errores tontos.</span>
+      </>}>
       {!jugando && ronda === 0 && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
+        <div className="fila-botones" role="group" aria-label="Dificultad">
+          {[1, 2, 3].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} onClick={() => { setDif(d); sfx.clic(); }}>{d === 1 ? "🟢 Fácil" : d === 2 ? "🟡 Normal" : "🔴 Difícil"}</button>
+          ))}
+        </div>
       )}
+      <div className="xp-bar fina" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progreso"><div style={{ width: `${pct}%` }} /></div>
       {jugando && (
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
           {items.map(v => (
@@ -71,9 +103,6 @@ function OrdenaVBase({ titulo, emoji, generar, etiqueta, tira, iconoFondo }) {
         </div>
       )}
       <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && ronda > 0 && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
-      )}
     </GameShell>
   );
 }

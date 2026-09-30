@@ -82,7 +82,9 @@ function SerpBase({ titulo, modo, tira, iconoFondo }) {
   return (
     <GameShell titulo={titulo} emoji="🐍"
       descripcion={dosJ ? "Duelo local J1 🔵 vs J2 🔴 · escaleras suben, serpientes bajan." : "Tú 🔵 contra la IA 🔴 · escaleras suben, serpientes bajan."}
-      tira={tira} iconoFondo={iconoFondo}>
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[{ etiqueta: "🔵 Tú", valor: yo }, { etiqueta: "🔴 Rival", valor: rival }, { etiqueta: "Dado", valor: dado ?? "—" }]}
+      ayuda={<div><p><b>Objetivo:</b> llegar exacto a 30 (si te pasas, rebotas).</p><p><b>Cómo jugar:</b> sin fichas: lanza el dado y avanza. Escaleras suben, serpientes bajan.</p><ul><li>Escaleras: 3→12 · 8→18 · 15→25 · Serpientes: 6→2 · 17→9 · 24→14 · 28→19</li><li>Victoria = 500 pts · derrota = 120 pts</li></ul><p><b>Controles:</b> Empezar · Lanzar.</p><p><b>Consejo:</b> pura suerte: juega una partida rápida y descansa.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🔵 <b>{yo}</b></span>
         <span className="chip">🔴 <b>{rival}</b></span>

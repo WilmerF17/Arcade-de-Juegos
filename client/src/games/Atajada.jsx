@@ -38,7 +38,9 @@ export default function Atajada() {
   return (
     <GameShell titulo="Atajada" emoji="🧤"
       descripcion="Adivina el lado del penalti · 5 tiros · 3+ atajadas es victoria."
-      tira="linear-gradient(90deg,#22c55e,#0ea5e9)" iconoFondo="linear-gradient(135deg,#22c55e,#0ea5e9)">
+      tira="linear-gradient(90deg,#22c55e,#0ea5e9)" iconoFondo="linear-gradient(135deg,#22c55e,#0ea5e9)"
+      stats={[{ etiqueta: "Tiro", valor: `${Math.min(tiro + (jugando ? 1 : 0), TIROS)}/${TIROS}` }, { etiqueta: "Atajadas", valor: atajadas }, { etiqueta: "Estado", valor: jugando ? "En juego" : "Listo" }]}
+      ayuda={<div><p><b>Objetivo:</b> atajar 3+ de 5 penaltis adivinando el lado (puntos = atajadas×100).</p><p><b>Cómo jugar:</b> sin fichas: elige ⬅️ ⬆️ ➡️. Si coincides con el rival, atajas.</p><ul><li>Cada atajada = 100 pts · 3+ = victoria</li></ul><p><b>Controles:</b> botones de lado · Empezar.</p><p><b>Consejo:</b> quédate con un lado favorito y cambia poco: es 1/3 por tiro.</p></div>}>
       <div className="fila-botones">
         <span className="chip">Tiro: <b>{Math.min(tiro + (jugando ? 1 : 0), TIROS)}/{TIROS}</b></span>
         <span className="chip">🧤 Atajadas: <b>{atajadas}</b></span>

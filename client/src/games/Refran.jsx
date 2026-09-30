@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
-/* Motor de refranes: completa la frase con la opción correcta. 8 rondas. */
-/* item: [inicio, [opciones], ok, final] */
+/* Motor de refranes: completa la frase con la opción correcta. */
+const DIFS = { "Fácil": { n: 4 }, "Normal": { n: 6 }, "Difícil": { n: 8 } };
 function RefranBase({ titulo, emoji, banco, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
+  const [dif, setDif] = useState("Normal");
+  const RONDAS = DIFS[dif].n;
   const [ronda, setRonda] = useState(null);
   const [idx, setIdx] = useState(0);
   const [puntos, setPuntos] = useState(0);
   const [racha, setRacha] = useState(0);
   const [jugando, setJugando] = useState(false);
-
-  const RONDAS = 8;
 
   function nuevaRonda() {
     const r = banco[Math.floor(Math.random() * banco.length)];
@@ -45,32 +45,66 @@ function RefranBase({ titulo, emoji, banco, tira, iconoFondo }) {
     }
   }
 
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === "Enter" || e.key === " ") && !jugando) {
+        e.preventDefault();
+        empezar();
+        return;
+      }
+      if (!jugando || !ronda) return;
+      const k = String(e.key).toLowerCase();
+      let i = -1;
+      if (["1", "2", "3", "4"].includes(e.key)) i = parseInt(e.key, 10) - 1;
+      else if (["a", "b", "c", "d"].includes(k)) i = "abcd".indexOf(k);
+      if (i >= 0 && i < ronda[1].length) elegir(i);
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const pct = RONDAS ? Math.round(((idx - (jugando ? 1 : 0)) / RONDAS) * 100) : 0;
   return (
     <GameShell titulo={titulo} emoji={emoji}
-      descripcion="Completa el refrán · 8 rondas · cultura popular."
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <span className="chip">Refrán: <b>{jugando ? `${idx}/${RONDAS}` : "—"}</b></span>
-        <span className="chip">Puntos: <b>{puntos}</b></span>
-        <span className="chip">🔥 <b>{racha}</b></span>
-      </div>
-      {!jugando && idx === 0 && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
+      descripcion={`Completa el refrán · ${RONDAS} rondas · cultura popular.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "💬", etiqueta: "Refrán", valor: jugando ? `${idx}/${RONDAS}` : "—" },
+        { icono: "⭐", etiqueta: "Puntos", valor: puntos },
+        { icono: "🔥", etiqueta: "Racha", valor: racha },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: dif },
+      ]}
+      resultado={{ mensaje, tipo }}
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> completa cada refrán con su final correcto durante {RONDAS} rondas.</p>
+          <p><b>Controles:</b> ratón o táctil tocando la opción · teclado <kbd>1</kbd>–<kbd>4</kbd> para elegir, <kbd>Enter</kbd>/<kbd>Espacio</kbd> para empezar.</p>
+          <p><b>Puntuación:</b> +100 por acierto más bonus de racha. Victoria con 500+ puntos.</p>
+          <p><b>Consejo:</b> los refranes riman o tienen ritmo: léelos en voz alta y el final correcto sonará mejor.</p>
+        </div>
       )}
+      acciones={(
+        <>
+          {["Fácil", "Normal", "Difícil"].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} disabled={jugando} onClick={() => { setDif(d); sfx.clic(); }}>{d}</button>
+          ))}
+          {!jugando && <button className="btn-principal" onClick={empezar}>{idx > 0 ? "↻ Otra vez" : "▶ Empezar"}</button>}
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pct}%` }} /></div>
       {jugando && ronda && (
         <>
           <p style={{ textAlign: "center", fontSize: "1.25rem" }}>💬 <b>{ronda[0]} …{ronda[3] ? ` ${ronda[3]}` : ""}</b></p>
           <div style={{ display: "grid", gap: 8 }}>
             {ronda[1].map((op, i) => (
-              <button key={i} className="btn-suave" style={{ padding: "12px" }} onClick={() => elegir(i)}>{op}</button>
+              <button key={i} className="trivia-op" style={{ padding: "12px" }} onClick={() => elegir(i)}><span className="op-letra"><kbd>{i + 1}</kbd></span> {op}</button>
             ))}
           </div>
         </>
       )}
-      <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && idx > 0 && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
-      )}
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

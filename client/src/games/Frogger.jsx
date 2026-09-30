@@ -21,6 +21,7 @@ export default function Frogger() {
   st.current = { rana, puntos, vidas, nivel, jugando };
 
   function empezar() {
+    sfx.clic();
     carriles.current = [5, 4, 3, 2, 1].map((y, i) => filaCoches(y, i % 2 ? 1 : -1, 0.06 + nivel * 0.012 + i * 0.008));
     st.current = { rana: [8, 4], puntos: 0, vidas: 3, nivel: 1, jugando: true };
     setRana([8, 4]); setPuntos(0); setVidas(3); setNivel(1); setJugando(true);
@@ -84,7 +85,18 @@ export default function Frogger() {
 
   const EMOJI = { 5: "🚗", 4: "🚕", 3: "🚙", 2: "🚌", 1: "🚛" };
   return (
-    <GameShell titulo="Rana Crossing" emoji="🐸" descripcion="Flechas/WASD · cruza 5 carriles y llega arriba · 3 vidas.">
+    <GameShell titulo="Rana Crossing" emoji="🐸" descripcion="Flechas/WASD · cruza 5 carriles y llega arriba · 3 vidas."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "Nivel", valor: nivel },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> cruza los 5 carriles y llega a la meta sin que te atropellen.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> saltar, <kbd>Enter</kbd> empezar o botones táctiles.</span>
+        <span><b>Puntos:</b> +50 × nivel por cada meta; cada meta sube el nivel y la velocidad.</span>
+        <span><b>Consejo:</b> avanza por huecos y espera el carril rápido antes de cruzar.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

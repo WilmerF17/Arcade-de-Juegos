@@ -82,6 +82,17 @@ export default function Ruta() {
   return (
     <GameShell titulo="Ruta Exprés" emoji="🧭"
       descripcion="Memoriza las flechas y repítelas con teclado o botones · 3 vidas."
+      stats={[
+        { etiqueta: "Nivel", valor: `${nivel} flechas` },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+        { etiqueta: "Puntos", valor: puntos },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> memoriza la ruta y repítela; crece 1 flecha por nivel.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd><kbd>←</kbd>/<kbd>W</kbd><kbd>D</kbd><kbd>S</kbd><kbd>A</kbd> o botones táctiles.</span>
+        <span><b>Puntos:</b> +25 × nivel por ruta completa; fallar quita 1 vida.</span>
+        <span><b>Consejo:</b> recita la ruta en voz alta mientras la miras.</span>
+      </>}
       tira="linear-gradient(90deg,#22d3ee,#22c55e)" iconoFondo="linear-gradient(135deg,#22d3ee,#22c55e)">
       <div className="fila-botones">
         <span className="chip">Nivel: <b>{nivel} flechas</b></span>

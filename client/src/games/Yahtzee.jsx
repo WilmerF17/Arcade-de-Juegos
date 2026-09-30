@@ -30,7 +30,9 @@ export default function Yahtzee() {
   const [tiradas, setTiradas] = useState(0);
   const [usadas, setUsadas] = useState({});
   const [fin, setFin] = useState(false);
+  const [mejor, setMejor] = useState(null);
   const st = useRef({ tiradas, usadas }); st.current = { tiradas, usadas };
+  const finRef = useRef(false); finRef.current = fin;
 
   function lanzar() {
     if (fin || st.current.tiradas >= 3) return;
@@ -47,36 +49,66 @@ export default function Yahtzee() {
     setBloq([false, false, false, false, false]);
     setTiradas(0); st.current.tiradas = 0;
     setDados([1, 2, 3, 4, 5]);
-    if (p >= 25) sfx.bien();
+    if (p >= 25) sfx.bien(); else sfx.clic();
     if (Object.keys(nu).length >= CATS.length) {
       const total = Object.values(nu).reduce((a, b) => a + b, 0);
       setFin(true);
+      finRef.current = true;
+      setMejor(m => (m == null || total > m ? total : m));
       registrarPunt(total, total >= 200 ? 1 : 0);
-      sfx.record();
+      if (total >= 200) sfx.record(); else sfx.bien();
     }
   }
+  function reiniciar() {
+    sfx.clic();
+    setDados([1, 2, 3, 4, 5]);
+    setBloq([false, false, false, false, false]);
+    setTiradas(0); st.current.tiradas = 0;
+    setUsadas({}); st.current.usadas = {};
+    setFin(false); finRef.current = false;
+  }
   const lanzarRef = useRef(lanzar); lanzarRef.current = lanzar;
+  const reiniciarRef = useRef(reiniciar); reiniciarRef.current = reiniciar;
   useEffect(() => {
     const fn = e => {
       if (escribiendo()) return;
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); lanzarRef.current(); }
-      if (e.key >= "1" && e.key <= "5") { const i = Number(e.key) - 1; setBloq(b => b.map((v, k) => (k === i ? !v : v))); }
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (finRef.current) reiniciarRef.current();
+        else lanzarRef.current();
+      }
+      if (e.key >= "1" && e.key <= "5") { const i = Number(e.key) - 1; setBloq(b => b.map((v, k) => (k === i ? !v : v))); sfx.clic(); }
     };
     window.addEventListener("keydown", fn);
     return () => window.removeEventListener("keydown", fn);
   }, [bloq, dados]);
 
   const total = Object.values(usadas).reduce((a, b) => a + b, 0);
+  const hechas = Object.keys(usadas).length;
+  const pct = Math.round((hechas / CATS.length) * 100);
   return (
-    <GameShell titulo="Dados Cinco" emoji="🎲" descripcion="ENTER lanzar (3/turno) · 1-5 bloquear · elige categoría.">
-      <div className="fila-botones">
-        <button className="btn-principal" onClick={lanzar} disabled={fin || tiradas >= 3}>🎲 Lanzar ({tiradas}/3)</button>
-        <span className="chip">Total <b>{total}</b></span>
-        <span className="chip">Ronda <b>{Object.keys(usadas).length + 1}/{CATS.length}</b></span>
-      </div>
+    <GameShell titulo="Dados Cinco" emoji="🎲" descripcion="ENTER lanzar (3/turno) · 1-5 bloquear · elige categoría."
+      stats={[
+        { icono: "🎲", etiqueta: "Tirada", valor: `${tiradas}/3` },
+        { icono: "⭐", etiqueta: "Total", valor: total },
+        { icono: "📋", etiqueta: "Ronda", valor: `${hechas + 1}/${CATS.length}` },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : mejor },
+      ]}
+      acciones={<>
+        <button className="btn-principal" onClick={lanzar} disabled={fin || tiradas >= 3}>🎲 Lanzar ({tiradas}/3 · ENTER)</button>
+        <button className="btn-exito" onClick={reiniciar}>↻ Nueva partida</button>
+      </>}
+      resultado={fin ? { mensaje, tipo } : null}
+      ayuda={<>
+        <p><b>Objetivo:</b> completa las 12 categorías con la mejor puntuación. Tienes <b>3 tiradas por turno</b> y puedes bloquear dados (clic o <kbd>1</kbd>–<kbd>5</kbd>).</p>
+        <p><b>Controles:</b> <kbd>Enter</kbd>/<kbd>Espacio</kbd> lanzar (o reiniciar al terminar), <kbd>1</kbd>–<kbd>5</kbd> bloquear. Táctil: toca los dados y la categoría.</p>
+        <p><b>Puntuación:</b> Unos–Seises suman sus dados; Trío/Póker suman todo si hay 3+/4+ iguales; Full 25 · Escalera 30 · Cinco iguales 50 · Chance suma libre. Total ≥200 cuenta como victoria.</p>
+        <p><b>Consejo:</b> no quemes el Chance pronto: guárdalo para una mala tirada y prioriza Full/Escalera cuando los dados casi encajan.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
       <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
         {dados.map((d, i) => (
-          <div key={i} onClick={() => setBloq(b => b.map((v, k) => (k === i ? !v : v)))}
+          <div key={i} onClick={() => { setBloq(b => b.map((v, k) => (k === i ? !v : v))); sfx.clic(); }}
             className="dado" style={{ outline: bloq[i] ? "3px solid var(--exito)" : undefined, cursor: "pointer", opacity: tiradas === 0 ? 0.5 : 1 }}>
             {caras[d]}
           </div>
@@ -94,7 +126,7 @@ export default function Yahtzee() {
           );
         })}
       </div>
-      {fin && <div className={`mensaje-final ${tipo}`}>🎉 ¡Partida completa! {mensaje}</div>}
+      {fin && <p style={{ fontWeight: 800, textAlign: "center" }}>🎉 ¡Partida completa! Total {total}</p>}
     </GameShell>
   );
 }

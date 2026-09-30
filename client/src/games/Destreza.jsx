@@ -71,10 +71,15 @@ function DestrezaMotor({ nombre, emoji, descripcion, ayuda, tiempo, objetivo, in
       stats={[
         { etiqueta: "Dianas", valor: `${puntos}/${objetivo}` },
         { etiqueta: "Tiempo", valor: `${quedan}s` },
-        ...(fallos ? [{ etiqueta: "Fallos", valor: fallos }] : []),
+        ...(fallos ? [{ etiqueta: "Fallos", valor: fallos }] : [{ etiqueta: "Meta", valor: objetivo }]),
       ]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>{ayuda}</span>}>
+      ayuda={<>
+        <span><b>Objetivo:</b> {descripcion} Toca solo la casilla encendida.</span>
+        <span><b>Controles:</b> <kbd>toque</kbd>/<kbd>clic</kbd> en la cuadrícula 3×3; sin teclado, ideal móvil.</span>
+        <span><b>Puntos:</b> dianas×5 − fallos×2; llegar a la meta es victoria. {ayuda}</span>
+        <span><b>Consejo:</b> mantén el dedo flotando en el centro para recortar distancia.</span>
+      </>}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, maxWidth: 340, margin: "0 auto" }}>
         {Array.from({ length: 9 }, (_, pos) => {
           const on = activas.some(d => d.pos === pos);

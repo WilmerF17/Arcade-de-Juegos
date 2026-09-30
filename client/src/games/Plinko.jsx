@@ -20,6 +20,7 @@ export default function Plinko() {
 
   function soltar() {
     if (cayendo) return;
+    sfx.clic();
     const r = apostarConAviso(apuesta, setAviso);
     if (!r.ok) return;
     setSlot(null);
@@ -49,9 +50,9 @@ export default function Plinko() {
   return (
     <GameShell titulo="Plinko" emoji="🔮"
       descripcion="Suelta la bola entre los clavos: cae en un premio de ×0.5 a ×10."
-      stats={[{ icono: "🪙", valor: saldo }, ...(slot != null ? [{ etiqueta: "Premio", valor: `×${MULTS[slot]}` }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(slot != null ? [{ etiqueta: "Premio", valor: `×${MULTS[slot]}` }] : [{ etiqueta: "Premio", valor: "—" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>La bola rebota al azar a izquierda o derecha en cada fila. Los bordes pagan <b>×10</b>, el centro <b>×0.5</b>.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> que la bola caiga en el mejor multiplicador tras 6 filas.</p><p><b>Apuesta:</b> se descuenta al soltar; premio = floor(apuesta×mult). Si premio &gt; apuesta ganas, si no pierdes.</p><ul><li>Slots: ×10 · ×3 · ×1.5 · ×0.5 · ×1.5 · ×3 · ×10</li></ul><p><b>Controles:</b> botón Soltar. La bola rebota 50/50 a cada lado.</p><p><b>Consejo:</b> el centro paga poco: juega pocas bolas seguidas y para a tiempo.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={cayendo} />
       <div className="plinko-tab" aria-hidden>
         {Array.from({ length: FILAS }, (_, f) => (

@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const ABC = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("");
 
-/* Ahorcado por categorías: 6 fallos, palabra aleatoria del banco. */
+/* Ahorcado por categorías: palabra aleatoria del banco. */
+const DIFS = { "Fácil": { max: 8 }, "Normal": { max: 6 }, "Difícil": { max: 4 } };
 function AhorBase({ titulo, emoji, banco, pista, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
+  const [dif, setDif] = useState("Normal");
+  const MAX = DIFS[dif].max;
   const [palabra, setPalabra] = useState("");
   const [usadas, setUsadas] = useState([]);
   const [fallos, setFallos] = useState(0);
   const [jugando, setJugando] = useState(false);
-
-  const MAX = 6;
 
   function empezar() {
     setPalabra(banco[Math.floor(Math.random() * banco.length)].toUpperCase());
@@ -21,8 +22,9 @@ function AhorBase({ titulo, emoji, banco, pista, tira, iconoFondo }) {
   }
 
   const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const visible = l => norm(palabra).split("").map((c, i) => (usadas.includes(c) ? palabra[i] : "_")).join(" ");
+  const visible = () => norm(palabra).split("").map((c, i) => (usadas.includes(c) ? palabra[i] : "_")).join(" ");
   const gano = palabra && norm(palabra).split("").every(c => usadas.includes(c));
+  const aciertos = usadas.filter(u => norm(palabra).includes(u)).length;
 
   function letra(l) {
     if (!jugando || usadas.includes(l)) return;
@@ -46,23 +48,63 @@ function AhorBase({ titulo, emoji, banco, pista, tira, iconoFondo }) {
     }
   }
 
-  const etapas = ["🙂", "😐", "😟", "😨", "😰", "🥵", "💀"];
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === "Enter" || e.key === " ") && !jugando) {
+        e.preventDefault();
+        empezar();
+        return;
+      }
+      if (!jugando) return;
+      const k = String(e.key).toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      if (/^[A-ZÑ]$/.test(k) && ABC.includes(k)) letra(k);
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const etapas = ["🙂", "😐", "😟", "😨", "😰", "🥵", "💀", "👻", "☠️"];
+  const cara = etapas[Math.min(fallos, etapas.length - 1)];
+  const pctVida = MAX ? Math.round(((MAX - fallos) / MAX) * 100) : 0;
 
   return (
     <GameShell titulo={titulo} emoji={emoji}
-      descripcion={`${pista} · ${MAX} fallos permitidos.`}
-      tira={tira} iconoFondo={iconoFondo}>
+      descripcion={`${pista} · ${MAX} fallos permitidos (${dif}).`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "❤️", etiqueta: "Vidas", valor: `${MAX - fallos}/${MAX}` },
+        { icono: "🔤", etiqueta: "Letras", valor: aciertos },
+        { icono: "❌", etiqueta: "Fallos", valor: `${fallos}/${MAX}` },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: dif },
+      ]}
+      resultado={{ mensaje, tipo }}
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> {pista}. Toca letras hasta completar la palabra antes de agotar tus {MAX} fallos.</p>
+          <p><b>Controles:</b> ratón o táctil en el abecedario · teclado físico <kbd>A</kbd>–<kbd>Z</kbd> para probar letras, <kbd>Enter</kbd>/<kbd>Espacio</kbd> para empezar.</p>
+          <p><b>Puntuación:</b> victoria = 300 más 50 por cada vida restante. Derrota = 10 por letra acertada.</p>
+          <p><b>Consejo:</b> empieza por vocales y letras frecuentes (E, A, S, R) para abrir la palabra.</p>
+        </div>
+      )}
+      acciones={(
+        <>
+          {["Fácil", "Normal", "Difícil"].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} disabled={jugando} onClick={() => { setDif(d); sfx.clic(); }}>{d}</button>
+          ))}
+          {!jugando && <button className="btn-principal" onClick={empezar}>{palabra ? "↻ Otra palabra" : "▶ Empezar"}</button>}
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pctVida}%` }} /></div>
       <div className="fila-botones">
-        <span className="chip" style={{ fontSize: "1.6rem" }}>{etapas[fallos]}</span>
+        <span className="chip" style={{ fontSize: "1.6rem" }}>{cara}</span>
         <span className="chip">Fallos: <b>{fallos}/{MAX}</b></span>
       </div>
-      {!jugando && !palabra && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
-      )}
       {palabra && (
         <>
           <p style={{ textAlign: "center", fontSize: "2rem", letterSpacing: 4 }}>{jugando || gano ? visible() : palabra.split("").join(" ")}</p>
-          {!jugando && !gano && <p style={{ textAlign: "center" }}>Era: <b>{palabra}</b></p>}
+          {!jugando && !gano && palabra && <p style={{ textAlign: "center" }}>Era: <b>{palabra}</b></p>}
           {jugando && (
             <div style={{ display: "flex", gap: 5, flexWrap: "wrap", justifyContent: "center", maxWidth: 480, margin: "0 auto" }}>
               {ABC.map(l => (
@@ -73,10 +115,7 @@ function AhorBase({ titulo, emoji, banco, pista, tira, iconoFondo }) {
           )}
         </>
       )}
-      <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && palabra && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra palabra</button></div>
-      )}
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

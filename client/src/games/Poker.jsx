@@ -36,26 +36,36 @@ export default function Poker() {
   const [fase, setFase] = useState("cambio"); // cambio -> resultado
   const [creditos, setCreditos] = useState(50);
   const [res, setRes] = useState(null);
+  const [mejor, setMejor] = useState(null);
+  const [manos, setManos] = useState(0);
   const credRef = useRef(50); credRef.current = creditos;
+  const stRef = useRef({ fase });
+  stRef.current = { fase };
 
   function jugar() {
     if (credRef.current < 5) return;
     setCreditos(c => { credRef.current = c - 5; return credRef.current; });
     setMano(mano5()); setSel([false, false, false, false, false]);
     setFase("cambio"); setRes(null);
+    stRef.current.fase = "cambio";
     sfx.clic();
   }
   function cambiar() {
+    if (stRef.current.fase !== "cambio") return;
+    sfx.clic();
     const palos = ["♠", "♥", "♦", "♣"];
     const vs = ["J", "Q", "K", "A", "9", "10"];
     setMano(m => m.map((c, i) => (sel[i] ? c : { v: vs[Math.floor(Math.random() * vs.length)], p: palos[Math.floor(Math.random() * palos.length)], id: Math.random() })));
     setFase("resultado");
+    stRef.current.fase = "resultado";
+    setManos(m => m + 1);
     setTimeout(() => {
       setMano(m => {
         const [nombre, premio] = evaluar(m);
         setRes({ nombre, premio });
         if (premio > 0) {
           setCreditos(c => { credRef.current = c + premio; return credRef.current; });
+          setMejor(mm => (mm == null || premio > mm ? premio : mm));
           if (premio >= 40) { sfx.record(); registrarPunt(premio, 1); }
           else sfx.moneda();
         } else sfx.mal();
@@ -63,14 +73,52 @@ export default function Poker() {
       });
     }, 50);
   }
+  const jugarRef = useRef(jugar);
+  jugarRef.current = jugar;
+  const cambiarRef = useRef(cambiar);
+  cambiarRef.current = cambiar;
+  const selRef = useRef(null);
+  selRef.current = setSel;
+
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if (e.key >= "1" && e.key <= "5") {
+        if (stRef.current.fase !== "cambio") return;
+        const i = Number(e.key) - 1;
+        selRef.current(s => s.map((v, k) => (k === i ? !v : v)));
+        sfx.clic();
+      } else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (stRef.current.fase === "cambio") cambiarRef.current();
+        else jugarRef.current();
+      } else if (e.key === "n" || e.key === "N") jugarRef.current();
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, [sel]);
+
   return (
-    <GameShell titulo="Video Poker" emoji="🃏" descripcion="Apuesta 5 · conserva con clic o 1-5 · ENTER cambiar.">
-      <div className="fila-botones">
-        <button className="btn-exito" onClick={jugar}>Nueva mano (5 🪙)</button>
-        <span className="chip">🪙 <b>{creditos}</b></span>
-        {res && <span className="chip"><b>{res.nombre}</b> +{res.premio}</span>}
-      </div>
+    <GameShell titulo="Video Poker" emoji="🃏" descripcion="Apuesta 5 · conserva con clic o 1-5 · ENTER cambiar."
+      stats={[
+        { icono: "🪙", etiqueta: "Bote", valor: creditos },
+        { icono: "💸", etiqueta: "Apuesta", valor: 5 },
+        { icono: "🂡", etiqueta: "Manos", valor: manos },
+        { icono: "🏆", etiqueta: "Mejor premio", valor: mejor == null ? "—" : `+${mejor}` },
+      ]}
+      acciones={<>
+        <button className="btn-exito" onClick={jugar}>🃏 Nueva mano (5 🪙 · N)</button>
+        {fase === "cambio" && <button className="btn-principal" onClick={cambiar}>🔄 Cambiar (ENTER)</button>}
+      </>}
+      ayuda={<>
+        <p><b>Objetivo:</b> apuesta <b>5 🪙</b>, conserva (clica) las cartas buenas y cambia el resto una vez. Cobras según la jugada final.</p>
+        <p><b>Controles:</b> clic o <kbd>1</kbd>–<kbd>5</kbd> para conservar/descartar, <kbd>Enter</kbd>/<kbd>Espacio</kbd> para cambiar o repartir, <kbd>N</kbd> nueva mano. Táctil: toca las cartas.</p>
+        <p><b>Premios:</b> Jotas+ 4 · Doble pareja 8 · Trío 12 · Escalera 20 · Color 25 · Full 40 · Póker 80 · Escalera color 100 · Real 250. Premios ≥40 registran ranking.</p>
+        <p><b>Consejo:</b> conserva siempre pareja alta o 4 a color/escalera; si no hay nada, cambia 5 cartas... aquí conserva solo la carta más alta.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${Math.min(100, Math.round((creditos / 100) * 100))}%` }} /></div>
       <div className="mesa-casino" style={{ marginTop: 14 }}>
+        <p style={{ color: "#fff", textAlign: "center", margin: "0 0 8px" }}>🪙 Bote <b>{creditos}</b> · apuesta <b>5</b> {res && <>· <b>{res.nombre}</b> +{res.premio}</>}</p>
         <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
           {mano.map((c, i) => (
             <div key={c.id + "-" + i} onClick={() => fase === "cambio" && setSel(s => s.map((v, k) => (k === i ? !v : v)))}
@@ -80,10 +128,9 @@ export default function Poker() {
             </div>
           ))}
         </div>
-        {fase === "cambio" && <div className="fila-botones" style={{ justifyContent: "center" }}><button className="btn-principal" onClick={cambiar}>🔄 Cambiar (ENTER)</button></div>}
         {res && <p style={{ textAlign: "center", color: "#fff" }}>{res.nombre} → +{res.premio} 🪙</p>}
       </div>
-      {creditos < 5 && <p className="aviso info">Sin créditos: recarga <button className="btn-suave" onClick={() => { setCreditos(50); credRef.current = 50; }}>↻ 50</button></p>}
+      {creditos < 5 && <p className="aviso info">Sin créditos: recarga <button className="btn-suave" onClick={() => { setCreditos(50); credRef.current = 50; sfx.moneda(); }}>↻ 50</button></p>}
       <Resultado mensaje={mensaje} tipo={tipo} />
     </GameShell>
   );

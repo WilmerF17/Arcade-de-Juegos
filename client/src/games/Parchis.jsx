@@ -108,7 +108,9 @@ function ParchisBase({ titulo, modo, tira, iconoFondo }) {
   return (
     <GameShell titulo={titulo} emoji="🎲"
       descripcion={dosJ ? "Duelo local: J1 🔵 y J2 🔴 · elige ficha y lanza." : "Tú 🔵 contra la IA 🔴 · elige ficha y lanza."}
-      tira={tira} iconoFondo={iconoFondo}>
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[{ etiqueta: "🔵 Tú", valor: yo.join(" · ") }, { etiqueta: "🔴 Rival", valor: rival.join(" · ") }, { etiqueta: "Dado", valor: dado ?? "—" }]}
+      ayuda={<div><p><b>Objetivo:</b> llevar una ficha exacta a la meta 20 (si te pasas, rebotas).</p><p><b>Cómo jugar:</b> sin fichas: lanza el dado y elige qué ficha mover. Caer sobre el rival lo captura (vuelve a 0).</p><ul><li>Victoria = 600 pts · derrota = 150 pts</li></ul><p><b>Controles:</b> Empezar · toca tu ficha para lanzar y mover.</p><p><b>Consejo:</b> avanza la ficha más adelantada y busca capturas: valen un turno.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🔵 <b>{yo.join(" · ")}</b></span>
         <span className="chip">🔴 <b>{rival.join(" · ")}</b></span>

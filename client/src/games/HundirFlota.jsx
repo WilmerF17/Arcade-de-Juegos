@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const N = 8;
 const BARCOS = [4, 3, 3, 2, 2];
@@ -39,6 +40,7 @@ export default function HundirFlota() {
   const [fin, setFin] = useState("");
   const [turnoIA, setTurnoIA] = useState(false);
   const [cursor, setCursor] = useState([0, 0]);
+  const [mejor, setMejor] = useState(null);
   const tirosRef = useRef(tiros);
   const tirosIARef = useRef(tirosIA);
   const finRef = useRef(fin);
@@ -53,8 +55,10 @@ export default function HundirFlota() {
   const totalCeldas = BARCOS.reduce((a, b) => a + b, 0);
   const aciertos = tiros.filter(([r, c]) => enemiga.grid[r][c] === 1).length;
   const aciertosIA = tirosIA.filter(([r, c]) => mia.grid[r][c] === 1).length;
+  const pct = Math.round((aciertos / totalCeldas) * 100);
 
   function reiniciar() {
+    sfx.clic();
     const m = colocarBarcos(), e = colocarBarcos();
     setMia(m); setEnemiga(e);
     miaRef.current = m; enemigaRef.current = e;
@@ -63,12 +67,15 @@ export default function HundirFlota() {
     setFin(""); finRef.current = ""; setTurnoIA(false);
     setCursor([0, 0]);
   }
+  const reiniciarRef = useRef(reiniciar);
+  reiniciarRef.current = reiniciar;
 
   function disparar(r, c) {
     if (finRef.current || turnoIA) return;
     if (r < 0 || r >= N || c < 0 || c >= N) return;
     const ya = tirosRef.current.some(([a, b]) => a === r && b === c);
     if (ya) return;
+    sfx.clic();
     const nt = [...tirosRef.current, [r, c]];
     tirosRef.current = nt;
     setTiros(nt);
@@ -76,7 +83,9 @@ export default function HundirFlota() {
     if (hits >= totalCeldas) {
       setFin("victoria");
       finRef.current = "victoria";
+      setMejor(m => (m == null || nt.length < m ? nt.length : m));
       registrarPunt(Math.max(150 - nt.length, 20), 1);
+      sfx.bien();
       return;
     }
     setTurnoIA(true);
@@ -96,6 +105,7 @@ export default function HundirFlota() {
         setFin("derrota");
         finRef.current = "derrota";
         registrarPunt(Math.max(hits * 5, 5), 0);
+        sfx.mal();
       }
       setTurnoIA(false);
     }, 450);
@@ -106,7 +116,13 @@ export default function HundirFlota() {
 
   useEffect(() => {
     const fn = e => {
-      if (escribiendo() || finRef.current) return;
+      if (escribiendo() || finRef.current) {
+        if (finRef.current && !escribiendo() && (e.key === "Enter" || e.key === "n" || e.key === "N" || e.key === " ")) {
+          e.preventDefault();
+          reiniciarRef.current();
+        }
+        return;
+      }
       const d = dirDeTecla(e.key);
       if (d) {
         e.preventDefault();
@@ -150,13 +166,22 @@ export default function HundirFlota() {
   return (
     <GameShell titulo="Hundir la flota" emoji="🚢"
       descripcion="Clic o teclado (flechas/WASD + ENTER). Tocado 🔥, agua 💦."
-      tira="linear-gradient(90deg,#0ea5e9,#1e3a8a,#22d3ee)" iconoFondo="linear-gradient(135deg,#0ea5e9,#1e3a8a)">
-      <div className="fila-botones">
-        <button className="btn-exito" onClick={reiniciar}>⚓ Nueva batalla</button>
-        <span className="chip">Tus impactos: <b>{aciertos}/{totalCeldas}</b></span>
-        <span className="chip">IA: <b>{aciertosIA}/{totalCeldas}</b></span>
-        {turnoIA && <span className="chip">🤖 la IA apunta...</span>}
-      </div>
+      tira="linear-gradient(90deg,#0ea5e9,#1e3a8a,#22d3ee)" iconoFondo="linear-gradient(135deg,#0ea5e9,#1e3a8a)"
+      stats={[
+        { icono: "🎯", etiqueta: "Impactos", valor: `${aciertos}/${totalCeldas}` },
+        { icono: "🤖", etiqueta: "IA", valor: `${aciertosIA}/${totalCeldas}` },
+        { icono: "💣", etiqueta: "Tiros", valor: tiros.length },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : `${mejor} tiros` },
+      ]}
+      acciones={<button className="btn-exito" onClick={reiniciar}>⚓ Nueva batalla (ENTER al fin)</button>}
+      resultado={fin ? { mensaje: fin === "victoria" ? `🏆 ¡Flota enemiga hundida! ${mensaje}` : `💀 Tu flota fue hundida. ${mensaje}`, tipo: fin === "victoria" ? "record" : "perdida" } : null}
+      ayuda={<>
+        <p><b>Objetivo:</b> hunde los 5 barcos enemigos ({totalCeldas} casillas: 4+3+3+2+2) antes de que la IA hunda los tuyos. 🔥 = tocado, 💦 = agua.</p>
+        <p><b>Controles:</b> clica el mar enemigo o mueve el cursor con <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>/<kbd>WASD</kbd> y dispara con <kbd>Enter</kbd>/<kbd>Espacio</kbd>. <kbd>Enter</kbd>/<kbd>N</kbd> reinicia al terminar.</p>
+        <p><b>Puntuación:</b> ganar da <b>150 − nº de tiros</b> (mínimo 20); perder da 5 por impacto logrado.</p>
+        <p><b>Consejo:</b> dispara en damero (casillas alternas) para localizar rápido y remata alrededor del primer 🔥.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
       <div className="flota-tablas" style={{ marginTop: 14 }}>
         <div className="flota-tab">
           <h4>🎯 Mar enemigo <small style={{ color: "var(--texto-suave)" }}>(clica o ENTER)</small></h4>
@@ -168,7 +193,7 @@ export default function HundirFlota() {
           </div>
         </div>
         <div className="flota-tab">
-          <h4>🛡️ Tu flota</h4>
+          <h4>🛡️ Tu flota {turnoIA && <small>· 🤖 la IA apunta...</small>}</h4>
           <div className="tablero" style={{ gridTemplateColumns: `repeat(${N},30px)` }}>
             {Array.from({ length: N * N }, (_, i) => {
               const r = Math.floor(i / N), c = i % N;
@@ -178,9 +203,6 @@ export default function HundirFlota() {
         </div>
       </div>
       {!fin && <p className="aviso-ia">💡 Cursor en [{cursor[0] + 1},{cursor[1] + 1}] · <b>flechas/WASD</b> mover · <b>ENTER</b> disparar.</p>}
-      {fin && <div className={`mensaje-final ${fin === "victoria" ? "record" : "perdida"}`}>
-        {fin === "victoria" ? "🏆 ¡Flota enemiga hundida!" : "💀 Tu flota fue hundida."} {mensaje}
-      </div>}
     </GameShell>
   );
 }

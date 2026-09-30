@@ -35,6 +35,7 @@ export default function Laberinto() {
   const finRef = useRef(false); finRef.current = fin;
 
   function nuevo() {
+    sfx.clic();
     const g = generar();
     setGrid(g); gridRef.current = g;
     setPos([1, 1]); posRef.current = [1, 1];
@@ -81,7 +82,18 @@ export default function Laberinto() {
   }, [pasos, tiempo]);
 
   return (
-    <GameShell titulo="Laberinto" emoji="🧭" descripcion="Flechas o WASD hasta 🏁 · R genera otro.">
+    <GameShell titulo="Laberinto" emoji="🧭" descripcion="Flechas o WASD hasta 🏁 · R genera otro."
+      stats={[
+        { etiqueta: "Pasos", valor: pasos },
+        { etiqueta: "⏱️ Tiempo", valor: `${tiempo}s` },
+        { etiqueta: "Estado", valor: fin ? "¡Meta!" : "En juego" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> llega a la meta 🏁 con los menos pasos y segundos posibles.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> moverse, <kbd>R</kbd>/<kbd>Enter</kbd> nuevo laberinto o botones táctiles.</span>
+        <span><b>Puntos:</b> máx(200 − pasos − tiempo, 30); llegar siempre es victoria.</span>
+        <span><b>Consejo:</b> sigue una pared para no perderte.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-exito" onClick={nuevo}>🔀 Nuevo laberinto</button>
         <span className="chip">Pasos <b>{pasos}</b></span>

@@ -22,6 +22,7 @@ export default function CartaMayor() {
   const [aviso, setAviso] = useState("");
 
   function jugar() {
+    sfx.clic();
     const r = apostarConAviso(apuesta, setAviso);
     if (!r.ok) return;
     const a = carta(), b = carta();
@@ -36,9 +37,9 @@ export default function CartaMayor() {
   return (
     <GameShell titulo="Carta Mayor" emoji="🂡"
       descripcion="Tu carta contra la banca: la más alta gana ×2, el empate devuelve la apuesta."
-      stats={[{ icono: "🪙", valor: saldo }]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(tu ? [{ etiqueta: "Duelo", valor: `${tu.txt} vs ${banca.txt}` }] : [{ etiqueta: "Duelo", valor: "—" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>El As es la carta más alta y el 2 la más baja. Sin decisiones: pura suerte.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> que tu carta supere a la de la banca (As alto, 2 bajo).</p><p><b>Apuesta:</b> se descuenta al repartir. Ganas apuesta×2, el empate te devuelve la apuesta.</p><ul><li>Tu carta &gt; banca = apuesta×2 · empate = devuelve apuesta · menor = pierdes</li></ul><p><b>Controles:</b> botón Repartir.</p><p><b>Consejo:</b> pura suerte sin decisiones: apuesta pequeño y disfruta.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} />
       <div className="bj-cartas" style={{ justifyContent: "center", margin: "10px 0" }}>
         <span className={`btn-carta${tu && rojo(tu.txt) ? " rojo" : ""}`}>{tu ? tu.txt : "?"}</span>

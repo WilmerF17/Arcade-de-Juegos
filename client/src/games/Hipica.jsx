@@ -64,7 +64,9 @@ export default function Hipica() {
   return (
     <GameShell titulo="Hípica" emoji="🐎"
       descripcion="Apuesta al corredor · paga su cuota si gana."
-      tira="linear-gradient(90deg,#16a34a,#eab308)" iconoFondo="linear-gradient(135deg,#16a34a,#eab308)">
+      tira="linear-gradient(90deg,#16a34a,#eab308)" iconoFondo="linear-gradient(135deg,#16a34a,#eab308)"
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Favorito", valor: CABALLOS[elegido].nombre }, ...(fase === "fin" && apuestaEnJuego > 0 ? [{ etiqueta: "Apostado", valor: apuestaEnJuego }] : [{ etiqueta: "Fase", valor: fase }])]}
+      ayuda={<div><p><b>Objetivo:</b> que tu caballo llegue primero a meta 30.</p><p><b>Apuesta:</b> se descuenta al apostar. Premio = apuesta×cuota del caballo.</p><ul><li>Rayo ×2 · Trueno ×3 · Flecha ×4 · Torbellino ×6 · otro ganador = pierdes</li></ul><p><b>Controles:</b> elige apuesta y caballo · botón Apostar.</p><p><b>Consejo:</b> la cuota alta paga más porque gana menos: favorito para durar.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         {fase === "fin" && apuestaEnJuego > 0 && <span className="chip">Apostado: <b>{apuestaEnJuego}</b></span>}
@@ -80,7 +82,7 @@ export default function Hipica() {
           <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
             {CABALLOS.map((c, i) => (
               <button key={c.nombre} className={elegido === i ? "btn-principal" : "btn-suave"}
-                onClick={() => setElegido(i)}>{c.emoji} {c.nombre} ×{c.cuota}</button>
+                onClick={() => { sfx.clic(); setElegido(i); }}>{c.emoji} {c.nombre} ×{c.cuota}</button>
             ))}
           </div>
           <div className="fila-botones">

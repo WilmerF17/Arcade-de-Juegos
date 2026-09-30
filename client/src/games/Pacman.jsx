@@ -33,6 +33,7 @@ export default function Pacman() {
   st.current = { jug, fantasmas, puntos, dots, jugando, fin };
 
   function empezar() {
+    sfx.clic();
     const d = new Set();
     MAPA.forEach((fila, r) => fila.split("").forEach((v, c) => { if (v === ".") d.add(`${r},${c}`); }));
     st.current = { jug: [1, 1], fantasmas: [[7, 7], [7, 1]], puntos: 0, dots: d, jugando: true, fin: null };
@@ -93,7 +94,18 @@ export default function Pacman() {
   }, [jugando]);
 
   return (
-    <GameShell titulo="Comepuntos" emoji="🟡" descripcion="Flechas o WASD · come todo sin que te atrapen.">
+    <GameShell titulo="Comepuntos" emoji="🟡" descripcion="Flechas o WASD · come todo sin que te atrapen."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "Restan", valor: dots.size },
+        { etiqueta: "Estado", valor: jugando ? "Jugando" : fin ? "Fin" : "Listo" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> come todos los puntos del laberinto sin que te atrape un fantasma.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> moverse, <kbd>Enter</kbd> empezar o botones táctiles.</span>
+        <span><b>Puntos:</b> +10 por punto; +100 extra al limpiar todo.</span>
+        <span><b>Consejo:</b> no te encierres en pasillos: cruza por el centro.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

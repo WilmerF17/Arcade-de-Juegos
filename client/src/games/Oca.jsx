@@ -67,6 +67,17 @@ export default function Oca() {
   return (
     <GameShell titulo="La Oca Veloz" emoji="🪿"
       descripcion="Dados contra la IA · ocas +4, puentes +2, calavera al inicio · clava el 24."
+      stats={[
+        { etiqueta: "🧍 Tú", valor: yo },
+        { etiqueta: "🤖 IA", valor: ia },
+        { etiqueta: "🎲 Dado", valor: dado ?? "—" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> llega exacto a la casilla 24 antes que la IA.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd> en Lanzar dado por turnos.</span>
+        <span><b>Puntos:</b> ocas +4, puentes +2, calavera (20) al inicio, pasarse rebota.</span>
+        <span><b>Consejo:</b> con 20 en juego evita tirar alto: el rebote te aleja.</span>
+      </>}
       tira="linear-gradient(90deg,#22c55e,#eab308)" iconoFondo="linear-gradient(135deg,#22c55e,#eab308)">
       <div className="fila-botones">
         <span className="chip">🧍 Tú: <b>{yo}</b></span>

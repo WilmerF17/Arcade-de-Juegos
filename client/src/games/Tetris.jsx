@@ -46,6 +46,7 @@ export default function Tetris() {
   st.current = { tab, pieza, sig, puntos, lineas, nivel, jugando, pausa, fin };
 
   function empezar() {
+    sfx.clic();
     const t = tableroVacio();
     const p = nuevaPieza(), s = nuevaPieza();
     st.current = { tab: t, pieza: p, sig: s, puntos: 0, lineas: 0, nivel: 1, jugando: true, pausa: false, fin: false };
@@ -130,7 +131,18 @@ export default function Tetris() {
   }));
 
   return (
-    <GameShell titulo="Bloques Neón" emoji="🧱" descripcion="Flechas o WASD mover · ↑/W girar · ESPACIO bajar · P pausa.">
+    <GameShell titulo="Bloques Neón" emoji="🧱" descripcion="Flechas o WASD mover · ↑/W girar · ESPACIO bajar · P pausa."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "Líneas", valor: lineas },
+        { etiqueta: "Nivel", valor: nivel },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> completa líneas para sumar y aguantar; el juego acelera por nivel.</span>
+        <span><b>Controles:</b> <kbd>←</kbd><kbd>→</kbd>/<kbd>A</kbd><kbd>D</kbd> mover, <kbd>↓</kbd>/<kbd>S</kbd>/<kbd>Espacio</kbd> bajar, <kbd>↑</kbd>/<kbd>W</kbd>/<kbd>X</kbd> girar, <kbd>P</kbd> pausa, <kbd>Enter</kbd> empezar.</span>
+        <span><b>Puntos:</b> 40/100/300/1200 × nivel por 1/2/3/4 líneas; nivel sube cada 10 líneas.</span>
+        <span><b>Consejo:</b> deja un hueco lateral para el palo largo (Tetris).</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : fin ? "↻ Reintentar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

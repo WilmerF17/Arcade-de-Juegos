@@ -87,7 +87,9 @@ export default function Tragaperras() {
   return (
     <GameShell titulo="Tragaperras" emoji="🎰"
       descripcion="ENTER/ESPACIO para girar · el 7️⃣7️⃣7️⃣ paga 100."
-      tira="linear-gradient(90deg,#f59e0b,#ef4444,#a855f7)" iconoFondo="linear-gradient(135deg,#f59e0b,#ef4444)">
+      tira="linear-gradient(90deg,#f59e0b,#ef4444,#a855f7)" iconoFondo="linear-gradient(135deg,#f59e0b,#ef4444)"
+      stats={[{ icono: "🪙", etiqueta: "Créditos", valor: creditos }, { etiqueta: "Apuesta", valor: apuesta }, { icono: "🔥", etiqueta: "Racha", valor: racha }]}
+      ayuda={<div><p><b>Objetivo:</b> conseguir tríos o parejas en los 3 rodillos.</p><p><b>Apuesta:</b> elige 1, 5 o 10 créditos por giro. El premio se multiplica por (apuesta/5).</p><ul><li>7️⃣7️⃣7️⃣ = 100 · 💎💎💎 = 50 · otro trío = 25 · pareja = 5 · nada = 0</li></ul><p><b>Controles:</b> ENTER/ESPACIO o botón ¡GIRAR! · Recargar devuelve a 50.</p><p><b>Consejo:</b> juega por diversión y recarga sin remordimientos: son créditos ficticios.</p></div>}>
       <div className="tragaperras">
         <div className={`rodillos ${girando ? "girando" : ""} ${flash.includes("MAYOR") ? "premio-mayor" : ""}`}>
           {rod.map((r, i) => <span key={i} className="rodillo">{r}</span>)}
@@ -106,7 +108,7 @@ export default function Tragaperras() {
           <button className="btn-principal btn-palanca" onClick={girar} disabled={girando || creditos < apuesta}>
             {girando ? "🎰 Girando..." : "🎰 ¡GIRAR!"}
           </button>
-          <button className="btn-suave" onClick={() => { setCreditos(50); credRef.current = 50; setRacha(0); }}>↻ Recargar 50</button>
+          <button className="btn-suave" onClick={() => { sfx.clic(); setCreditos(50); credRef.current = 50; setRacha(0); }}>↻ Recargar 50</button>
         </div>
         <div className="tabla-premios">
           <span>7️⃣7️⃣7️⃣ = 100</span><span>💎💎💎 = 50</span><span>trío = 25</span><span>pareja = 5</span>

@@ -16,6 +16,7 @@ export default function Esquiva() {
   ptsRef.current = puntos; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     st.current = { x: W / 2, y: H - 60, mets: [], frame: 0 };
     ptsRef.current = 0; setPuntos(0); setJugando(true);
   }
@@ -24,7 +25,7 @@ export default function Esquiva() {
     const p = ptsRef.current;
     if (p > mejor) { setMejor(p); localStorage.setItem("arcade-esquiva", String(p)); }
     registrarPunt(p, p >= 300 ? 1 : 0);
-    sfx.mal();
+    if (p >= 300) sfx.bien(); else sfx.mal();
   }
 
   useEffect(() => {
@@ -92,7 +93,18 @@ export default function Esquiva() {
   }, []);
 
   return (
-    <GameShell titulo="Esquiva Meteoros" emoji="🚀" descripcion="Flechas o WASD · sobrevive · 1 punto por frame.">
+    <GameShell titulo="Esquiva Meteoros" emoji="🚀" descripcion="Flechas o WASD · sobrevive · 1 punto por frame."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { icono: "🏆", etiqueta: "Mejor", valor: Math.max(mejor, puntos) },
+        { etiqueta: "Estado", valor: jugando ? "Esquivando" : "Parado" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> esquiva los meteoros el mayor tiempo posible.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> moverse, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> +1 por frame; 300+ es victoria.</span>
+        <span><b>Consejo:</b> muévete poco y por abajo, con margen de escape.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

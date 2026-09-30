@@ -31,6 +31,7 @@ export default function PuntoBanco() {
   }
 
   function repartir() {
+    sfx.clic();
     setAviso("");
     const r = apostar(apuesta);
     if (!r.ok) { setAviso(`⛔ ${r.motivo}. Reclama el 🎁 bonus diario.`); sfx.mal(); return; }
@@ -57,7 +58,9 @@ export default function PuntoBanco() {
   return (
     <GameShell titulo="Punto Banco" emoji="🃏"
       descripcion="Jugador ×2 · Banca ×2 · Empate ×9 · mano alta en mod 10 gana."
-      tira="linear-gradient(90deg,#052e16,#22c55e)" iconoFondo="linear-gradient(135deg,#052e16,#22c55e)">
+      tira="linear-gradient(90deg,#052e16,#22c55e)" iconoFondo="linear-gradient(135deg,#052e16,#22c55e)"
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Lado", valor: lado }, ...(manos ? [{ etiqueta: "Mesa", valor: `${total(manos.j)}-${total(manos.b)}` }] : [{ etiqueta: "Mesa", valor: "—" }])]}
+      ayuda={<div><p><b>Objetivo:</b> acertar qué mano suma más en mod 10 (10/figuras = 0, As = 1).</p><p><b>Apuesta:</b> se descuenta al repartir. Premio = apuesta×mult.</p><ul><li>Jugador = ×2 · Banca = ×2 · Empate = ×9 · fallo = pierdes</li><li>Con total ≤ 5 se pide tercera carta</li></ul><p><b>Controles:</b> elige lado y apuesta · botón Repartir.</p><p><b>Consejo:</b> el empate paga ×9 porque es raro: úsalo de vez en cuando.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
       </div>

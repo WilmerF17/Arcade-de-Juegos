@@ -76,7 +76,18 @@ export default function Topo() {
   }, [dorado]);
 
   return (
-    <GameShell titulo="Toca al Topo" emoji="🐹" descripcion="Clic o teclas 1-9 · 30 segundos · el dorado vale 30.">
+    <GameShell titulo="Toca al Topo" emoji="🐹" descripcion="Clic o teclas 1-9 · 30 segundos · el dorado vale 30."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "⏱️ Tiempo", valor: `${tiempo}s` },
+        { icono: "🏆", etiqueta: "Récord", valor: Math.max(record, puntos) },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> golpea topos 30 segundos y suma lo máximo posible.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> o <kbd>1</kbd>–<kbd>9</kbd> golpear, <kbd>Enter</kbd> empezar.</span>
+        <span><b>Puntos:</b> +10 normal, +30 dorado 🌟, −3 por fallo; 150+ es victoria.</span>
+        <span><b>Consejo:</b> mira el centro y usa visión periférica para el dorado.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : tiempo < 30 ? "↻ Otra vez" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

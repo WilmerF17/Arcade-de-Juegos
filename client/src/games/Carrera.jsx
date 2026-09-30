@@ -17,6 +17,7 @@ export default function Carrera() {
   ptsRef.current = puntos; jugRef.current = jugando; velRef.current = vel;
 
   function empezar() {
+    sfx.clic();
     st.current = { x: W / 2, en: [], frame: 0 };
     ptsRef.current = 0; setPuntos(0); setJugando(true);
   }
@@ -25,7 +26,7 @@ export default function Carrera() {
     const p = ptsRef.current;
     if (p > mejor) { setMejor(p); localStorage.setItem("arcade-carrera", String(p)); }
     registrarPunt(p, p >= 400 ? 1 : 0);
-    sfx.mal();
+    if (p >= 400) sfx.bien(); else sfx.mal();
   }
   useEffect(() => {
     const dn = e => {
@@ -91,7 +92,18 @@ export default function Carrera() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <GameShell titulo="Carrera Neón" emoji="🏎️" descripcion="Flechas/WASD · ↑ acelera · esquiva el tráfico.">
+    <GameShell titulo="Carrera Neón" emoji="🏎️" descripcion="Flechas/WASD · ↑ acelera · esquiva el tráfico."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { icono: "🏆", etiqueta: "Mejor", valor: Math.max(mejor, puntos) },
+        { etiqueta: "Ritmo", valor: vel === 1.4 ? "Turbo" : vel === 0.8 ? "Tranquilo" : "Normal" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> esquiva el tráfico y suma distancia sin chocar.</span>
+        <span><b>Controles:</b> <kbd>←</kbd><kbd>→</kbd>/<kbd>A</kbd><kbd>D</kbd> cambiar carril, <kbd>↑</kbd>/<kbd>W</kbd> acelerar, <kbd>↓</kbd>/<kbd>S</kbd> frenar, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> sumas según velocidad; 400+ es victoria.</span>
+        <span><b>Consejo:</b> acelera solo en rectas despejadas.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <select value={vel} onChange={e => setVel(Number(e.target.value))}>

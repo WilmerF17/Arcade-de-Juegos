@@ -17,6 +17,7 @@ export default function Reflejos() {
   tiemposRef.current = tiempos;
 
   function empezar() {
+    sfx.clic();
     clearTimeout(timer.current);
     setTiempos([]);
     tiemposRef.current = [];
@@ -96,6 +97,17 @@ export default function Reflejos() {
   return (
     <GameShell titulo="Reflejos" emoji="⚡"
       descripcion="Clic o ESPACIO/ENTER · toca solo en verde. Media de rondas."
+      stats={[
+        { etiqueta: "Intentos", valor: `${tiempos.length}/${rondas}` },
+        ...(mejor > 0 ? [{ icono: "🏆", etiqueta: "Mejor", valor: `${mejor}ms` }] : [{ etiqueta: "Meta", valor: "<350ms" }]),
+        ...(media > 0 ? [{ etiqueta: "📊 Media", valor: `${media}ms` }] : []),
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> toca lo más rápido posible solo cuando salga el verde.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> o <kbd>Espacio</kbd>/<kbd>Enter</kbd>; tocar en rojo es trampa.</span>
+        <span><b>Puntos:</b> máx(10, 300 − media/2); media &lt;350ms es victoria.</span>
+        <span><b>Consejo:</b> mira el centro y no tensas el dedo antes del verde.</span>
+      </>}
       tira="linear-gradient(90deg,#facc15,#22c55e,#38bdf8)" iconoFondo="linear-gradient(135deg,#facc15,#22c55e)">
       <div className="fila-botones">
         <select value={rondas} onChange={e => setRondas(Number(e.target.value))}>

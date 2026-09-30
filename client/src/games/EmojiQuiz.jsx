@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
-/* Motor "¿qué emoji es?": lee la descripción y elige el emoji. 10 rondas. */
-/* item: [emoji, descripcion] */
+/* Motor "¿qué emoji es?": lee la descripción y elige el emoji. */
+const DIFS = { "Fácil": { n: 6 }, "Normal": { n: 8 }, "Difícil": { n: 10 } };
 function EmojiBase({ titulo, emoji, banco, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
+  const [dif, setDif] = useState("Normal");
+  const RONDAS = Math.min(DIFS[dif].n, banco.length);
   const [ronda, setRonda] = useState(null);
   const [idx, setIdx] = useState(0);
   const [puntos, setPuntos] = useState(0);
   const [racha, setRacha] = useState(0);
   const [jugando, setJugando] = useState(false);
-
-  const RONDAS = 10;
 
   function nuevaRonda() {
     const [e, d] = banco[Math.floor(Math.random() * banco.length)];
@@ -46,32 +46,66 @@ function EmojiBase({ titulo, emoji, banco, tira, iconoFondo }) {
     }
   }
 
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === "Enter" || e.key === " ") && !jugando) {
+        e.preventDefault();
+        empezar();
+        return;
+      }
+      if (!jugando || !ronda) return;
+      const k = String(e.key).toLowerCase();
+      let i = -1;
+      if (["1", "2", "3", "4"].includes(e.key)) i = parseInt(e.key, 10) - 1;
+      else if (["a", "b", "c", "d"].includes(k)) i = "abcd".indexOf(k);
+      if (i >= 0 && i < ronda.opciones.length) elegir(ronda.opciones[i]);
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const pct = RONDAS ? Math.round(((idx - (jugando ? 1 : 0)) / RONDAS) * 100) : 0;
   return (
     <GameShell titulo={titulo} emoji={emoji}
-      descripcion="Lee la descripción y toca su emoji · 10 rondas."
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <span className="chip">Ronda: <b>{jugando ? `${idx}/${RONDAS}` : "—"}</b></span>
-        <span className="chip">Puntos: <b>{puntos}</b></span>
-        <span className="chip">🔥 <b>{racha}</b></span>
-      </div>
-      {!jugando && idx === 0 && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
+      descripcion={`Lee la descripción y toca su emoji · ${RONDAS} rondas.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "😀", etiqueta: "Ronda", valor: jugando ? `${idx}/${RONDAS}` : "—" },
+        { icono: "⭐", etiqueta: "Puntos", valor: puntos },
+        { icono: "🔥", etiqueta: "Racha", valor: racha },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: dif },
+      ]}
+      resultado={{ mensaje, tipo }}
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> lee la descripción y toca el emoji correcto entre 4 opciones durante {RONDAS} rondas.</p>
+          <p><b>Controles:</b> ratón o táctil tocando el emoji · teclado <kbd>1</kbd>–<kbd>4</kbd> para elegir, <kbd>Enter</kbd>/<kbd>Espacio</kbd> para empezar.</p>
+          <p><b>Puntuación:</b> +100 por acierto más bonus de racha. Victoria con 600+ puntos.</p>
+          <p><b>Consejo:</b> en Difícil hay más rondas: no cambies tu primera intuición salvo error evidente.</p>
+        </div>
       )}
+      acciones={(
+        <>
+          {["Fácil", "Normal", "Difícil"].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} disabled={jugando} onClick={() => { setDif(d); sfx.clic(); }}>{d}</button>
+          ))}
+          {!jugando && <button className="btn-principal" onClick={empezar}>{idx > 0 ? "↻ Otra vez" : "▶ Empezar"}</button>}
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pct}%` }} /></div>
       {jugando && ronda && (
         <>
           <p style={{ textAlign: "center", fontSize: "1.25rem" }}>¿Cuál es <b>{ronda.desc}</b>?</p>
           <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-            {ronda.opciones.map(o => (
-              <button key={o} className="btn-suave" style={{ fontSize: "2.4rem", padding: "12px 18px" }} onClick={() => elegir(o)}>{o}</button>
+            {ronda.opciones.map((o, i) => (
+              <button key={o} className="btn-suave" title={`Opción ${i + 1}`} style={{ fontSize: "2.4rem", padding: "12px 18px" }} onClick={() => elegir(o)}>{o}</button>
             ))}
           </div>
         </>
       )}
-      <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && idx > 0 && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
-      )}
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

@@ -59,7 +59,9 @@ export default function Ruleta() {
 
   const colorBola = bola === 0 ? "#22c55e" : ROJOS.has(bola) ? "#ef4444" : "#1f2937";
   return (
-    <GameShell titulo="Ruleta" emoji="🎡" descripcion="ENTER girar · rojo/negro/par/impar ×2 · número ×35.">
+    <GameShell titulo="Ruleta" emoji="🎡" descripcion="ENTER girar · rojo/negro/par/impar ×2 · número ×35."
+      stats={[{ icono: "🪙", etiqueta: "Créditos", valor: creditos }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Sale", valor: bola }, { etiqueta: "Juegas", valor: eleccion }]}
+      ayuda={<div><p><b>Objetivo:</b> acertar dónde cae la bola (0-36).</p><p><b>Apuesta:</b> elige 5, 10 o 25 y una opción. Se descuenta al girar; si ganas se suma apuesta×cuota.</p><ul><li>Número exacto = apuesta×35 · rojo/negro/par/impar = apuesta×2 · resto = 0</li></ul><p><b>Controles:</b> ENTER/ESPACIO o botón ¡GIRAR! · el 0 solo gana con número exacto.</p><p><b>Consejo:</b> las apuestas simples duran más; el número es lotería.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{creditos}</b></span>
         <select value={apuesta} onChange={e => setApuesta(Number(e.target.value))} disabled={girando}>
@@ -74,7 +76,7 @@ export default function Ruleta() {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <div className="fila-botones">
             {["rojo", "negro", "par", "impar", "numero"].map(o => (
-              <button key={o} className={eleccion === o ? "btn-principal" : ""} onClick={() => setEleccion(o)}>{o}</button>
+              <button key={o} className={eleccion === o ? "btn-principal" : ""} onClick={() => { sfx.clic(); setEleccion(o); }}>{o}</button>
             ))}
           </div>
           {eleccion === "numero" && <input type="number" min={0} max={36} value={numero} onChange={e => setNumero(Math.max(0, Math.min(36, Number(e.target.value))))} style={{ width: 100 }} />}

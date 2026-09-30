@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
-/* Motor de quizzes temáticos: 6 preguntas, +100 por acierto con bonus de racha. */
+/* Motor de quizzes temáticos: +100 por acierto con bonus de racha. */
+const DIFS = { "Fácil": { n: 4 }, "Normal": { n: 6 }, "Difícil": { n: 8 } };
 function QuizBase({ titulo, emoji, preguntas, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
+  const [dif, setDif] = useState("Normal");
+  const total = Math.min(DIFS[dif].n, preguntas.length);
   const [orden, setOrden] = useState([]);
   const [idx, setIdx] = useState(0);
   const [puntos, setPuntos] = useState(0);
@@ -21,7 +24,7 @@ function QuizBase({ titulo, emoji, preguntas, tira, iconoFondo }) {
   }
 
   function empezar() {
-    setOrden(mezclar(preguntas).slice(0, 6));
+    setOrden(mezclar(preguntas).slice(0, total));
     setIdx(0); setPuntos(0); setRacha(0); setJugando(true);
     sfx.clic();
   }
@@ -29,6 +32,7 @@ function QuizBase({ titulo, emoji, preguntas, tira, iconoFondo }) {
   function responder(i) {
     if (!jugando) return;
     const q = orden[idx];
+    if (!q) return;
     if (i === q.ok) {
       const nr = racha + 1;
       const np = puntos + 100 + Math.min(50, nr * 10);
@@ -46,33 +50,72 @@ function QuizBase({ titulo, emoji, preguntas, tira, iconoFondo }) {
     }
   }
 
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === "Enter" || e.key === " ") && !jugando) {
+        e.preventDefault();
+        empezar();
+        return;
+      }
+      if (!jugando) return;
+      const k = String(e.key).toLowerCase();
+      let i = -1;
+      if (["1", "2", "3", "4"].includes(e.key)) i = parseInt(e.key, 10) - 1;
+      else if (["a", "b", "c", "d"].includes(k)) i = "abcd".indexOf(k);
+      if (i >= 0 && orden[idx] && i < orden[idx].o.length) responder(i);
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+
   const q = orden[idx];
+  const pct = orden.length ? Math.round((idx / orden.length) * 100) : 0;
   return (
     <GameShell titulo={titulo} emoji={emoji}
-      descripcion="6 preguntas del tema · +100 por acierto · las rachas dan bonus."
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <span className="chip">Pregunta: <b>{jugando ? `${idx + 1}/6` : "—"}</b></span>
-        <span className="chip">Puntos: <b>{puntos}</b></span>
-        <span className="chip">🔥 <b>{racha}</b></span>
-      </div>
-      {!jugando && idx === 0 && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar quiz</button></div>
+      descripcion={`${total} preguntas del tema · +100 por acierto · las rachas dan bonus.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "❓", etiqueta: "Pregunta", valor: jugando ? `${idx + 1}/${orden.length || total}` : "—" },
+        { icono: "⭐", etiqueta: "Puntos", valor: puntos },
+        { icono: "🔥", etiqueta: "Racha", valor: racha },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: dif },
+      ]}
+      resultado={{ mensaje, tipo }}
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> responde las {total} preguntas del tema antes de terminar. Cada acierto suma 100 puntos más bonus de racha.</p>
+          <p><b>Controles:</b> ratón o táctil tocando la respuesta · teclado <kbd>1</kbd>–<kbd>4</kbd> o <kbd>A</kbd>–<kbd>D</kbd> para responder, <kbd>Enter</kbd>/<kbd>Espacio</kbd> para empezar o reintentar.</p>
+          <p><b>Puntuación:</b> +100 por acierto y hasta +50 extra según tu racha. Victoria con 400+ puntos.</p>
+          <p><b>Consejo:</b> en Difícil hay más preguntas: mantén la calma y encadena rachas para el bonus máximo.</p>
+        </div>
       )}
+      acciones={(
+        <>
+          {["Fácil", "Normal", "Difícil"].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} disabled={jugando} onClick={() => { setDif(d); sfx.clic(); }}>{d}</button>
+          ))}
+          {!jugando && <button className="btn-principal" onClick={empezar}>{idx > 0 ? "↻ Otra vez" : "▶ Empezar quiz"}</button>}
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pct}%` }} /></div>
+      <div style={{ display: "flex", gap: 6, justifyContent: "center", margin: "8px 0" }} aria-hidden>
+        {(orden.length ? orden : Array.from({ length: total })).map((_, i) => (
+          <span key={i} className={`tp-dot${i < idx ? " bien" : i === idx && jugando ? " actual" : ""}`} />
+        ))}
+      </div>
       {jugando && q && (
         <>
           <p style={{ fontSize: "1.15rem", textAlign: "center" }}><b>{q.p}</b></p>
           <div style={{ display: "grid", gap: 8 }}>
             {q.o.map((op, i) => (
-              <button key={i} className="btn-suave" style={{ padding: "12px" }} onClick={() => responder(i)}>{op}</button>
+              <button key={i} className="trivia-op" style={{ padding: "12px" }} onClick={() => responder(i)}><span className="op-letra"><kbd>{i + 1}</kbd></span> {op}</button>
             ))}
           </div>
         </>
       )}
-      <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && idx > 0 && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
-      )}
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

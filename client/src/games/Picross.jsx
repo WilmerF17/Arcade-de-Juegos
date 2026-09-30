@@ -89,7 +89,9 @@ export default function Picross() {
   }, [fin, idx]);
 
   return (
-    <GameShell titulo="Nonogram 5×5" emoji="🧩" descripcion="Flechas/WASD + ENTER pintar · X cruz · 3 errores = fin.">
+    <GameShell titulo="Nonogram 5×5" emoji="🧩" descripcion="Flechas/WASD + ENTER pintar · X cruz · 3 errores = fin."
+      stats={[{ etiqueta: "Puzzle", valor: `${idx + 1}/3` }, { etiqueta: "Errores", valor: `${errores}/3` }, { etiqueta: "Estado", valor: fin ? "Fin" : "En juego" }]}
+      ayuda={<div><p><b>Objetivo:</b> pintar los bloques según los números de filas/columnas.</p><p><b>Cómo jugar:</b> sin fichas: ENTER pinta, X marca cruz. 3 errores = derrota; resolver = máx(150−errores×20, 50) pts.</p><ul><li>Los números indican bloques seguidos de casillas llenas</li></ul><p><b>Controles:</b> flechas/WASD + ENTER/X o clic / clic derecho.</p><p><b>Consejo:</b> empieza por las filas con números grandes: son seguras.</p></div>}>
       <div className="fila-botones">
         {PRESETS.map((_, i) => <button key={i} className={idx === i ? "btn-principal" : ""} onClick={() => nuevo(i)}>Puzzle {i + 1}</button>)}
         <span className="chip">❌ <b>{errores}/3</b></span>

@@ -28,9 +28,9 @@ export default function Dobles() {
   return (
     <GameShell titulo="Dobles" emoji="🎲"
       descripcion="Dos dados: pareja ×5, suma 7 devuelve la apuesta, resto pierde."
-      stats={[{ icono: "🪙", valor: saldo }]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(dados[0] ? [{ etiqueta: "Dados", valor: `${dados[0]}+${dados[1]}=${dados[0] + dados[1]}` }] : [{ etiqueta: "Dados", valor: "—" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Hay 6 parejas en 36 combinaciones: por eso paga <b>×5</b>. El 7 te salva con devolución.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> sacar pareja con 2 dados.</p><p><b>Apuesta:</b> se descuenta al lanzar. Pareja cobra apuesta×5; suma 7 te devuelve la apuesta.</p><ul><li>Pareja = apuesta×5 · suma 7 = devuelve apuesta · resto = pierdes</li></ul><p><b>Controles:</b> botón Lanzar.</p><p><b>Consejo:</b> la pareja es 6/36: juega pocas rondas seguidas.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} />
       <p style={{ textAlign: "center", fontSize: "3.4rem", margin: "6px 0" }}>
         {dados[0] ? `${DADO[dados[0] - 1]} ${DADO[dados[1] - 1]}` : "🎲🎲"}

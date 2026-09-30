@@ -55,9 +55,9 @@ function CrashMotor({ nombre, emoji, descripcion, ayuda, subidaMin, subidaMax, t
   return (
     <GameShell titulo={nombre} emoji={emoji}
       descripcion={descripcion}
-      stats={[{ icono: "🪙", valor: saldo }, { etiqueta: "Multi", valor: `×${mult.toFixed(2)}` }]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Multi", valor: `×${mult.toFixed(2)}` }]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>{ayuda}</span>}>
+      ayuda={<div><p><b>Objetivo:</b> cobrar antes de que el multiplicador explote. Premio = floor(apuesta×mult).</p><p><b>Apuesta:</b> se descuenta al despegar. Si explota antes de cobrar, pierdes.</p><p><b>Variante:</b> {ayuda}</p><p><b>Controles:</b> Despegar para empezar · Cobrar para plantar.</p><p><b>Consejo:</b> cobra pronto con frecuencia: aguantar busca el ×10 pero explota más.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={volando} />
       <div className="crash-pista" aria-hidden style={{ textAlign: "center", fontSize: "2.2rem", minHeight: 90 }}>
         <div style={{ transform: `translateY(${-altura}px)`, transition: `transform ${tickMs}ms linear` }}>

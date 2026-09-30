@@ -53,6 +53,7 @@ export default function Quince() {
 
   function plantar() {
     if (terminado || !mano.length) return;
+    sfx.clic();
     cerrar(mano, banca);
   }
 
@@ -61,9 +62,9 @@ export default function Quince() {
   return (
     <GameShell titulo="Quince" emoji="🃏"
       descripcion="Cartas del 1 al 10: quédate lo más cerca del 15 sin pasarte y supera a la banca ×2."
-      stats={[{ icono: "🪙", valor: saldo }]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(mano.length ? [{ etiqueta: "Tú", valor: total(mano) }] : [{ etiqueta: "Tú", valor: "—" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>La banca pide hasta <b>13</b>. Si te pasas de 15 pierdes al instante. El empate <b>devuelve</b> la apuesta.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> sumar lo más cerca de 15 sin pasarte y superar a la banca.</p><p><b>Apuesta:</b> se descuenta al repartir. Ganas apuesta×2; el empate devuelve la apuesta.</p><ul><li>Ganas cerca de 15 = apuesta×2 · empate = devuelve · te pasas o te supera = pierdes</li><li>La banca pide hasta 13</li></ul><p><b>Controles:</b> Repartir · Pedir · Plantarme.</p><p><b>Consejo:</b> con 12 o más, plantarse suele ser mejor que pedir.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} />
       <div className="fila-botones">
         <button className="btn-principal" onClick={repartir}>🃏 Repartir ({apuesta})</button>

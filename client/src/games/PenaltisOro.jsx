@@ -29,6 +29,7 @@ export default function PenaltisOro() {
 
   function lanzar(lado) {
     if (!enJuego) return;
+    sfx.clic();
     const por = LADOS[Math.floor(Math.random() * 3)];
     setTiro(lado); setPortero(por);
     const gol = lado !== por;
@@ -47,9 +48,9 @@ export default function PenaltisOro() {
   return (
     <GameShell titulo="Penaltis de Oro" emoji="🥅"
       descripcion="Lanza 3 penaltis contra el portero: 2 goles ×2, 3 goles ×5."
-      stats={[{ icono: "🪙", valor: saldo }, ...(enJuego || ronda ? [{ etiqueta: "Tanda", valor: `${Math.min(ronda + (enJuego ? 1 : 0), 3)}/3` }, { etiqueta: "Goles", valor: goles }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(enJuego || ronda ? [{ etiqueta: "Tanda", valor: `${Math.min(ronda + (enJuego ? 1 : 0), 3)}/3` }, { etiqueta: "Goles", valor: goles }] : [{ etiqueta: "Tanda", valor: "0/3" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Elige esquina: si el portero va a otro lado es <b>gol</b>. Con 0-1 goles pierdes la apuesta.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> marcar más goles que el portero en 3 lanzamientos.</p><p><b>Apuesta:</b> se descuenta al jugar. Premio = apuesta×mult si aciertas.</p><ul><li>3 goles = apuesta×5 · 2 goles = apuesta×2 · 0-1 goles = pierdes</li></ul><p><b>Controles:</b> botones ↖️ ⬆️ ↗️ para lanzar.</p><p><b>Consejo:</b> es 2/3 de gol por tiro: no persigas el pleno cada vez.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={enJuego} />
       {!enJuego && <div className="fila-botones"><button className="btn-principal" onClick={empezar}>🥅 Jugar ({apuesta})</button></div>}
       <p style={{ textAlign: "center", fontSize: "3rem", margin: "6px 0" }}>

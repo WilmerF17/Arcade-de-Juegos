@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const lineas = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
@@ -22,6 +23,8 @@ function minimax(b, turno, prof) {
   }
 }
 
+const NOM_DIF = { 1: "Fácil", 2: "Normal", 3: "Difícil" };
+
 export default function TicTacToe() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Tic-Tac-Toe");
   const [tablero, setTablero] = useState([]);
@@ -30,12 +33,14 @@ export default function TicTacToe() {
   const [dif, setDif] = useState(3);
   const [terminado, setTerminado] = useState(null);
   const [cursor, setCursor] = useState(4);
+  const [balance, setBalance] = useState({ v: 0, e: 0, d: 0 });
   const tableroRef = useRef(tablero);
   const terminadoRef = useRef(terminado);
   tableroRef.current = tablero;
   terminadoRef.current = terminado;
 
   const empezar = () => {
+    sfx.clic();
     const t = Array(9).fill(" ");
     setTablero(t);
     tableroRef.current = t;
@@ -76,12 +81,16 @@ export default function TicTacToe() {
   function jugar(pos) {
     const tab = tableroRef.current;
     if (terminadoRef.current || !tab.length || tab[pos] !== " ") return;
+    sfx.clic();
     let nuevo = [...tab];
     const marca = vsIa ? "X" : turno;
     nuevo[pos] = marca;
     if (gana(nuevo, marca)) {
       const ganado = vsIa && marca === "X";
       registrarPunt(30, ganado ? 1 : 0);
+      if (ganado) { sfx.bien(); setBalance(b => ({ ...b, v: b.v + 1 })); }
+      else if (vsIa) { sfx.mal(); setBalance(b => ({ ...b, d: b.d + 1 })); }
+      else { sfx.bien(); setBalance(b => ({ ...b, v: b.v + 1 })); }
       setTerminado({ ganador: marca, ganado });
       terminadoRef.current = { ganador: marca };
       setTablero(nuevo);
@@ -90,6 +99,8 @@ export default function TicTacToe() {
     }
     if (!nuevo.includes(" ")) {
       registrarPunt(10, 0);
+      sfx.clic();
+      setBalance(b => ({ ...b, e: b.e + 1 }));
       setTerminado({ ganador: null, ganado: false });
       terminadoRef.current = { ganador: null };
       setTablero(nuevo);
@@ -106,6 +117,8 @@ export default function TicTacToe() {
         setTerminado({ ganador: "O", ganado: false });
         terminadoRef.current = { ganador: "O" };
         registrarPunt(0, 0);
+        sfx.mal();
+        setBalance(b => ({ ...b, d: b.d + 1 }));
         setTablero(nuevo);
         tableroRef.current = nuevo;
         return;
@@ -116,6 +129,7 @@ export default function TicTacToe() {
         setTablero(nuevo);
         tableroRef.current = nuevo;
         registrarPunt(10, 0);
+        setBalance(b => ({ ...b, e: b.e + 1 }));
         return;
       }
       setTablero(nuevo);
@@ -131,10 +145,17 @@ export default function TicTacToe() {
 
   const jugarRef = useRef(jugar);
   jugarRef.current = jugar;
+  const empezarRef = useRef(empezar);
+  empezarRef.current = empezar;
 
   useEffect(() => {
     const fn = e => {
       if (escribiendo() || !tableroRef.current.length) return;
+      if ((e.key === "Enter" || e.key === " ") && terminadoRef.current) {
+        e.preventDefault();
+        empezarRef.current();
+        return;
+      }
       const d = dirDeTecla(e.key);
       if (d) {
         e.preventDefault();
@@ -163,20 +184,39 @@ export default function TicTacToe() {
   }, [vsIa, dif, turno]);
 
   const mostrarEtiqueta = (c, i) => c === " " && !terminado ? i + 1 : c;
+  const totalFin = balance.v + balance.e + balance.d;
+  const pctV = totalFin ? Math.round((balance.v / totalFin) * 100) : 0;
+  const textoFin = terminado
+    ? terminado.ganador === null ? "¡Empate! 🤝" : terminado.ganado ? "¡GANASTE! 🎉 " : vsIa ? "🤖 Gana la IA." : `¡Gana ${terminado.ganador}!`
+    : "";
+  const resultadoBanner = terminado ? { mensaje: `${textoFin} ${mensaje}`, tipo } : null;
 
   return (
     <GameShell titulo="Tic-Tac-Toe" emoji="❌"
-      descripcion="Clic o teclado (flechas/WASD + ENTER, o teclas 1-9).">
-      <div className="fila-botones">
-        <button className={vsIa ? "btn-principal" : ""} onClick={() => { setVsIa(true); empezar(); }}>vs IA</button>
-        <button className={!vsIa ? "btn-principal" : ""} onClick={() => { setVsIa(false); empezar(); }}>2 jugadores</button>
+      descripcion="Clic o teclado (flechas/WASD + ENTER, o teclas 1-9)."
+      stats={[
+        { icono: "🔄", etiqueta: "Turno", valor: terminado ? "Fin" : vsIa ? "Tú (X)" : turno },
+        { icono: "🤖", etiqueta: "Modo", valor: vsIa ? `IA ${NOM_DIF[dif]}` : "2 jug." },
+        { icono: "🏆", etiqueta: "Victorias", valor: balance.v },
+        { icono: "🤝", etiqueta: "Tablas", valor: balance.e },
+      ]}
+      acciones={<>
+        <button className={vsIa ? "btn-principal" : "btn-suave"} onClick={() => { setVsIa(true); empezar(); }}>vs IA</button>
+        <button className={!vsIa ? "btn-principal" : "btn-suave"} onClick={() => { setVsIa(false); empezar(); }}>2 jugadores</button>
         {[1, 2, 3].map(d => (
-          <button key={d} className={vsIa && dif === d ? "btn-exito" : ""} onClick={() => setDif(d)} disabled={!vsIa}>
+          <button key={d} className={vsIa && dif === d ? "btn-exito" : "btn-suave"} onClick={() => { sfx.clic(); setDif(d); }} disabled={!vsIa}>
             {d === 1 ? "Fácil" : d === 2 ? "Normal" : "Difícil"}
           </button>
         ))}
-        <button onClick={empezar}>Reiniciar</button>
-      </div>
+        <button className="btn-exito" onClick={empezar}>↻ Reiniciar (ENTER)</button>
+      </>}
+      resultado={resultadoBanner}
+      ayuda={<>
+        <p><b>Objetivo:</b> alinea 3 fichas en fila, columna o diagonal. Juegas con <b>X</b>; la IA o el segundo jugador lleva <b>O</b>.</p>
+        <p><b>Controles:</b> clica una casilla o mueve el cursor con <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>/<kbd>WASD</kbd> y confirma con <kbd>Enter</kbd>/<kbd>Espacio</kbd>. Teclas <kbd>1</kbd>–<kbd>9</kbd> juegan directo. Con <kbd>Enter</kbd> reinicias al terminar.</p>
+        <p><b>Puntuación:</b> ganar da <b>30 pts</b>, empatar <b>10 pts</b>, perder 0. Niveles: <b>Fácil</b> aleatoria, <b>Normal</b> glotona (gana/bloquea), <b>Difícil</b> minimax casi perfecta.</p>
+        <p><b>Consejo:</b> ocupa el centro si está libre y crea dobles amenazas (dos líneas a la vez) para forzar la victoria.</p>
+      </>}>
       {tablero.length > 0 && (
         <div>
           <div className="tablero" style={{ gridTemplateColumns: "repeat(3,64px)", margin: "18px auto 0" }}>
@@ -192,10 +232,12 @@ export default function TicTacToe() {
           <p style={{ textAlign: "center", marginTop: 12, color: "var(--texto-suave)" }}>
             {terminado ? "" : `Turno: ${vsIa ? "Tú (X)" : turno} · cursor en ${cursor + 1}`}
           </p>
-          {terminado && <div className={`mensaje-final ${tipo}`} style={{ textAlign: "center" }}>
-            {terminado.ganador === null ? "¡Empate! 🤝" : terminado.ganado ? "¡GANASTE! 🎉 " : vsIa ? "🤖 Gana la IA." : `¡Gana ${terminado.ganador}!`}
-            {" "}{mensaje}
-          </div>}
+          {totalFin > 0 && (
+            <div style={{ maxWidth: 320, margin: "8px auto" }}>
+              <div className="xp-bar fina"><div style={{ width: `${pctV}%` }} /></div>
+              <p style={{ textAlign: "center", fontSize: ".8rem", color: "var(--texto-suave)" }}>Victorias {balance.v}/{totalFin} · Derrotas {balance.d} · Tablas {balance.e}</p>
+            </div>
+          )}
           {!terminado && <p className="aviso-ia" style={{ textAlign: "center" }}>💡 <b>flechas/WASD</b> mover · <b>ENTER</b> o <b>1-9</b> jugar.</p>}
         </div>
       )}

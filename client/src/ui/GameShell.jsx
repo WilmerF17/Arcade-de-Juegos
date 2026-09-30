@@ -13,11 +13,12 @@ function juegoIdActual(nombreJuego) {
 }
 
 /**
- * Tema visual del juego activo (tira de color + familia).
+ * Tema visual del juego activo (tira de color + familia + ayuda de reserva).
  * App.jsx lo provee automáticamente desde el catálogo (grad/tema),
- * así los 276 juegos heredan identidad propia sin editar cada fichero.
+ * así los 285 juegos heredan identidad propia sin editar cada fichero.
+ * Si un juego no pasa `ayuda`, se usa la del contexto como reserva.
  */
-const TemaJuegoContext = createContext({ tira: null, fam: null });
+const TemaJuegoContext = createContext({ tira: null, fam: null, ayuda: null });
 export const ProveedorTemaJuego = TemaJuegoContext.Provider;
 export function useTemaJuego() {
   return useContext(TemaJuegoContext);
@@ -65,6 +66,7 @@ export function useRegistro(nombreJuego, juegoId = null) {
     // Muestra el resultado al instante con lo local; el récord se añade si el servidor lo confirma
     setEstado(prev => ({ ...prev, mensaje: mensajeBase, tipo: ganadas ? "victoria" : "derrota", xp: extra }));
     if (ganadas) sfx.bien();
+    else sfx.mal();
 
     // 2) Servidor en segundo plano (ranking global + récord)
     let s = null;
@@ -111,6 +113,7 @@ export default function GameShell({
   const temaCtx = useTemaJuego();
   const tiraFinal = tira || temaCtx.tira;
   const famFinal = fam || temaCtx.fam;
+  const ayudaFinal = ayuda || temaCtx.ayuda;
   const icon = iconoDeTitulo(titulo);
   return (
     <div
@@ -136,7 +139,7 @@ export default function GameShell({
       </div>
       {acciones && <div className="fila-botones">{acciones}</div>}
       <Resultado mensaje={resultado?.mensaje} tipo={resultado?.tipo} />
-      {ayuda && <Ayuda>{ayuda}</Ayuda>}
+      {ayudaFinal && <Ayuda>{ayudaFinal}</Ayuda>}
     </div>
   );
 }
@@ -196,5 +199,39 @@ export function Ayuda({ children }) {
       <summary>❓ ¿Cómo se juega?</summary>
       <div className="ayuda-cuerpo">{children}</div>
     </details>
+  );
+}
+
+/** Barra de progreso unificada (0-100). Ej: <Progreso actual={3} meta={8} /> */
+export function Progreso({ actual = 0, meta = 1, etiqueta = "" }) {
+  const pct = Math.max(0, Math.min(100, Math.round((actual / Math.max(1, meta)) * 100)));
+  return (
+    <div className="progreso-juego" role="progressbar" aria-valuenow={actual} aria-valuemin={0} aria-valuemax={meta} aria-label={etiqueta || "Progreso"}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
+      {etiqueta ? <small>{etiqueta}: <b>{actual}/{meta}</b> ({pct}%)</small> : null}
+    </div>
+  );
+}
+
+/** Selector de dificultad segmentado. Ej: <Dificultad valor={dif} alCambiar={setDif} /> */
+export const DIFICULTADES = [
+  { id: "facil", nombre: "Fácil" },
+  { id: "normal", nombre: "Normal" },
+  { id: "dificil", nombre: "Difícil" },
+];
+
+export function Dificultad({ valor = "normal", alCambiar, opciones = DIFICULTADES, deshabilitado = false }) {
+  return (
+    <div className="dificultad" role="group" aria-label="Dificultad">
+      {opciones.map(o => (
+        <button key={o.id} type="button"
+          className={valor === o.id ? "chip-cat on" : "chip-cat"}
+          aria-pressed={valor === o.id}
+          disabled={deshabilitado}
+          onClick={() => { sfx.clic(); alCambiar?.(o.id); }}>
+          {o.nombre}
+        </button>
+      ))}
+    </div>
   );
 }

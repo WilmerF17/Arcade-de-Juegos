@@ -29,17 +29,21 @@ export default function Bingo() {
   const [bolas, setBolas] = useState([]);
   const [auto, setAuto] = useState(false);
   const [fin, setFin] = useState(null);
+  const [mejor, setMejor] = useState(null);
   const st = useRef({ cart, bolas, fin: null });
   st.current = { cart, bolas, fin };
 
   function nuevo() {
+    sfx.clic();
     const c = carton();
     st.current = { cart: c, bolas: [], fin: null };
     setCart(c); setBolas([]); setFin(null);
   }
+  const nuevoRef = useRef(nuevo);
+  nuevoRef.current = nuevo;
   function sacar() {
     const s = st.current;
-    if (s.fin || s.bolas.length >= 40) return;
+    if (s.fin === "bingo" || s.bolas.length >= 40) return;
     const disp = Array.from({ length: 75 }, (_, i) => i + 1).filter(n => !s.bolas.includes(n));
     const n = disp[Math.floor(Math.random() * disp.length)];
     const nb = [...s.bolas, n];
@@ -49,6 +53,7 @@ export default function Bingo() {
     sfx.clic();
     if (nc.flat().every(c => c.m)) {
       st.current.fin = "bingo"; setFin("bingo");
+      setMejor(m => (m == null || nb.length < m ? nb.length : m));
       registrarPunt(200 - nb.length * 2, 1); sfx.record();
     } else if (linea(nc) && !s.fin?.includes("linea")) {
       st.current.fin = "linea"; setFin("linea");
@@ -59,7 +64,11 @@ export default function Bingo() {
   useEffect(() => {
     const fn = e => {
       if (escribiendo()) return;
-      if ((e.key === "Enter" || e.key === " ") && !st.current.fin) { e.preventDefault(); sacarRef.current(); }
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (st.current.fin === "bingo") nuevoRef.current();
+        else sacarRef.current();
+      } else if ((e.key === "n" || e.key === "N") && st.current.fin === "bingo") nuevoRef.current();
     };
     window.addEventListener("keydown", fn);
     return () => window.removeEventListener("keydown", fn);
@@ -71,15 +80,29 @@ export default function Bingo() {
   }, [auto, fin, bolas]);
 
   const ultima = bolas[bolas.length - 1];
+  const marcados = cart.flat().filter(c => c.m).length;
+  const pct = Math.round((marcados / 25) * 100);
   return (
-    <GameShell titulo="Bingo 75" emoji="🎱" descripcion="ENTER saca bola · línea y bingo · auto cada 0.9s.">
-      <div className="fila-botones">
+    <GameShell titulo="Bingo 75" emoji="🎱" descripcion="ENTER saca bola · línea y bingo · auto cada 0.9s."
+      stats={[
+        { icono: "🎱", etiqueta: "Bolas", valor: `${bolas.length}/40` },
+        { icono: "⭐", etiqueta: "Última", valor: ultima ?? "—" },
+        { icono: "✅", etiqueta: "Marcados", valor: `${marcados}/25` },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : `${mejor} bolas` },
+      ]}
+      acciones={<>
         <button className="btn-principal" onClick={sacar} disabled={fin === "bingo"}>🎱 Sacar (ENTER)</button>
-        <button className={auto ? "btn-principal" : "btn-suave"} onClick={() => setAuto(a => !a)}>{auto ? "⏸ Auto" : "▶ Auto"}</button>
-        <button className="btn-exito" onClick={nuevo}>Nuevo cartón</button>
-        <span className="chip">Bolas <b>{bolas.length}</b></span>
-        {ultima != null && <span className="chip">Última <b>{ultima}</b></span>}
-      </div>
+        <button className={auto ? "btn-principal" : "btn-suave"} onClick={() => { sfx.clic(); setAuto(a => !a); }}>{auto ? "⏸ Auto" : "▶ Auto"}</button>
+        <button className="btn-exito" onClick={nuevo}>↻ Nuevo cartón</button>
+      </>}
+      resultado={fin === "bingo" ? { mensaje, tipo } : null}
+      ayuda={<>
+        <p><b>Objetivo:</b> marca tu cartón 5×5 (centro gratis ⭐) hasta completar <b>línea</b> (fila, columna o diagonal) y luego <b>bingo</b> (25/25) en máximo 40 bolas.</p>
+        <p><b>Controles:</b> <kbd>Enter</kbd>/<kbd>Espacio</kbd> saca bola (o cartón nuevo al lograr bingo), botón Auto saca cada 0.9s. Táctil: toca Sacar.</p>
+        <p><b>Puntuación:</b> el bingo registra <b>200 − 2 por bola</b> como victoria; la línea avisa pero no registra.</p>
+        <p><b>Consejo:</b> juega en Auto para no perder ritmo y vigila las dos diagonales: suelen cantar línea antes que las filas.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
       <div style={{ display: "flex", gap: 18, marginTop: 14, flexWrap: "wrap" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5,52px)", gap: 4 }}>
           {cart.map((fila, r) => fila.map((c, i) => (
@@ -92,8 +115,8 @@ export default function Bingo() {
           {bolas.slice(-20).map(n => <span key={n} className="chip" style={n === ultima ? { borderColor: "var(--aviso)", color: "var(--aviso)" } : undefined}><b>{n}</b></span>)}
         </div>
       </div>
-      {fin === "linea" && <div className="aviso info">📏 ¡LÍNEA! Sigue hasta el bingo 🎉</div>}
-      {fin === "bingo" && <div className={`mensaje-final ${tipo}`}>🎉 ¡BINGO en {bolas.length} bolas! {mensaje}</div>}
+      {fin === "linea" && <div className="aviso info">📏 ¡LÍNEA! Sigue hasta el bingo 🎉 (llevas {bolas.length} bolas)</div>}
+      {fin === "bingo" && <p style={{ fontWeight: 800 }}>🎉 ¡BINGO en {bolas.length} bolas!</p>}
     </GameShell>
   );
 }

@@ -98,7 +98,12 @@ function TiroteoMotor({ nombre, emoji, descripcion, ayuda, intervalo, maxVivos, 
         { etiqueta: "Tiempo", valor: `${quedan}s` },
       ]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>{ayuda}</span>}>
+      ayuda={<>
+        <span><b>Objetivo:</b> {descripcion}</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> disparar, <kbd>R</kbd> recargar (6 balas).</span>
+        <span><b>Puntos:</b> 🥷 +10, 👤 −15, aire −2 y gasta bala; 100+ es victoria. {ayuda}</span>
+        <span><b>Consejo:</b> no vacíes el cargador: recarga con 1-2 balas de margen.</span>
+      </>}>
       <div onPointerDown={dispararAire}
         style={{
           position: "relative", height: 260, borderRadius: 12, overflow: "hidden",
@@ -212,7 +217,12 @@ export function DueloAmanecer() {
       descripcion="Duelo rápido: espera el ¡YA! y dispara antes que la máquina. Al mejor de 5."
       stats={[{ etiqueta: "Tú", valor: p1 }, { etiqueta: "CPU", valor: p2 }, { etiqueta: "Ronda", valor: fin ? "—" : `${ronda}/5` }]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Cuando veas <b>🔫 ¡YA!</b>, toca el botón antes que la máquina. Si disparas <b>antes</b>, es falta y pierdes la ronda. Gana quien llegue a 3.</span>}>
+      ayuda={<>
+        <span><b>Objetivo:</b> dispara tras el <b>🔫 ¡YA!</b> antes que la máquina; al mejor de 5 (3 rondas).</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> en ¡DISPARA!; disparar antes es falta.</span>
+        <span><b>Puntos:</b> 20 por ronda + 40 bonus al ganar el duelo.</span>
+        <span><b>Consejo:</b> no mires el “Espera…”, reacciona solo al cambio a ¡YA!.</span>
+      </>}>
       <div style={{ textAlign: "center", fontSize: "3rem", minHeight: 90 }} aria-live="polite">
         {fase === "inicio" && "🌵"}
         {fase === "espera" && "😐"}

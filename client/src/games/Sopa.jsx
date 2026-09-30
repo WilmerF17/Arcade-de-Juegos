@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
-import { escribiendo } from "../suite/teclado";
+import { useEffect, useState } from "react";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
 const LISTAS = [
@@ -8,6 +7,7 @@ const LISTAS = [
   ["JUEGO", "PIXEL", "NIVEL", "PUNTOS", "TECLA"],
   ["DRAGON", "CASTILLO", "ESPADA", "MAGIA", "REINO"],
 ];
+const NOMBRES = ["Fácil", "Normal", "Difícil"];
 function crear(nivel) {
   const palabras = LISTAS[nivel];
   const N = 10;
@@ -47,6 +47,7 @@ export default function Sopa() {
 
   function nuevo(n = nivel) {
     setNivel(n); setJuego(crear(n)); setHalladas([]); setEntrada(""); setFallos(0);
+    sfx.clic();
   }
   function probar(palabraParam) {
     const w = (palabraParam ?? entrada).trim().toUpperCase();
@@ -70,14 +71,45 @@ export default function Sopa() {
     if (p) p.celdas.forEach(([r, c]) => hallSet.add(`${r},${c}`));
   });
   const fin = halladas.length === juego.puestas.length;
+  const pct = juego.puestas.length ? Math.round((halladas.length / juego.puestas.length) * 100) : 0;
+
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === "Enter" || e.key === " ") && fin) {
+        e.preventDefault();
+        nuevo();
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <GameShell titulo="Sopa de Letras" emoji="🔍" descripcion="Escribe las palabras ocultas (→ ↓ ↘) · 3 niveles.">
-      <div className="fila-botones">
-        {[0, 1, 2].map(n => <button key={n} className={nivel === n ? "btn-principal" : ""} onClick={() => nuevo(n)}>{["Fácil", "Normal", "Difícil"][n]}</button>)}
-        <span className="chip">Halladas <b>{halladas.length}/{juego.puestas.length}</b></span>
-        <span className="chip">❌ <b>{fallos}</b></span>
-      </div>
+    <GameShell titulo="Sopa de Letras" emoji="🔍" descripcion="Escribe las palabras ocultas (→ ↓ ↘) · 3 niveles."
+      stats={[
+        { icono: "🔍", etiqueta: "Halladas", valor: `${halladas.length}/${juego.puestas.length}` },
+        { icono: "❌", etiqueta: "Fallos", valor: fallos },
+        { icono: "⭐", etiqueta: "Nivel+", valor: `+${nivel * 30}` },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: NOMBRES[nivel] },
+      ]}
+      resultado={{ mensaje, tipo }}
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> encuentra las {juego.puestas.length} palabras ocultas (derecha, abajo o diagonal) escribiéndolas en el buscador.</p>
+          <p><b>Controles:</b> escribe con el teclado y pulsa <kbd>Enter</kbd> o el botón Buscar · cambia de nivel con <kbd>1</kbd>–<kbd>3</kbd> si quieres (cuando el foco no está en el buscador).</p>
+          <p><b>Puntuación:</b> 150 menos 10 por fallo (mínimo 40) más 30 por nivel. Completar siempre es victoria.</p>
+          <p><b>Consejo:</b> busca primero las palabras largas: sus letras raras delatan la fila.</p>
+        </div>
+      )}
+      acciones={(
+        <>
+          {[0, 1, 2].map(n => <button key={n} className={nivel === n ? "btn-principal" : "btn-suave"} onClick={() => nuevo(n)}>{NOMBRES[n]}</button>)}
+          <button className="btn-suave" onClick={() => nuevo(nivel)}>↻ Nueva sopa</button>
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pct}%` }} /></div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(10,34px)", gap: 2, marginTop: 14, background: "#0b0d14", padding: 8, borderRadius: 10, width: "max-content" }}>
         {juego.grid.map((fila, r) => fila.map((ch, c) => (
           <div key={`${r}-${c}`} style={{ width: 34, height: 34, display: "grid", placeItems: "center", fontWeight: 800, borderRadius: 6, background: hallSet.has(`${r},${c}`) ? "rgba(34,197,94,.4)" : "var(--bg-soft)", border: "1px solid var(--border)" }}>{ch}</div>
@@ -86,7 +118,7 @@ export default function Sopa() {
       {!fin && (
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
           <input type="text" value={entrada} onChange={e => setEntrada(e.target.value.toUpperCase())} onKeyDown={e => e.key === "Enter" && probar()} placeholder="Palabra..." style={{ width: 180, textTransform: "uppercase" }} />
-          <button className="btn-principal" onClick={() => probar()}>Buscar</button>
+          <button className="btn-principal" onClick={() => probar()}>Buscar ⏎</button>
         </div>
       )}
       <div className="fila-botones">
@@ -96,7 +128,7 @@ export default function Sopa() {
           </span>
         ))}
       </div>
-      {fin && <div className={`mensaje-final ${tipo}`}>🎉 ¡Sopa completa! {mensaje}</div>}
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

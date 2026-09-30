@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
+import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
 /* Sudoku 4×4: 3 minipuzzles con filas, columnas y cuadros 2×2 del 1 al 4. */
@@ -16,6 +17,7 @@ export default function Sudoku4() {
   const [sel, setSel] = useState(null);
   const [errores, setErrores] = useState(0);
   const [jugando, setJugando] = useState(true);
+  const [mejor, setMejor] = useState(null);
 
   function elegirPuzzle(i) {
     setPi(i);
@@ -34,6 +36,7 @@ export default function Sudoku4() {
         setJugando(false);
         const puntos = Math.max(100, 400 - errores * 30);
         sfx.bien();
+        setMejor(m => (m == null || errores < m ? errores : m));
         registrarPunt(puntos, errores === 0 ? 1 : 0);
       }
     } else {
@@ -41,24 +44,55 @@ export default function Sudoku4() {
       sfx.mal();
     }
   }
+  const ponerRef = useRef(poner);
+  ponerRef.current = poner;
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if (e.key >= "1" && e.key <= "4") ponerRef.current(Number(e.key));
+      else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (!jugando) elegirPuzzle(pi);
+      } else if (e.key >= "0" && e.key <= "9" && false) { void selRef; }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, [pi, jugando, tab]);
+
+  const huecos = PUZZLES[pi].ini.filter(v => v === 0).length;
+  const hechos = tab.filter((v, i) => v !== 0 && PUZZLES[pi].ini[i] === 0).length;
+  const pct = huecos ? Math.round((hechos / huecos) * 100) : 100;
 
   return (
     <GameShell titulo="Sudoku 4×4" emoji="🔢"
       descripcion="Filas, columnas y cuadros 2×2 del 1 al 4 · 3 puzzles."
-      tira="linear-gradient(90deg,#38bdf8,#6366f1)" iconoFondo="linear-gradient(135deg,#38bdf8,#6366f1)">
-      <div className="fila-botones">
+      tira="linear-gradient(90deg,#38bdf8,#6366f1)" iconoFondo="linear-gradient(135deg,#38bdf8,#6366f1)"
+      stats={[
+        { icono: "🧩", etiqueta: "Puzzle", valor: `${pi + 1}/3` },
+        { icono: "❌", etiqueta: "Errores", valor: errores },
+        { icono: "📝", etiqueta: "Hechas", valor: `${hechos}/${huecos}` },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : `${mejor} fallos` },
+      ]}
+      acciones={<>
         {[0, 1, 2].map(i => (
           <button key={i} className={pi === i ? "btn-principal" : "btn-suave"} onClick={() => elegirPuzzle(i)}>Puzzle {i + 1}</button>
         ))}
-        <span className="chip">❌ <b>{errores}</b></span>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,62px)", gap: 5, justifyContent: "center" }}>
+        <button className="btn-exito" onClick={() => elegirPuzzle(pi)}>↻ Reiniciar</button>
+      </>}
+      ayuda={<>
+        <p><b>Objetivo:</b> rellena la cuadrícula 4×4 para que cada fila, columna y cuadro 2×2 tenga los números <b>1–4</b> sin repetir.</p>
+        <p><b>Controles:</b> clica una casilla vacía y luego el número, o pulsa <kbd>1</kbd>–<kbd>4</kbd> tras seleccionar. <kbd>Enter</kbd> reinicia al terminar.</p>
+        <p><b>Puntuación:</b> completar da hasta <b>400 − 30 por error</b> (mínimo 100); sin errores cuenta como victoria.</p>
+        <p><b>Consejo:</b> completa primero la fila o bloque con más pistas y elimina candidatos por parejas.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,62px)", gap: 5, justifyContent: "center", marginTop: 10 }}>
         {tab.map((v, i) => {
           const fijo = PUZZLES[pi].ini[i] !== 0;
           const bordeD = i % 4 === 1 ? { borderRight: "3px solid var(--principal)" } : {};
           const bordeB = i < 12 && Math.floor(i / 4) % 2 === 1 ? { borderBottom: "3px solid var(--principal)" } : {};
           return (
-            <button key={i} onClick={() => !fijo && setSel(i)}
+            <button key={i} onClick={() => { if (!fijo) { setSel(i); sfx.clic(); } }}
               style={{ width: 62, height: 62, fontSize: "1.5rem", fontWeight: 800, borderRadius: 8,
                 background: sel === i ? "var(--bg-hover)" : "var(--bg-soft)",
                 color: fijo ? "var(--texto)" : "#22d3ee",

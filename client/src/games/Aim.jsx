@@ -21,6 +21,7 @@ export default function Aim() {
     t0.current = performance.now();
   }
   function empezar() {
+    sfx.clic();
     st.current = { puntos: 0, aciertos: 0, disparos: 0, tiempos: [] };
     setPuntos(0); setDisparos(0); setAciertos(0); setTiempos([]);
     setTiempo(30); setJugando(true); nuevoBlanco();
@@ -69,7 +70,18 @@ export default function Aim() {
   const prec = disparos ? Math.round((aciertos / disparos) * 100) : 0;
   const media = tiempos.length ? Math.round(tiempos.reduce((a, b) => a + b, 0) / tiempos.length) : 0;
   return (
-    <GameShell titulo="Aim Trainer" emoji="🎯" descripcion="ENTER empezar · clic en el blanco · 30s · precisión.">
+    <GameShell titulo="Aim Trainer" emoji="🎯" descripcion="ENTER empezar · clic en el blanco · 30s · precisión."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "🎯 Precisión", valor: `${aciertos}/${disparos} (${prec}%)` },
+        { etiqueta: "⏱️ Tiempo", valor: `${tiempo}s` },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> revienta blancos 30 segundos con la mejor precisión.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> disparar, <kbd>Enter</kbd> empezar; fallar al fondo baja precisión.</span>
+        <span><b>Puntos:</b> máx(5, 25 − ms/60) por acierto; 20+ aciertos es victoria.</span>
+        <span><b>Consejo:</b> apunta al centro y dispara sin perseguir el blanco.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

@@ -1,5 +1,22 @@
 # Historial — ArcadePaLoMuchacho
 
+## v2.16.0 (2026-09-30) — Remaster total: los 285 juegos elaborados
+- **Los 153 ficheros de juego rehechos**: cada juego tiene ahora chips de
+  marcador en vivo (`stats`), acordeón «¿Cómo se juega?» con reglas,
+  controles de teclado/ratón/táctil y consejos (`ayuda`), botonera
+  principal (`acciones`), sonidos en cada acción (clic/bien/mal/moneda)
+  y barra de progreso.
+- **Dificultad Fácil/Normal/Difícil** en quizzes, VoF, parejas, ahorcados,
+  intrusos, cálculos, buscaminas, damas/otelo/raya, cartas y duelos 2P
+  (con nombres editables y mejor de 3/5/7).
+- **Teclado en todas partes**: Enter/Espacio para empezar y reintentar,
+  1-4/A-D o V/F para responder, flechas en puzzles, 1-9 en topos.
+- **Casino documentado**: cada juego de apuestas muestra su tabla exacta
+  de premios y consejo de juego responsable en la ayuda.
+- **GameShell v4**: sonido de derrota global, ayuda de reserva por
+  contexto y componentes nuevos `Progreso` y `Dificultad` + CSS.
+- PWA SW `aplm-v34`.
+
 ## v2.15.0 (2026-09-30) — Más rápido, más contenido e interfaces al día
 - **+6 juegos (285)**: Quiz Mates ➗, Quiz Inglés 🇬🇧 y Quiz Código 💻;
   Verdad Arte 🎨, Verdad Cine 🎬 y Verdad Naturaleza 🌿.

@@ -53,7 +53,9 @@ export default function Mate1() {
   }, [res]);
   const p = PUZZLES[idx];
   return (
-    <GameShell titulo="Mate en 1" emoji="♞" descripcion="Clic origen + destino · encuentra el mate · racha 3 = XP.">
+    <GameShell titulo="Mate en 1" emoji="♞" descripcion="Clic origen + destino · encuentra el mate · racha 3 = XP."
+      stats={[{ etiqueta: "Puzzle", valor: `${idx + 1}/3` }, { etiqueta: "Puntos", valor: puntos }, { icono: "🔥", etiqueta: "Racha", valor: `×${rachas}` }]}
+      ayuda={<div><p><b>Objetivo:</b> encontrar el mate en 1 en 3 puzzles (dama, torre, caballo).</p><p><b>Cómo jugar:</b> sin fichas: clic origen + destino. Acierto +50, fallo −10. Racha 3 registra XP.</p><ul><li>Dama e2-e8 · Torre e1-e7/e1-g1 · Caballo d4-e6/c6/f5</li></ul><p><b>Controles:</b> clic en piezas ♕♖♘ · Siguiente con ENTER.</p><p><b>Consejo:</b> usa la pista de cada puzzle y busca el jaque definitivo.</p></div>}>
       <div className="fila-botones">
         {PUZZLES.map((q, i) => <button key={i} className={idx === i ? "btn-principal" : ""} onClick={() => { setIdx(i); setSel(null); setRes(null); }}>{i + 1}. {q.titulo}</button>)}
         <span className="chip">Puntos <b>{puntos}</b></span>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const crearBaraja = () => {
   const palos = ["♠", "♥", "♦", "♣"];
@@ -31,6 +32,8 @@ function Pips({ n, meta = 5 }) {
   );
 }
 
+const APUESTAS = [10, 25, 50];
+
 export default function Blackjack() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Blackjack");
   const [baraja, setBaraja] = useState([]);
@@ -42,10 +45,15 @@ export default function Blackjack() {
   const [ronda, setRonda] = useState("");
   const [terminado, setTerminado] = useState(false);
   const [sesionFin, setSesionFin] = useState(false);
+  const [apuesta, setApuesta] = useState(10);
+  const [bote, setBote] = useState(100);
   const stRef = useRef({ victorias: 0, derrotas: 0, terminado: false, sesionFin: false });
   stRef.current = { victorias, derrotas, terminado, sesionFin };
+  const boteRef = useRef(100);
+  boteRef.current = bote;
 
   function nuevaRonda() {
+    sfx.clic();
     const b = crearBaraja();
     const jug = [b.pop(), b.pop()];
     const cru = [b.pop(), b.pop()];
@@ -58,6 +66,8 @@ export default function Blackjack() {
       const nv = victorias + 1;
       setVictorias(nv);
       setRonda("¡BLACKJACK! 21 directo. ✅");
+      sfx.bien();
+      setBote(v => v + apuesta);
       setTerminado(true);
       stRef.current.terminado = true;
       cerrarSesion(nv, derrotas);
@@ -69,6 +79,7 @@ export default function Blackjack() {
   function cerrarSesion(nV, nD) {
     if (nV >= 5 || nD >= 5) {
       registrarPunt(nV * 10, nV >= 5 ? 1 : 0, nV + nD);
+      if (nV >= 5) { sfx.moneda(); sfx.bien(); } else sfx.mal();
       setSesionFin(true);
       stRef.current.sesionFin = true;
     }
@@ -76,6 +87,7 @@ export default function Blackjack() {
 
   function pedir() {
     if (stRef.current.terminado || !jugador.length) return;
+    sfx.clic();
     const nb = [...baraja];
     const carta = nb.pop();
     if (!carta) return;
@@ -83,8 +95,10 @@ export default function Blackjack() {
     setBaraja(nb); setJugador(mano);
     if (valor(mano) > 21) {
       setRonda("Te pasaste de 21. Pierdes la ronda. ❌");
+      sfx.mal();
       setTerminado(true);
       stRef.current.terminado = true;
+      setBote(v => Math.max(0, v - apuesta));
       const nd = derrotas + 1; setDerrotas(nd);
       cerrarSesion(victorias, nd);
     }
@@ -97,13 +111,19 @@ export default function Blackjack() {
     setBaraja(b); setCrupier(c);
     const vj = valor(manoFinal), vc = valor(c);
     if (vc > 21 || vj > vc) {
-      setRonda(`Ganas la ronda (${vj} vs ${vc}). ✅`);
+      setRonda(`Ganas la ronda (${vj} vs ${vc}). ✅ +${apuesta} 🪙`);
+      sfx.bien();
+      sfx.moneda();
+      setBote(v => v + apuesta);
       const nv = victorias + 1; setVictorias(nv);
       cerrarSesion(nv, derrotas);
     } else if (vj === vc) {
       setRonda(`Empate (${vj}). 🤝`);
+      sfx.clic();
     } else {
-      setRonda(`Pierdes la ronda (${vj} vs ${vc}). ❌`);
+      setRonda(`Pierdes la ronda (${vj} vs ${vc}). ❌ −${apuesta} 🪙`);
+      sfx.mal();
+      setBote(v => Math.max(0, v - apuesta));
       const nd = derrotas + 1; setDerrotas(nd);
       cerrarSesion(victorias, nd);
     }
@@ -111,9 +131,10 @@ export default function Blackjack() {
     stRef.current.terminado = true;
   }
 
-  function plantarse() { if (!stRef.current.terminado && jugador.length) plantarseCon(jugador); }
+  function plantarse() { if (!stRef.current.terminado && jugador.length) { sfx.clic(); plantarseCon(jugador); } }
   function doblar() {
     if (stRef.current.terminado || jugador.length !== 2) return;
+    sfx.clic();
     const nb = [...baraja];
     const carta = nb.pop();
     if (!carta) return;
@@ -122,8 +143,10 @@ export default function Blackjack() {
     setDobles(d => d + 1);
     if (valor(mano) > 21) {
       setRonda("Te pasaste al doblar. Pierdes. ❌");
+      sfx.mal();
       setTerminado(true);
       stRef.current.terminado = true;
+      setBote(v => Math.max(0, v - apuesta));
       const nd = derrotas + 1; setDerrotas(nd);
       cerrarSesion(victorias, nd);
     } else {
@@ -136,7 +159,7 @@ export default function Blackjack() {
   const doblarRef = useRef(doblar); doblarRef.current = doblar;
   const nuevaRef = useRef(nuevaRonda); nuevaRef.current = nuevaRonda;
 
-  // Teclado: C/H pedir · P plantarse · D doblar · N nueva ronda
+  // Teclado: C/H pedir · P plantarse · D doblar · N/ENTER nueva ronda
   useEffect(() => {
     const fn = e => {
       if (escribiendo()) return;
@@ -144,7 +167,8 @@ export default function Blackjack() {
       if (k === "c" || k === "h") pedirRef.current();
       else if (k === "p") plantarseRef.current();
       else if (k === "d") doblarRef.current();
-      else if (k === "n" || k === "enter") {
+      else if (k === "n" || k === "enter" || k === " ") {
+        if (k === " " ) e.preventDefault();
         if (!jugador.length || stRef.current.terminado) nuevaRef.current();
       }
     };
@@ -154,24 +178,33 @@ export default function Blackjack() {
   }, [jugador, baraja, crupier, victorias, derrotas]);
 
   const paloRojo = p => p === "♥" || p === "♦";
+  const pct = Math.round((victorias / 5) * 100);
 
   return (
     <GameShell titulo="Blackjack" emoji="🃏"
       descripcion="Acércate a 21 sin pasarte y gana a la banca. Primero en llegar a 5 rondas."
       stats={[
-        { etiqueta: "Tú", valor: victorias },
-        { etiqueta: "Banca", valor: derrotas },
-        { etiqueta: "Dobles", valor: dobles },
+        { icono: "🧍", etiqueta: "Tú", valor: `${victorias}/5` },
+        { icono: "🖥️", etiqueta: "Banca", valor: derrotas },
+        { icono: "🪙", etiqueta: "Bote", valor: `${bote} · ${apuesta}` },
+        { icono: "✌️", etiqueta: "Dobles", valor: dobles },
       ]}
-      resultado={sesionFin ? { mensaje, tipo } : null}
+      acciones={<>
+        <button className="btn-exito" onClick={nuevaRonda}>{jugador.length ? "↻ Nueva partida (N)" : "🃏 Repartir"}</button>
+        {APUESTAS.map(a => (
+          <button key={a} className={apuesta === a ? "btn-principal" : "btn-suave"} disabled={jugador.length > 0 && !terminado} onClick={() => { sfx.clic(); setApuesta(a); }}>{a} 🪙</button>
+        ))}
+      </>}
+      resultado={sesionFin ? { mensaje, tipo } : terminado && ronda ? { mensaje: ronda, tipo: "empate" } : null}
       ayuda={<>
-        <span>Las figuras valen <b>10</b> y el As vale <b>11 u 1</b> según convenga.</span>
-        <span>La banca pide hasta <b>17</b>. Gana la sesión quien llegue a <b>5 rondas</b>.</span>
-        <span>Teclas: <kbd>C</kbd> pedir · <kbd>P</kbd> plantarse · <kbd>D</kbd> doblar · <kbd>N</kbd> ronda.</span>
+        <p><b>Objetivo:</b> suma más que la banca sin pasar de <b>21</b>. Las figuras valen <b>10</b> y el As vale <b>11 u 1</b>. La banca pide hasta <b>17</b>. Gana la sesión quien llegue a <b>5 rondas</b>.</p>
+        <p><b>Controles:</b> botones o teclas <kbd>C</kbd> pedir, <kbd>P</kbd> plantarse, <kbd>D</kbd> doblar (solo con 2 cartas), <kbd>N</kbd>/<kbd>Enter</kbd> nueva ronda. Táctil: toca las cartas-botón.</p>
+        <p><b>Puntuación y bote:</b> la sesión registra <b>10 pts por ronda ganada</b>. El bote empieza en 100 🪙: ganas +apuesta por ronda y pierdes −apuesta. Elige apuesta 10/25/50.</p>
+        <p><b>Consejo:</b> planta con 17+ y pide con 11 o menos; con 12–16 pide solo si la banca muestra 7 o más.</p>
       </>}>
-      <div className="fila-botones">
-        <button className="btn-exito" onClick={nuevaRonda}>{jugador.length ? "↻ Nueva partida" : "🃏 Repartir"}</button>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
         <Pips n={victorias} />
+        <div className="xp-bar fina" style={{ flex: 1 }}><div style={{ width: `${pct}%` }} /></div>
       </div>
       {jugador.length > 0 && (
         <div className="bj-mesa">
@@ -200,7 +233,7 @@ export default function Blackjack() {
               {jugador.length === 2 && <button className="btn-exito" onClick={doblar}>Doblar ×2 (D)</button>}
             </div>
           )}
-          {ronda && <p className="bj-ronda">{ronda}</p>}
+          {ronda && !sesionFin && <p className="bj-ronda">{ronda}</p>}
           {terminado && !sesionFin && (
             <div className="fila-botones" style={{ marginTop: 12 }}>
               <button className="btn-exito" onClick={nuevaRonda}>Siguiente ronda (N)</button>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const W = 520, H = 360;
 
@@ -29,6 +30,7 @@ export default function Breakout() {
   jugandoRef.current = jugando;
 
   function empezar(nv = 1) {
+    sfx.clic();
     const bloques = [];
     const filas = 3 + nv, cols = 8;
     const colores = ["#f43f5e", "#fb923c", "#facc15", "#22c55e", "#38bdf8", "#a855f7"];
@@ -46,6 +48,7 @@ export default function Breakout() {
     if (finRef.current) return;
     finRef.current = true;
     setJugando(false);
+    if (victoria) sfx.bien(); else sfx.mal();
     if (victoria) registrarPunt(200 + vidasRef.current * 50 + nivelRef.current * 50, 1);
     else registrarPunt(puntosRef.current, 0);
   }
@@ -168,6 +171,17 @@ export default function Breakout() {
   return (
     <GameShell titulo="Rompebloques" emoji="🧱"
       descripcion="Ratón o teclado (←/→, A/D). Los rojos aguantan 2 golpes."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+        { etiqueta: "Nivel", valor: nivel },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> rompe todos los bloques sin perder las 3 vidas.</span>
+        <span><b>Controles:</b> ratón o dedo sobre el canvas, <kbd>←</kbd>/<kbd>→</kbd> o <kbd>A</kbd>/<kbd>D</kbd> mover pala, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> +10 por bloque; victoria = 200 + 50 por vida y nivel. Los rojos piden 2 golpes.</span>
+        <span><b>Consejo:</b> golpea con los extremos para controlar el rebote.</span>
+      </>}
       tira="linear-gradient(90deg,#fb7185,#a855f7,#facc15)" iconoFondo="linear-gradient(135deg,#fb7185,#a855f7)">
       <div className="fila-botones">
         <button className="btn-principal" onClick={() => empezar(1)}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>

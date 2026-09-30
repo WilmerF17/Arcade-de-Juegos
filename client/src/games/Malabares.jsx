@@ -16,6 +16,7 @@ export default function Malabares() {
   tRef.current = toques; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     st.current = { px: W / 2, x: W / 2, y: H / 2, vx: 3 * (Math.random() < 0.5 ? 1 : -1), vy: -3.5 };
     tRef.current = 0; setToques(0); setJugando(true);
   }
@@ -91,7 +92,18 @@ export default function Malabares() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <GameShell titulo="Malabares" emoji="🤹" descripcion="←/→, A/D o ratón · no dejes caer la bola.">
+    <GameShell titulo="Malabares" emoji="🤹" descripcion="←/→, A/D o ratón · no dejes caer la bola."
+      stats={[
+        { etiqueta: "Toques", valor: toques },
+        { icono: "🏆", etiqueta: "Mejor", valor: Math.max(mejor, toques) },
+        { etiqueta: "Meta", valor: 20 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> mantén la bola en el aire con la pala el mayor tiempo posible.</span>
+        <span><b>Controles:</b> <kbd>←</kbd>/<kbd>→</kbd> o <kbd>A</kbd>/<kbd>D</kbd> o ratón/dedo, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> toques ×5; 20+ toques es victoria.</span>
+        <span><b>Consejo:</b> golpea con el centro para un rebote vertical estable.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Toques <b>{toques}</b></span>

@@ -57,7 +57,9 @@ export default function RascaGana() {
   return (
     <GameShell titulo="Rasca y Gana" emoji="🎫"
       descripcion="Revela 3 · trío ×10 · pareja = reembolso."
-      tira="linear-gradient(90deg,#f59e0b,#ec4899)" iconoFondo="linear-gradient(135deg,#f59e0b,#ec4899)">
+      tira="linear-gradient(90deg,#f59e0b,#ec4899)" iconoFondo="linear-gradient(135deg,#f59e0b,#ec4899)"
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Cartón", valor: apuesta }, { etiqueta: "Reveladas", valor: `${reveladas.length}/3` }]}
+      ayuda={<div><p><b>Objetivo:</b> revelar 3 casillas de 9 y lograr trío o pareja.</p><p><b>Apuesta:</b> compras el cartón por la apuesta elegida. Trío cobra apuesta×10; pareja te devuelve la apuesta.</p><ul><li>Trío = apuesta×10 · pareja = reembolso · nada = pierdes</li></ul><p><b>Controles:</b> Comprar cartón · toca 3 casillas.</p><p><b>Consejo:</b> el trío es raro: toma el reembolso como premio.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
       </div>

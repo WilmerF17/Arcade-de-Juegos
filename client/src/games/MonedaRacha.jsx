@@ -16,6 +16,7 @@ export default function MonedaRacha() {
   const [aviso, setAviso] = useState("");
 
   function empezar(elegida) {
+    sfx.clic();
     setAviso("");
     if (bote > 0) return turno(elegida);
     const r = apostar(apuesta);
@@ -51,7 +52,9 @@ export default function MonedaRacha() {
   return (
     <GameShell titulo="Moneda Racha" emoji="🪙"
       descripcion="Cara o cruz ×2 · planta y cobra o arriesga la racha (máx 5)."
-      tira="linear-gradient(90deg,#facc15,#eab308)" iconoFondo="linear-gradient(135deg,#facc15,#eab308)">
+      tira="linear-gradient(90deg,#facc15,#eab308)" iconoFondo="linear-gradient(135deg,#facc15,#eab308)"
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Bote", valor: bote }, { icono: "🔥", etiqueta: "Racha", valor: `${racha}/5` }]}
+      ayuda={<div><p><b>Objetivo:</b> encadenar aciertos de cara/cruz doblando el bote, hasta 5 seguidos.</p><p><b>Apuesta:</b> la primera se descuenta; cada acierto hace bote = base×2. Planta para cobrar o sigue.</p><ul><li>Cada acierto ×2 · fallo = pierdes todo el bote · 5 seguidas cobra solo</li></ul><p><b>Controles:</b> Cara / Cruz para jugar · Plantar para cobrar.</p><p><b>Consejo:</b> planta en racha 2-3: la 4ª y 5ª son 1/16 y 1/32.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         <span className="chip">💰 Bote: <b>{bote}</b></span>

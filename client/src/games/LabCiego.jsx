@@ -116,6 +116,17 @@ export default function LabCiego() {
   return (
     <GameShell titulo="Laberinto Ciego" emoji="🙈"
       descripcion="Memoriza el camino dorado (4s) y crúzalo a ciegas · 3 niveles · 3 vidas."
+      stats={[
+        { etiqueta: "Nivel", valor: `${nivel}/3` },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+        { etiqueta: "Puntos", valor: puntos },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> memoriza el camino dorado y repítelo a ciegas 3 niveles.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o botones táctiles.</span>
+        <span><b>Puntos:</b> +100 × nivel por meta; salir del camino quita 1 vida.</span>
+        <span><b>Consejo:</b> memoriza giros (“arriba, derecha…”) no casillas.</span>
+      </>}
       tira="linear-gradient(90deg,#57534e,#ff9a3d)" iconoFondo="linear-gradient(135deg,#57534e,#ff9a3d)">
       <div className="fila-botones">
         <span className="chip">Nivel: <b>{nivel}/3</b></span>

@@ -16,6 +16,7 @@ export default function Naves() {
   ptsRef.current = puntos; vidasRef.current = vidas; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     const aliens = [];
     for (let r = 0; r < 3; r++) for (let c = 0; c < 8; c++) aliens.push({ x: 40 + c * 55, y: 50 + r * 40, vivo: true });
     st.current = { x: W / 2, balas: [], balasE: [], aliens, dir: 1, frame: 0 };
@@ -113,7 +114,18 @@ export default function Naves() {
   }, []);
 
   return (
-    <GameShell titulo="Invasores Neón" emoji="👾" descripcion="←/→ o A/D moverse · ESPACIO disparar · 3 vidas.">
+    <GameShell titulo="Invasores Neón" emoji="👾" descripcion="←/→ o A/D moverse · ESPACIO disparar · 3 vidas."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+        { etiqueta: "👾 Restan", valor: st.current ? st.current.aliens.filter(a => a.vivo).length : 24 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> elimina los 24 invasores sin perder tus 3 vidas.</span>
+        <span><b>Controles:</b> <kbd>←</kbd>/<kbd>→</kbd> o <kbd>A</kbd>/<kbd>D</kbd> moverse, <kbd>Espacio</kbd>/<kbd>↑</kbd>/<kbd>W</kbd> o <kbd>clic</kbd> disparar, <kbd>Enter</kbd> empezar.</span>
+        <span><b>Puntos:</b> +20 por invasor; bonus +50 por vida +200 al ganar.</span>
+        <span><b>Consejo:</b> dispara desde los extremos y no te quedes quieto.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <button className="btn-suave" onClick={disparar}>🔫 Disparar</button>

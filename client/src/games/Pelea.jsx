@@ -171,9 +171,18 @@ function PeleaMotor({ nombre, emojiL, emojiR, descripcion, ayuda, modo, ia }) {
         { etiqueta: "⏱️", valor: `${quedan}s` },
         { etiqueta: modo === "duelo" ? "P1" : "Tú", valor: `${Math.round(luch.l.hp)}❤️` },
         { etiqueta: modo === "duelo" ? "P2" : "CPU", valor: `${Math.round(luch.r.hp)}❤️` },
-      ] : []}
+      ] : [
+        { etiqueta: "⏱️ Asalto", valor: `${TIEMPO}s` },
+        { etiqueta: "Puño", valor: `👊 ${DANO_PUNO}` },
+        { etiqueta: "Patada", valor: `🦵 ${DANO_PATADA}` },
+      ]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>{ayuda}</span>}>
+      ayuda={<>
+        <span><b>Objetivo:</b> {descripcion} Gana quien tenga más vida al final.</span>
+        <span><b>Controles:</b> 1P <kbd>A</kbd>/<kbd>D</kbd> o <kbd>←</kbd>/<kbd>→</kbd>, <kbd>J</kbd> puño, <kbd>K</kbd> patada, <kbd>L</kbd> bloqueo; duelo P1 <kbd>A</kbd><kbd>D</kbd><kbd>F</kbd><kbd>G</kbd><kbd>H</kbd> y P2 <kbd>←</kbd><kbd>→</kbd><kbd>K</kbd><kbd>L</kbd><kbd>P</kbd> o botones táctiles.</span>
+        <span><b>Puntos:</b> puño 8, patada 13 (30% si bloquea); bloqueo aguanta el 70%. {ayuda}</span>
+        <span><b>Consejo:</b> bloquea el combo rival y castiga con patada a distancia.</span>
+      </>}>
       {!luch && <div className="fila-botones"><button className="btn-principal" onClick={empezar}>🥊 ¡A pelear! (60s)</button></div>}
       {luch && (
         <>

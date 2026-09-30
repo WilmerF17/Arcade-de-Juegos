@@ -32,14 +32,14 @@ export default function Lotto6() {
     else perderApuesta(registrarPunt);
   }
 
-  function limpiar() { setElegidos([]); setSorteo([]); setAviso(""); }
+  function limpiar() { sfx.clic(); setElegidos([]); setSorteo([]); setAviso(""); }
 
   return (
     <GameShell titulo="Lotto 6" emoji="🎱"
       descripcion="Elige 6 del 1 al 20: 3 ×2, 4 ×5, 5 ×25, pleno ×100."
-      stats={[{ icono: "🪙", valor: saldo }, ...(sorteo.length ? [{ etiqueta: "Aciertos", valor: elegidos.filter(n => sorteo.includes(n)).length }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Elegidos", valor: `${elegidos.length}/6` }, ...(sorteo.length ? [{ etiqueta: "Aciertos", valor: elegidos.filter(n => sorteo.includes(n)).length }] : [])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Con 0-2 aciertos pierdes la apuesta. El pleno (6 de 6) paga <b>×100</b>.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> acertar 3 o más de tus 6 números entre 6 sorteados del 1 al 20.</p><p><b>Apuesta:</b> se descuenta al sortear; premio = apuesta×mult.</p><ul><li>3 = ×2 · 4 = ×5 · 5 = ×25 · 6 = ×100 · 0-2 = pierdes</li></ul><p><b>Controles:</b> toca 6 números · Sortear · Limpiar.</p><p><b>Consejo:</b> el pleno es rarísimo: celebra los ×2 como premio.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} />
       <div className="tombola-grid lotto" role="group" aria-label="Tus números">
         {Array.from({ length: 20 }, (_, i) => i + 1).map(n => (

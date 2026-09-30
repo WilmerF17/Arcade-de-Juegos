@@ -67,7 +67,9 @@ export default function Hanoi() {
 
   const optimo = Math.pow(2, n) - 1;
   return (
-    <GameShell titulo="Torres de Hanói" emoji="🗼" descripcion="←/→ o 1-3 + ENTER · lleva la torre a la derecha.">
+    <GameShell titulo="Torres de Hanói" emoji="🗼" descripcion="←/→ o 1-3 + ENTER · lleva la torre a la derecha."
+      stats={[{ etiqueta: "Movs", valor: `${movs}/${optimo}` }, { etiqueta: "Discos", valor: n }, { etiqueta: "Estado", valor: fin ? "¡Hecho!" : "En juego" }]}
+      ayuda={<div><p><b>Objetivo:</b> mover la torre a otra varilla sin poner disco grande sobre pequeño.</p><p><b>Cómo jugar:</b> sin fichas: selecciona origen y destino. Óptimo = 2^n−1 (7/15/31).</p><ul><li>Puntos = máx(200−(movs−óptimo)×5, 40)</li></ul><p><b>Controles:</b> clic, ←/→ o 1-3 + ENTER · 3/4/5 discos · Reiniciar.</p><p><b>Consejo:</b> memoriza el patrón: impar mueve distinto que par.</p></div>}>
       <div className="fila-botones">
         {[3, 4, 5].map(x => <button key={x} className={n === x && !movs ? "btn-principal" : ""} onClick={() => empezar(x)}>{x} discos</button>)}
         <button className="btn-exito" onClick={() => empezar(n)}>Reiniciar</button>

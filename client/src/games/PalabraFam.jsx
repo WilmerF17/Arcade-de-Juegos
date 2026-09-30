@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
-/* Palabras con pistas de colores: verde = bien, amarillo = otra posición. 6 intentos. */
+/* Palabras con pistas de colores: verde = bien, amarillo = otra posición. */
+const DIFS = { "Fácil": { intentos: 8 }, "Normal": { intentos: 6 }, "Difícil": { intentos: 4 } };
 function PalabraBase({ titulo, emoji, banco, longitud, diaria, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
+  const [dif, setDif] = useState("Normal");
+  const INTENTOS = DIFS[dif].intentos;
   const [objetivo, setObjetivo] = useState("");
   const [filas, setFilas] = useState([]);
   const [entrada, setEntrada] = useState("");
   const [jugando, setJugando] = useState(false);
-
-  const INTENTOS = 6;
 
   function elegirPalabra() {
     if (diaria) {
@@ -61,16 +62,49 @@ function PalabraBase({ titulo, emoji, banco, longitud, diaria, tira, iconoFondo 
     } else sfx.clic();
   }
 
-  const col = ["", "gris", "amarilla", "verde"];
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      const escribiendo = tag === "INPUT" || tag === "TEXTAREA";
+      if ((e.key === "Enter" || e.key === " ") && !jugando && !escribiendo) {
+        e.preventDefault();
+        empezar();
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const pct = Math.round((filas.length / INTENTOS) * 100);
   return (
     <GameShell titulo={titulo} emoji={emoji}
       descripcion={`Adivina la palabra de ${longitud} letras en ${INTENTOS} intentos${diaria ? " · cambia cada día" : ""}.`}
-      tira={tira} iconoFondo={iconoFondo}>
-      {!jugando && filas.length === 0 && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar</button></div>
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "📝", etiqueta: "Intento", valor: `${Math.min(filas.length + (jugando ? 1 : 0), INTENTOS)}/${INTENTOS}` },
+        { icono: "🔤", etiqueta: "Letras", valor: `${longitud}` },
+        { icono: "📊", etiqueta: "Filas", valor: filas.length },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: dif },
+      ]}
+      resultado={{ mensaje, tipo }}
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> adivina la palabra oculta de {longitud} letras en {INTENTOS} intentos. Verde = letra bien colocada, amarillo = existe pero en otro sitio.</p>
+          <p><b>Controles:</b> escribe con el teclado físico o el móvil y pulsa <kbd>Enter</kbd> para probar · <kbd>Enter</kbd>/<kbd>Espacio</kbd> para empezar cuando no juegas.</p>
+          <p><b>Puntuación:</b> ganas más cuantos menos intentos uses (600 menos 60 por fila). Si agotas los intentos solo sumas 20.</p>
+          <p><b>Consejo:</b> empieza con una palabra con vocales variadas para descartar rápido.</p>
+        </div>
       )}
-      <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
+      acciones={(
+        <>
+          {["Fácil", "Normal", "Difícil"].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} disabled={jugando} onClick={() => { setDif(d); sfx.clic(); }}>{d}</button>
+          ))}
+          {!jugando && <button className="btn-principal" onClick={empezar}>{filas.length > 0 ? "↻ Otra vez" : "▶ Empezar"}</button>}
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pct}%` }} /></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center", marginTop: 8 }}>
         {filas.map((f, r) => (
           <div key={r} style={{ display: "grid", gridTemplateColumns: `repeat(${longitud},44px)`, gap: 5 }}>
             {f.t.split("").map((l, c) => (
@@ -92,10 +126,7 @@ function PalabraBase({ titulo, emoji, banco, longitud, diaria, tira, iconoFondo 
         </div>
       )}
       {!jugando && filas.length > 0 && <p style={{ textAlign: "center" }}>Era: <b>{objetivo}</b></p>}
-      <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && filas.length > 0 && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra vez</button></div>
-      )}
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

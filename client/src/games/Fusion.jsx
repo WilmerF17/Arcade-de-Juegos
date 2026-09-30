@@ -69,9 +69,9 @@ function FusionMotor({ nombre, emoji, descripcion, setKey }) {
   return (
     <GameShell titulo={nombre} emoji={emoji}
       descripcion={descripcion}
-      stats={[{ etiqueta: "Puntos", valor: puntos }, { etiqueta: "Mejor", valor: set[mejor] }]}
+      stats={[{ etiqueta: "Puntos", valor: puntos }, { etiqueta: "Mejor", valor: set[mejor] }, { etiqueta: "Fichas", valor: 16 }]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Toca una ficha y luego otra <b>igual y vecina</b> para fusionarlas. Fusionar da puntos. Si no quedan parejas vecinas, la partida termina.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> fusionar fichas iguales y vecinas para sumar puntos hasta quedarte sin movimientos.</p><p><b>Cómo jugar:</b> sin apuesta: toca una ficha y luego otra igual y vecina. Fusionar da (nivel+1)×5 puntos.</p><ul><li>Sin parejas vecinas = fin de partida · mejor ≥ nivel 8 cuenta victoria</li></ul><p><b>Controles:</b> clic en dos fichas vecinas · Reiniciar.</p><p><b>Consejo:</b> juega tranquilo: es puzzle sin fichas, ideal para descansar.</p></div>}>
       <div className="fusion-tab" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, maxWidth: 340, margin: "0 auto" }}>
         {tab.map((v, i) => (
           <button key={i} onClick={() => tocar(i)}

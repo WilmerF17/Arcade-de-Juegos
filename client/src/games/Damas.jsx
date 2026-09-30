@@ -112,7 +112,9 @@ export default function Damas() {
   const dests = sel ? movimientos(tab, sel[0], sel[1], 1) : [];
   const n1 = tab.flat().filter(v => v === 1).length, n2 = tab.flat().filter(v => v === 2).length;
   return (
-    <GameShell titulo="Damas" emoji="♟️" descripcion="Flechas/WASD + ENTER · captura todo vs IA.">
+    <GameShell titulo="Damas" emoji="♟️" descripcion="Flechas/WASD + ENTER · captura todo vs IA."
+      stats={[{ etiqueta: "🔴 Tú", valor: n1 }, { etiqueta: "⚫ IA", valor: n2 }, { etiqueta: "Estado", valor: fin || "En juego" }]}
+      ayuda={<div><p><b>Objetivo:</b> capturar todas las piezas de la IA o bloquearla (captura obligatoria si puedes).</p><p><b>Cómo jugar:</b> sin fichas: mueve en diagonal, salto para capturar. Gana quien deje sin piezas/movimientos.</p><ul><li>Bloqueo IA = 120 pts · captura total = 150 pts</li></ul><p><b>Controles:</b> clic o flechas/WASD + ENTER · Nueva partida.</p><p><b>Consejo:</b> prioriza capturas y no dejes piezas colgadas.</p></div>}>
       <div className="fila-botones">
         <button className="btn-exito" onClick={() => { const t = inicial(); st.current = { tab: t, fin: null }; setTab(t); setFin(null); setSel(null); }}>Nueva partida</button>
         <span className="chip">🔴 Tú <b>{n1}</b></span>

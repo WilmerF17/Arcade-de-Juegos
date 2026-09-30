@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const DIRS = { arr: [-1, 0], aba: [1, 0], izq: [0, -1], der: [0, 1] };
 
@@ -14,6 +15,7 @@ export default function CazaTesoro() {
   tamRef.current = tam;
 
   function empezar() {
+    sfx.clic();
     const t = tamRef.current;
     const tes = [Math.floor(Math.random() * t), Math.floor(Math.random() * t)];
     let jug;
@@ -36,11 +38,13 @@ export default function CazaTesoro() {
     const pasos = j.pasos + 1;
     if (f === j.tesoro[0] && c === j.tesoro[1]) {
       const puntos = Math.max(100 - 5 * pasos, 10);
+      sfx.bien();
       registrarPunt(puntos, 1);
       const fin = { ...j, jugador: [f, c], pasos, fin: true };
       juegoRef.current = fin;
       setJuego(fin);
     } else {
+      sfx.clic();
       const nj = { ...j, jugador: [f, c], pasos };
       juegoRef.current = nj;
       setJuego(nj);
@@ -74,7 +78,18 @@ export default function CazaTesoro() {
 
   return (
     <GameShell titulo="Caza del tesoro" emoji="💰"
-      descripcion="Flechas o WASD para moverte · el radar te guía al tesoro oculto.">
+      descripcion="Flechas o WASD para moverte · el radar te guía al tesoro oculto."
+      stats={[
+        { etiqueta: "Pasos", valor: juego ? juego.pasos : 0 },
+        { etiqueta: "🧭 Distancia", valor: juego ? dist : "—" },
+        { etiqueta: "Tablero", valor: `${tam}×${tam}` },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> encuentra el tesoro oculto 💰 en los menos pasos posibles.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> moverse, <kbd>Enter</kbd> empezar o botones táctiles.</span>
+        <span><b>Puntos:</b> máx(100 − 5×pasos, 10); el radar sube al acercarte.</span>
+        <span><b>Consejo:</b> barre en espiral desde tu inicio para no repetir casillas.</span>
+      </>}>
       <div className="fila-botones">
         {[8, 10, 12].map(t => (
           <button key={t} className={tam === t ? "btn-principal" : ""} onClick={() => setTam(t)}>{t}×{t}</button>

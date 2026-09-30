@@ -50,9 +50,9 @@ export default function Minas() {
   return (
     <GameShell titulo="Minas" emoji="💣"
       descripcion="Revela casillas sin pisar las 3 minas. Cada acierto multiplica ×1.3. Cobra cuando quieras."
-      stats={[{ icono: "🪙", valor: saldo }, ...(jugando ? [{ etiqueta: "Bote", valor: `${bote} (×${mult.toFixed(1)})` }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(jugando ? [{ etiqueta: "Bote", valor: `${bote} (×${mult.toFixed(1)})` }, { etiqueta: "Seguras", valor: abiertas.length }] : [{ etiqueta: "Minas", valor: "3/25" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Hay <b>3 minas</b> escondidas en 25 casillas. Cada casilla segura sube el bote. Si explotas, pierdes la apuesta.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> revelar casillas seguras y cobrar antes de explotar.</p><p><b>Apuesta:</b> se descuenta al empezar; bote = floor(apuesta×1.3^aciertos). Cobra con el botón para ganar.</p><ul><li>Cada segura ×1.3 · mina = pierdes la apuesta</li></ul><p><b>Controles:</b> clic en casilla para revelar · Cobrar para plantar.</p><p><b>Consejo:</b> cobra pronto: cada clic extra arriesga todo el bote.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={jugando} />
       <div className="fila-botones">
         {!jugando

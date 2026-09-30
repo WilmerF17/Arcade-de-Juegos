@@ -26,6 +26,7 @@ export default function BolaLab() {
   const finRef = useRef(false);
 
   function empezar() {
+    sfx.clic();
     st.current = { x: 30, y: 30, vx: 0, vy: 0 };
     setTiempo(0); setFin(false); finRef.current = false; setJugando(true);
   }
@@ -101,7 +102,18 @@ export default function BolaLab() {
   }, [jugando, fin, tiempo]);
 
   return (
-    <GameShell titulo="Bola Laberinto" emoji="🔮" descripcion="Flechas/WASD con física e inercia · llega a 🏁.">
+    <GameShell titulo="Bola Laberinto" emoji="🔮" descripcion="Flechas/WASD con física e inercia · llega a 🏁."
+      stats={[
+        { etiqueta: "⏱️ Tiempo", valor: `${tiempo}s` },
+        { etiqueta: "Estado", valor: fin ? "¡Meta!" : jugando ? "Rodando" : "Listo" },
+        { etiqueta: "Meta", valor: "🏁" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> lleva la bola con inercia hasta la meta 🏁 sin atascarte.</span>
+        <span><b>Controles:</b> mantén <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> para acelerar, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> máx(200 − tiempo×2, 30); llegar siempre es victoria.</span>
+        <span><b>Consejo:</b> toques cortos: la inercia te juega en contra en curvas.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : fin ? "↻ Otra vez" : "▶ Jugar"}</button>
         <span className="chip">⏱️ <b>{tiempo}s</b></span>

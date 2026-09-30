@@ -54,9 +54,9 @@ export default function EscaleraOro() {
   return (
     <GameShell titulo="Escalera Millonaria" emoji="🪜"
       descripcion="Supera 5 peldaños con 2 dados (suma ≥ meta). Cada uno ×1.4, la cima ×5.3."
-      stats={[{ icono: "🪙", valor: saldo }, ...(enJuego || peldano ? [{ etiqueta: "Peldaño", valor: `${Math.min(peldano + 1, 5)}/5` }, { etiqueta: "Meta", valor: peldano < 5 ? `≥${METAS[peldano]}` : "🏁" }, { etiqueta: "Bote", valor: `${bote} (×${mult.toFixed(1)})` }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(enJuego || peldano ? [{ etiqueta: "Peldaño", valor: `${Math.min(peldano + 1, 5)}/5` }, { etiqueta: "Meta", valor: peldano < 5 ? `≥${METAS[peldano]}` : "🏁" }, { etiqueta: "Bote", valor: `${bote} (×${mult.toFixed(1)})` }] : [{ etiqueta: "Peldaño", valor: "0/5" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Las metas suben: <b>5, 7, 9, 10 y 11</b>. Si fallas un tiro pierdes la apuesta; puedes cobrar en cualquier peldaño.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> superar 5 peldaños tirando suma ≥ meta con 2 dados.</p><p><b>Apuesta:</b> se descuenta al subir; bote = floor(apuesta×1.4^peldaños). Puedes cobrar en cualquier peldaño.</p><ul><li>Cada peldaño ×1.4 · cima = floor(apuesta×1.4^5) ≈ ×5.3 · fallo = pierdes</li><li>Metas: 5, 7, 9, 10 y 11</li></ul><p><b>Controles:</b> Subir para empezar · Tirar para avanzar · Cobrar para plantar.</p><p><b>Consejo:</b> la meta 11 es dura: cobra antes si ya vas en verde.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={enJuego} />
       <div className="fila-botones">
         {!enJuego

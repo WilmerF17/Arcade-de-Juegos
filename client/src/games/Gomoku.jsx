@@ -24,7 +24,7 @@ export default function Gomoku() {
 
   function jugar(r, c) {
     const s = st.current;
-    if (s.fin || s.tab[r][c] !== 0) return;
+    if (s.fin || s.tab[r][c] !== 0) { sfx.mal(); return; }
     const t = s.tab.map(f => [...f]);
     t[r][c] = 1;
     const m = s.movs + 1;
@@ -82,7 +82,9 @@ export default function Gomoku() {
   }, []);
 
   return (
-    <GameShell titulo="Gomoku" emoji="⚪" descripcion="Flechas/WASD + ENTER · 5 en línea antes que la IA (9×9).">
+    <GameShell titulo="Gomoku" emoji="⚪" descripcion="Flechas/WASD + ENTER · 5 en línea antes que la IA (9×9)."
+      stats={[{ etiqueta: "Movs", valor: movs }, { etiqueta: "Tablero", valor: "9×9" }, { etiqueta: "Estado", valor: fin || "En juego" }]}
+      ayuda={<div><p><b>Objetivo:</b> hacer 5 en línea antes que la IA (eres ⚫).</p><p><b>Cómo jugar:</b> sin fichas: coloca por turnos. La IA gana si puede, si no bloquea.</p><ul><li>Victoria = máx(150−movs×2, 40) pts · empate = 30 · derrota = 10</li></ul><p><b>Controles:</b> clic o flechas/WASD + ENTER · Nueva partida.</p><p><b>Consejo:</b> abre en el centro y crea dobles amenazas.</p></div>}>
       <div className="fila-botones">
         <button className="btn-exito" onClick={() => { const t = Array.from({ length: N }, () => Array(N).fill(0)); st.current = { tab: t, fin: null, movs: 0 }; setTab(t); setFin(null); setMovs(0); }}>Nueva partida</button>
         <span className="chip">Movs <b>{movs}</b></span>

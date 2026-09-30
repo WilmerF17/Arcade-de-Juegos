@@ -54,9 +54,9 @@ export default function Torre() {
   return (
     <GameShell titulo="Torre Dorada" emoji="🗼"
       descripcion="Sube 6 pisos: 2 puertas avanzan (×1.5) y 1 es trampa. Cobra cuando quieras."
-      stats={[{ icono: "🪙", valor: saldo }, ...(trampas.length > 0 ? [{ etiqueta: "Piso", valor: `${Math.min(piso + 1, PISOS)}/${PISOS}` }, { etiqueta: "Bote", valor: `${bote} (×${mult.toFixed(1)})` }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(trampas.length > 0 ? [{ etiqueta: "Piso", valor: `${Math.min(piso + 1, PISOS)}/${PISOS}` }, { etiqueta: "Bote", valor: `${bote} (×${mult.toFixed(1)})` }] : [{ etiqueta: "Pisos", valor: `0/${PISOS}` }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Cada piso esconde una trampa entre 3 puertas. Si llegas arriba el premio es de <b>×11.4</b>. Puedes cobrar en cualquier piso.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> subir 6 pisos eligiendo la puerta sin trampa.</p><p><b>Apuesta:</b> se descuenta al subir; bote = floor(apuesta×1.5^pisos). Cobra cuando quieras o arriesga.</p><ul><li>Cada piso ×1.5 · cima = floor(apuesta×1.5^6) ≈ ×11.4 · trampa = pierdes</li></ul><p><b>Controles:</b> clic en 🚪 de cada piso · Cobrar para plantar.</p><p><b>Consejo:</b> cobrar en el piso 2-3 asegura; la cima es 1 de cada 64.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={jugando} />
       <div className="fila-botones">
         {!trampas.length || caida || piso >= PISOS

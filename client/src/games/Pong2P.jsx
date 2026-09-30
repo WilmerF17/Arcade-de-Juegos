@@ -16,6 +16,7 @@ export default function Pong2P() {
   ptsRef.current = puntos; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     st.current = { ay: H / 2 - 40, by: H / 2 - 40, x: W / 2, y: H / 2, vx: 4 * (Math.random() < 0.5 ? 1 : -1), vy: 2.5 * (Math.random() < 0.5 ? 1 : -1), estela: [] };
     ptsRef.current = { a: 0, b: 0 }; setPuntos({ a: 0, b: 0 }); setJugando(true);
   }
@@ -90,7 +91,18 @@ export default function Pong2P() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <GameShell titulo="Rebote 2 Jugadores" emoji="🏓" descripcion="Local: J1 W/S · J2 ↑/↓ · primero a 5.">
+    <GameShell titulo="Rebote 2 Jugadores" emoji="🏓" descripcion="Local: J1 W/S · J2 ↑/↓ · primero a 5."
+      stats={[
+        { etiqueta: "J1", valor: puntos.a },
+        { etiqueta: "J2", valor: puntos.b },
+        { etiqueta: "Meta", valor: 5 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> marca 5 puntos antes que tu rival en el mismo teclado.</span>
+        <span><b>Controles:</b> J1 <kbd>W</kbd>/<kbd>S</kbd>, J2 <kbd>↑</kbd>/<kbd>↓</kbd>, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> cada bola que entra suma 1; gana quien llegue a 5 (100 pts ranking).</span>
+        <span><b>Consejo:</b> colócate al centro y mueve poco para cubrir más ángulo.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">J1 <b>{puntos.a}</b> — J2 <b>{puntos.b}</b></span>

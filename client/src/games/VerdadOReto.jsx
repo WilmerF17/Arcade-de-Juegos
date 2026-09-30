@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
+import { escribiendo } from "../suite/teclado";
 
 /* Verdad o Reto familiar: gira y cumple. Suma puntos por cada prueba superada. */
+const CONF_DIF = { 1: { meta: 6, nombre: "Fácil" }, 2: { meta: 8, nombre: "Normal" }, 3: { meta: 10, nombre: "Difícil" } };
 function VoRBase({ titulo, banco, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
   const [reto, setReto] = useState(null);
   const [puntos, setPuntos] = useState(0);
   const [hechos, setHechos] = useState(0);
+  const [dif, setDif] = useState(2);
+  const META = CONF_DIF[dif].meta;
   const [jugando, setJugando] = useState(false);
-
-  const META = 8;
+  const jugandoRef = useRef(false);
+  jugandoRef.current = jugando;
+  const cumplirRef = useRef(null);
 
   function empezar() {
     setPuntos(0); setHechos(0); setJugando(true);
@@ -20,6 +25,7 @@ function VoRBase({ titulo, banco, tira, iconoFondo }) {
 
   function girar() {
     setReto(banco[Math.floor(Math.random() * banco.length)]);
+    sfx.clic();
   }
 
   function cumplir() {
@@ -33,33 +39,63 @@ function VoRBase({ titulo, banco, tira, iconoFondo }) {
       registrarPunt(np, 1);
     } else girar();
   }
+  cumplirRef.current = cumplir;
+
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if ((e.key === "Enter" || e.key === " ") && !jugandoRef.current) {
+        e.preventDefault();
+        empezar();
+        return;
+      }
+      if (!jugandoRef.current) return;
+      const k = e.key.toLowerCase();
+      if (k === "c" || e.key === "ArrowRight") cumplirRef.current();
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dif, puntos, hechos, jugando]);
+
+  const pct = Math.round((hechos / META) * 100);
 
   return (
     <GameShell titulo={titulo} emoji="🎉"
-      descripcion="Gira, cumple la prueba y suma · 8 pruebas = victoria."
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <span className="chip">Pruebas: <b>{hechos}/{META}</b></span>
-        <span className="chip">Puntos: <b>{puntos}</b></span>
-      </div>
+      descripcion={`Gira, cumple la prueba y suma · ${META} pruebas = victoria.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "🎯", etiqueta: "Pruebas", valor: `${hechos}/${META}` },
+        { icono: "⭐", etiqueta: "Puntos", valor: puntos },
+        { icono: "🎲", etiqueta: "Dificultad", valor: CONF_DIF[dif].nombre },
+      ]}
+      acciones={!jugando ? <button className="btn-principal" onClick={empezar}>{hechos > 0 ? "↻ Otra fiesta" : "▶ Empezar la fiesta"}</button> : null}
+      ayuda={<>
+        <span>Pulsa girar, cumple la <b>verdad o reto</b> en grupo y marca <b>¡Cumplido! (+100)</b>. Completa la meta para ganar.</span>
+        <span>Controles: botones o tecla <kbd>C</kbd> para cumplir. <kbd>ENTER</kbd> o <kbd>ESPACIO</kbd> empieza o repite fiesta.</span>
+        <span>Puntuación: cada prueba son <b>100 puntos</b>; completar la meta registra victoria. Dificultad: <b>Fácil 6</b>, <b>Normal 8</b>, <b>Difícil 10</b> pruebas.</span>
+        <span>Consejo: si una prueba no encaja con el grupo, pásala sin culpa y sigue la fiesta.</span>
+      </>}>
       {!jugando && hechos === 0 && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar la fiesta</button></div>
+        <div className="fila-botones" role="group" aria-label="Dificultad">
+          {[1, 2, 3].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} onClick={() => { setDif(d); sfx.clic(); }}>{d === 1 ? "🟢 Fácil" : d === 2 ? "🟡 Normal" : "🔴 Difícil"}</button>
+          ))}
+        </div>
       )}
+      <div className="xp-bar fina" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progreso de la fiesta"><div style={{ width: `${pct}%` }} /></div>
       {reto && jugando && (
         <>
           <p style={{ textAlign: "center", fontSize: "1.05rem", background: "var(--bg-soft)", border: "1px solid var(--border)", borderRadius: 12, padding: 16 }}>
             <b>{reto.t}</b><br />{reto.d}
           </p>
           <div className="fila-botones">
-            <button className="btn-exito" onClick={cumplir}>✅ ¡Cumplido! +100</button>
+            <button className="btn-exito" onClick={cumplir}>✅ ¡Cumplido! +100 <kbd>C</kbd></button>
             <button className="btn-suave" onClick={girar}>⏭ Otra prueba</button>
           </div>
         </>
       )}
       <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && hechos > 0 && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>↻ Otra fiesta</button></div>
-      )}
     </GameShell>
   );
 }

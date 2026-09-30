@@ -15,6 +15,7 @@ export default function Penaltis() {
 
   function tirar(i) {
     if (fin || anim) return;
+    sfx.clic();
     const portero = dif === 1 ? Math.floor(Math.random() * 5) : dif === 2 ? (Math.random() < 0.6 ? [1, 2, 3][Math.floor(Math.random() * 3)] : Math.floor(Math.random() * 5)) : Math.floor(Math.random() * 5);
     const gol = i !== portero;
     setAnim({ tiro: i, portero, gol });
@@ -31,7 +32,7 @@ export default function Penaltis() {
     }, 800);
   }
   const tirarRef = useRef(tirar); tirarRef.current = tirar;
-  function reiniciar() { st.current = { ronda: 0, goles: 0 }; setRonda(0); setGoles(0); setFin(false); setAnim(null); }
+  function reiniciar() { sfx.clic(); st.current = { ronda: 0, goles: 0 }; setRonda(0); setGoles(0); setFin(false); setAnim(null); }
   useEffect(() => {
     const fn = e => {
       if (escribiendo() || fin) return;
@@ -45,7 +46,9 @@ export default function Penaltis() {
   }, [fin, anim, dif]);
 
   return (
-    <GameShell titulo="Penaltis" emoji="⚽" descripcion="Flechas/WASD o 1-5 · 5 lanzamientos · el portero adivina.">
+    <GameShell titulo="Penaltis" emoji="⚽" descripcion="Flechas/WASD o 1-5 · 5 lanzamientos · el portero adivina."
+      stats={[{ etiqueta: "Ronda", valor: `${ronda}/5` }, { etiqueta: "Goles", valor: goles }, { etiqueta: "Dificultad", valor: dif === 1 ? "Fácil" : dif === 2 ? "Normal" : "Difícil" }]}
+      ayuda={<div><p><b>Objetivo:</b> marcar el máximo en 5 lanzamientos (puntos = goles×20, victoria con 3+).</p><p><b>Cómo jugar:</b> sin fichas: elige una de 5 direcciones. Si el portero va a otra, es gol.</p><ul><li>5 goles = 100 pts · cada gol = 20 pts · 3+ goles = victoria</li></ul><p><b>Controles:</b> clic, teclas 1-5, flechas o WASD/QE · Reiniciar.</p><p><b>Consejo:</b> varía el lado: en Normal el portero cubre el centro más.</p></div>}>
       <div className="fila-botones">
         {[1, 2, 3].map(d => <button key={d} className={dif === d ? "btn-principal" : ""} onClick={() => setDif(d)}>{d === 1 ? "Fácil" : d === 2 ? "Normal" : "Difícil"}</button>)}
         <button className="btn-exito" onClick={reiniciar}>Reiniciar</button>

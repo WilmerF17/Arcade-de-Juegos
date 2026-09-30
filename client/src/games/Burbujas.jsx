@@ -17,6 +17,7 @@ export default function Burbujas() {
   st.current.puntos = puntos; st.current.combo = combo;
 
   function empezar() {
+    sfx.clic();
     setBurbujas([]); setPuntos(0); st.current.puntos = 0;
     setCombo(0); st.current.combo = 0;
     setTiempo(45); setJugando(true);
@@ -76,7 +77,18 @@ export default function Burbujas() {
   }, [jugando]);
 
   return (
-    <GameShell titulo="Cazaburbujas" emoji="🫧" descripcion="Clic en burbujas 45s · combo × · evita 💣.">
+    <GameShell titulo="Cazaburbujas" emoji="🫧" descripcion="Clic en burbujas 45s · combo × · evita 💣."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "🔥 Combo", valor: `×${combo}` },
+        { etiqueta: "⏱️ Tiempo", valor: `${tiempo}s` },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> revienta burbujas 45 segundos sin tocar bombas.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> reventar, <kbd>Enter</kbd> empezar; fallar al fondo rompe el combo.</span>
+        <span><b>Puntos:</b> 10 + 2 por combo (máx +20); 💣 resta 20; 300+ es victoria.</span>
+        <span><b>Consejo:</b> prioriza 💎 y no persigas bombas cercanas.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

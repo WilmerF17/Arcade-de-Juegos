@@ -23,7 +23,7 @@ export default function Stroop() {
   const [jugando, setJugando] = useState(false);
   const st = useRef({ puntos: 0, aciertos: 0 }); st.current = { puntos, aciertos };
 
-  function empezar() { setR(ronda()); setPuntos(0); st.current.puntos = 0; setAciertos(0); st.current.aciertos = 0; setFallos(0); setTiempo(30); setJugando(true); }
+  function empezar() { sfx.clic(); setR(ronda()); setPuntos(0); st.current.puntos = 0; setAciertos(0); st.current.aciertos = 0; setFallos(0); setTiempo(30); setJugando(true); }
   useEffect(() => {
     if (!jugando) return;
     if (tiempo <= 0) {
@@ -68,7 +68,9 @@ export default function Stroop() {
   const jugandoRef = useRef(false); jugandoRef.current = jugando;
 
   return (
-    <GameShell titulo="Stroop Colores" emoji="🎨" descripcion="Elige el color de la TINTA (no la palabra) · 1-4 o flechas · 30s.">
+    <GameShell titulo="Stroop Colores" emoji="🎨" descripcion="Elige el color de la TINTA (no la palabra) · 1-4 o flechas · 30s."
+      stats={[{ etiqueta: "Puntos", valor: puntos }, { etiqueta: "✅/❌", valor: `${aciertos}/${fallos}` }, { etiqueta: "Tiempo", valor: `${tiempo}s` }]}
+      ayuda={<div><p><b>Objetivo:</b> acertar el color de la tinta (no lo que dice la palabra) en 30s. 15+ aciertos = victoria.</p><p><b>Cómo jugar:</b> sin fichas: cada acierto +10, cada fallo −5 (mín 0).</p><ul><li>Acierto = +10 · fallo = −5</li></ul><p><b>Controles:</b> clic, 1-4, A/S/D/F o flechas.</p><p><b>Consejo:</b> mira la tinta, no leas: respira y mantén el ritmo.</p></div>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

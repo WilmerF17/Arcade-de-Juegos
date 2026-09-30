@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
+import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
 const PALOS = [{ n: "Oros", e: "🪙" }, { n: "Copas", e: "🏆" }, { n: "Espadas", e: "⚔️" }, { n: "Bastos", e: "🍷" }];
@@ -37,11 +38,14 @@ export default function Escoba() {
   const [escobas, setEscobas] = useState(0);
   const [jugando, setJugando] = useState(false);
   const [log, setLog] = useState("");
+  const st = useRef({ jugando: false, mano: [] });
+  st.current = { jugando, mano };
 
   function empezar() {
     const m = mazo();
     setMano(m.slice(0, 3)); setManoIA(m.slice(3, 6)); setMesa(m.slice(6, 10)); setResto(m.slice(10));
     setMisCap([]); setIaCap([]); setEscobas(0); setJugando(true); setLog("");
+    st.current.jugando = true;
     sfx.clic();
   }
 
@@ -55,6 +59,8 @@ export default function Escoba() {
   function jugarCarta(ci) {
     if (!jugando) return;
     const carta = mano[ci];
+    if (!carta) return;
+    sfx.clic();
     const caps = capturas(mesa, carta);
     let nMesa = [...mesa], nMis = [...misCap], nEsc = escobas;
     let nMano = mano.filter((_, i) => i !== ci);
@@ -71,7 +77,6 @@ export default function Escoba() {
     } else {
       nMesa = [...nMesa, carta];
       texto = "Dejas carta…";
-      sfx.clic();
     }
     // turno IA: greedy
     if (nIa.length) {
@@ -106,27 +111,57 @@ export default function Escoba() {
       // fin del mazo
       if (r.restoN.length === 0 && nMano.length === 0 && nIa.length === 0) {
         setJugando(false);
+        st.current.jugando = false;
         const puntos = nEsc * 100 + nMis.length * 5;
         const victoria = nEsc > 0 || nMis.length >= 20;
-        if (victoria) sfx.record();
+        if (victoria) { sfx.record(); sfx.moneda(); }
+        else sfx.mal();
         registrarPunt(puntos, victoria ? 1 : 0);
       }
     }
   }
+  const jugarRef = useRef(jugarCarta);
+  jugarRef.current = jugarCarta;
+  const empezarRef = useRef(empezar);
+  empezarRef.current = empezar;
+
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if (e.key >= "1" && e.key <= "3") {
+        const i = Number(e.key) - 1;
+        if (st.current.jugando && st.current.mano[i]) jugarRef.current(i);
+      } else if (e.key === "Enter" || e.key === " " || e.key === "n" || e.key === "N") {
+        if (!st.current.jugando) { e.preventDefault(); empezarRef.current(); }
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, []);
 
   const cartaTxt = c => `${NOMBRE(c.v)}${PALOS[c.p].e}`;
+  const totalCaps = misCap.length + iaCap.length;
+  const pct = Math.min(100, Math.round((totalCaps / 40) * 100));
 
   return (
     <GameShell titulo="Escoba" emoji="🧹"
-      descripcion="Suma 15 con la mesa para capturar · barrerla = escoba."
-      tira="linear-gradient(90deg,#b45309,#f59e0b)" iconoFondo="linear-gradient(135deg,#b45309,#f59e0b)">
-      <div className="fila-botones">
-        {!jugando && mano.length === 0 && <button className="btn-principal" onClick={empezar}>▶ Repartir</button>}
-        <span className="chip">🧹 Escobas: <b>{escobas}</b></span>
-        <span className="chip">Tus cartas: <b>{misCap.length}</b></span>
-        <span className="chip">IA: <b>{iaCap.length}</b></span>
-      </div>
-      {mesa.length > 0 && <p style={{ textAlign: "center", color: "var(--texto-suave)" }}>Mesa ({mesa.length})</p>}
+      descripcion="Suma 15 con la mesa para capturar · barrerla = escoba · teclas 1-3."
+      tira="linear-gradient(90deg,#b45309,#f59e0b)" iconoFondo="linear-gradient(135deg,#b45309,#f59e0b)"
+      stats={[
+        { icono: "🧹", etiqueta: "Escobas", valor: escobas },
+        { icono: "🧍", etiqueta: "Tus cartas", valor: misCap.length },
+        { icono: "🤖", etiqueta: "IA", valor: iaCap.length },
+        { icono: "🂡", etiqueta: "Mazo", valor: resto.length },
+      ]}
+      acciones={<button className="btn-principal" onClick={empezar}>{jugando ? "↻ Reiniciar" : mensaje ? "↻ Otra (ENTER)" : "▶ Repartir (ENTER)"}</button>}
+      ayuda={<>
+        <p><b>Objetivo:</b> captura cartas de la mesa que sumen <b>15</b> con una de tu mano (figuras: sota 8, caballo 9, rey 10). Si te llevas toda la mesa es <b>escoba 🧹</b>. Gana quien más cartas y escobas logre.</p>
+        <p><b>Controles:</b> clica tu carta o pulsa <kbd>1</kbd>–<kbd>3</kbd>. <kbd>Enter</kbd>/<kbd>Espacio</kbd> reparte de nuevo al terminar. Táctil: toca la carta.</p>
+        <p><b>Puntuación:</b> <b>100 pts por escoba + 5 por carta capturada</b>; con escoba o 20+ cartas cuenta como victoria.</p>
+        <p><b>Consejo:</b> prioriza capturar muchas cartas antes que escobas fáciles y guarda los 7 para limpiar mesas cargadas.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
+      {mesa.length > 0 && <p style={{ textAlign: "center", color: "var(--texto-suave)" }}>Mesa ({mesa.length}) · mazo {resto.length}</p>}
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
         {mesa.map((c, i) => (
           <span key={i} className="chip" style={{ fontSize: "1rem" }}>{cartaTxt(c)}</span>
@@ -135,10 +170,10 @@ export default function Escoba() {
       {log && <p style={{ textAlign: "center" }}>{log}</p>}
       {jugando && (
         <>
-          <p style={{ textAlign: "center", color: "var(--texto-suave)" }}>Tu mano 👇</p>
-          <div className="fila-botones">
+          <p style={{ textAlign: "center", color: "var(--texto-suave)" }}>Tu mano 👇 (1-3)</p>
+          <div className="fila-botones" style={{ justifyContent: "center" }}>
             {mano.map((c, i) => (
-              <button key={i} className="btn-principal" onClick={() => jugarCarta(i)}>{cartaTxt(c)}</button>
+              <button key={i} className="btn-principal" onClick={() => jugarCarta(i)}>{i + 1} · {cartaTxt(c)}</button>
             ))}
           </div>
         </>

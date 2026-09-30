@@ -43,13 +43,16 @@ export default function KenoVeloz() {
   }
 
   function limpiar() {
+    sfx.clic();
     setElegidos([]); setSorteo([]);
   }
 
   return (
     <GameShell titulo="Keno Veloz" emoji="🎱"
       descripcion="Elige 5 · salen 8 · 3×2, 4×5, 5×20."
-      tira="linear-gradient(90deg,#0f172a,#7c3aed)" iconoFondo="linear-gradient(135deg,#0f172a,#7c3aed)">
+      tira="linear-gradient(90deg,#0f172a,#7c3aed)" iconoFondo="linear-gradient(135deg,#0f172a,#7c3aed)"
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Elegidos", valor: `${elegidos.length}/5` }, ...(sorteo.length ? [{ etiqueta: "Aciertos", valor: elegidos.filter(n => sorteo.includes(n)).length }] : [{ etiqueta: "Sorteo", valor: "—" }])]}
+      ayuda={<div><p><b>Objetivo:</b> acertar 3+ de tus 5 números entre 8 sorteados del 1 al 20.</p><p><b>Apuesta:</b> se descuenta al sortear; premio = apuesta×mult.</p><ul><li>3 = ×2 · 4 = ×5 · 5 = ×20 · 0-2 = pierdes</li></ul><p><b>Controles:</b> toca 5 números · Sortear · Limpiar.</p><p><b>Consejo:</b> el 5/5 es 1 entre miles: juega por los ×2.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         <span className="chip">Elegidos: <b>{elegidos.length}/5</b></span>

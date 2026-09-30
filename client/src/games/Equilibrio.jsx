@@ -51,6 +51,7 @@ export default function Equilibrio() {
       sfx.moneda();
       if (npi >= 10) {
         st.current.jugando = false; setJugando(false);
+        sfx.bien();
         registrarPunt(np, 1);
       }
     } else {
@@ -78,6 +79,17 @@ export default function Equilibrio() {
   return (
     <GameShell titulo="Torre Equilibrio" emoji="🏗️"
       descripcion="ESPACIO/clic para fijar el piso en la zona verde · 10 pisos · 3 fallos."
+      stats={[
+        { etiqueta: "Piso", valor: `${piso}/10` },
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "Fallos", valor: `${fallos}/3` },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> fija 10 pisos parando el marcador en la zona verde.</span>
+        <span><b>Controles:</b> <kbd>Espacio</kbd>/<kbd>Enter</kbd> o <kbd>clic</kbd> en Fijar piso.</span>
+        <span><b>Puntos:</b> 100 + 5 por cercanía al centro; 3 fallos terminan.</span>
+        <span><b>Consejo:</b> pulsa cuando venga de vuelta, no a la ida.</span>
+      </>}
       tira="linear-gradient(90deg,#ff3d5a,#ff9a3d,#22c55e)" iconoFondo="linear-gradient(135deg,#ff3d5a,#ff9a3d)">
       <div className="fila-botones">
         <span className="chip">Piso: <b>{piso}/10</b></span>

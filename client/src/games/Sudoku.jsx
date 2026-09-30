@@ -18,10 +18,12 @@ export default function Sudoku() {
   const [cursor, setCursor] = useState([0, 0]);
   const [errores, setErrores] = useState(0);
   const [fin, setFin] = useState(false);
+  const [mejor, setMejor] = useState(null);
   const tabRef = useRef(tab); tabRef.current = tab;
   const finRef = useRef(false); finRef.current = fin;
 
   function cargar(i) {
+    sfx.clic();
     const b = aMatriz(PUZZLES[i].puzzle), s = aMatriz(PUZZLES[i].solution);
     setIdxPuzzle(i); setBase(b); setSol(s); setTab(b.map(f => [...f]));
     tabRef.current = b.map(f => [...f]);
@@ -33,15 +35,17 @@ export default function Sudoku() {
     const [r, c] = cursor;
     if (base[r][c] !== 0) return;
     const t = tabRef.current.map(f => [...f]);
-    if (n === 0) { t[r][c] = 0; setTab(t); tabRef.current = t; return; }
+    if (n === 0) { t[r][c] = 0; setTab(t); tabRef.current = t; sfx.clic(); return; }
     if (sol[r][c] === n) {
       t[r][c] = n; setTab(t); tabRef.current = t;
-      sfx.bien();
+      sfx.clic();
       if (t.every((fila, rr) => fila.every((v, cc) => v === sol[rr][cc]))) {
         finRef.current = true; setFin(true);
         const pts = Math.max(150 - errores * 10, 30);
         registrarPunt(pts, 1);
+        sfx.bien();
         sfx.record();
+        setMejor(m => (m == null || errores < m ? errores : m));
       }
     } else {
       setErrores(e => e + 1);
@@ -49,10 +53,16 @@ export default function Sudoku() {
     }
   }
   const ponerRef = useRef(poner); ponerRef.current = poner;
+  const cargarRef = useRef(cargar); cargarRef.current = cargar;
 
   useEffect(() => {
     const fn = e => {
       if (escribiendo()) return;
+      if ((e.key === "Enter" || e.key === " ") && finRef.current) {
+        e.preventDefault();
+        cargarRef.current(0);
+        return;
+      }
       const d = dirDeTecla(e.key);
       if (d) {
         e.preventDefault();
@@ -72,12 +82,34 @@ export default function Sudoku() {
     return () => window.removeEventListener("keydown", fn);
   }, [base, sol]);
 
+  const totalCeldas = 81;
+  const fijas = base.flat().filter(v => v !== 0).length;
+  const puestas = tab.flat().filter((v, i) => v !== 0 && base.flat()[i] === 0).length;
+  const huecos = totalCeldas - fijas;
+  const restantes = tab.flat().filter((v, i) => v !== sol.flat()[i]).length;
+  const pct = huecos ? Math.round(((huecos - restantes) / huecos) * 100) : 0;
+  void puestas;
+
   return (
-    <GameShell titulo="Sudoku" emoji="🔢" descripcion="Flechas/WASD cursor · 1-9 poner · Retroceso borrar.">
-      <div className="fila-botones">
-        {PUZZLES.map((_, i) => <button key={i} className={idxPuzzle === i ? "btn-principal" : ""} onClick={() => cargar(i)}>Puzzle {i + 1}</button>)}
-        <span className="chip">Errores <b>{errores}</b></span>
-      </div>
+    <GameShell titulo="Sudoku" emoji="🔢" descripcion="Flechas/WASD cursor · 1-9 poner · Retroceso borrar."
+      stats={[
+        { icono: "🧩", etiqueta: "Puzzle", valor: `${idxPuzzle + 1}/${PUZZLES.length}` },
+        { icono: "❌", etiqueta: "Errores", valor: errores },
+        { icono: "📝", etiqueta: "Restan", valor: restantes },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : `${mejor} fallos` },
+      ]}
+      acciones={<>
+        {PUZZLES.map((_, i) => <button key={i} className={idxPuzzle === i ? "btn-principal" : "btn-suave"} onClick={() => cargar(i)}>Puzzle {i + 1}</button>)}
+        <button className="btn-exito" onClick={() => cargar(idxPuzzle)}>↻ Reiniciar</button>
+      </>}
+      resultado={fin ? { mensaje: `🎉 ¡Sudoku completo! ${mensaje}`, tipo } : null}
+      ayuda={<>
+        <p><b>Objetivo:</b> completa la cuadrícula 9×9 para que cada fila, columna y bloque 3×3 contenga los dígitos <b>1–9</b> sin repetir.</p>
+        <p><b>Controles:</b> mueve el cursor con <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>/<kbd>WASD</kbd> o clic, escribe <kbd>1</kbd>–<kbd>9</kbd> para poner y <kbd>Retroceso</kbd>/<kbd>0</kbd> para borrar. <kbd>Enter</kbd> reinicia al terminar.</p>
+        <p><b>Puntuación:</b> al completar obtienes <b>150 − 10 por error</b> (mínimo 30) como victoria.</p>
+        <p><b>Consejo:</b> busca el número con más apariciones y completa sus bloques; marca mentalmente candidatos antes de arriesgar.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(9,38px)", gap: 0, marginTop: 14, background: "var(--border)", border: "2px solid var(--border)", width: "max-content", borderRadius: 8, overflow: "hidden" }}>
         {tab.map((fila, r) => fila.map((v, c) => {
           const fijo = base[r][c] !== 0;
@@ -95,7 +127,6 @@ export default function Sudoku() {
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => <button key={n} className="btn-suave" onClick={() => poner(n)}>{n}</button>)}
         <button onClick={() => poner(0)}>⌫</button>
       </div>
-      {fin && <div className={`mensaje-final ${tipo}`}>🎉 ¡Sudoku completo! {mensaje}</div>}
     </GameShell>
   );
 }

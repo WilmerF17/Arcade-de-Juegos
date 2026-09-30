@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const W = 520, H = 340;
 
@@ -21,6 +22,7 @@ export default function Pong() {
   velRef.current = vel;
 
   function empezar() {
+    sfx.clic();
     estado.current = {
       jY: H / 2 - 40, iaY: H / 2 - 40,
       x: W / 2, y: H / 2,
@@ -38,6 +40,7 @@ export default function Pong() {
     if (finRef.current) return;
     finRef.current = true;
     setJugando(false);
+    if (gano) sfx.bien(); else sfx.mal();
     registrarPunt(gano ? 100 : p.j * 10, gano ? 1 : 0);
   }
 
@@ -164,6 +167,17 @@ export default function Pong() {
   return (
     <GameShell titulo="Rebote Neón" emoji="🏓"
       descripción="Ratón, dedo o teclado (W/S y ↑/↓). Gana quien llegue a 5."
+      stats={[
+        { etiqueta: "Tú", valor: puntos.j },
+        { etiqueta: "IA", valor: puntos.ia },
+        { etiqueta: "Meta", valor: 5 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> marca 5 puntos antes que la IA.</span>
+        <span><b>Controles:</b> ratón o dedo sobre el canvas, <kbd>W</kbd>/<kbd>S</kbd> o <kbd>↑</kbd>/<kbd>↓</kbd> mover pala, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> +1 por bola que entra; victoria = 100 pts, derrota = 10 por punto tuyo.</span>
+        <span><b>Consejo:</b> golpea con el borde de la pala para abrir el ángulo.</span>
+      </>}
       tira="linear-gradient(90deg,#22d3ee,#e879f9,#6366f1)" iconoFondo="linear-gradient(135deg,#22d3ee,#e879f9)">
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>

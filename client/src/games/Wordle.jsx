@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const PALABRAS = [
   "casa", "perro", "gato", "mesa", "papel", "agua", "luna", "rojo", "verde", "flor",
@@ -10,7 +11,9 @@ const PALABRAS = [
   "jarra", "vela", "vino", "panza", "busto", "claro", "lento", "mundo", "selva",
 ];
 
-const FILAS = 6, LARGO = 5;
+const LARGO = 5;
+const FILAS_DIF = { 1: 8, 2: 6, 3: 5 };
+const NOMBRE_DIF = { 1: "Fácil", 2: "Normal", 3: "Difícil" };
 
 export default function Palabra5() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Palabra 5");
@@ -19,12 +22,17 @@ export default function Palabra5() {
   const [entrada, setEntrada] = useState("");
   const [aviso, setAviso] = useState("");
   const [fin, setFin] = useState(null);
+  const [dif, setDif] = useState(2);
+  const FILAS = FILAS_DIF[dif];
   const entradaRef = useRef("");
   const finRef = useRef(null);
   entradaRef.current = entrada;
   finRef.current = fin;
+  const secretoRef = useRef(null);
+  secretoRef.current = secreto;
 
   function empezar() {
+    sfx.clic();
     setIntentos([]);
     setEntrada("");
     setFin(null);
@@ -49,12 +57,13 @@ export default function Palabra5() {
 
   function enviar(palabraParam) {
     const palabra = (palabraParam ?? entradaRef.current).toLowerCase().trim();
-    const sec = secreto;
+    const sec = secretoRef.current;
     if (!sec || finRef.current) return;
     setIntentos(prev => {
       if (prev.length >= FILAS) return prev;
       if (palabra.length !== LARGO || !/^[a-zñ]+$/.test(palabra)) {
         setAviso("Debe tener 5 letras (a-z).");
+        sfx.mal();
         return prev;
       }
       const nuevo = evaluar(palabra, sec, prev);
@@ -63,6 +72,8 @@ export default function Palabra5() {
       setAviso("");
       if (palabra === sec) {
         const puntos = 60 - 10 * (nuevo.length - 1);
+        sfx.bien();
+        sfx.moneda();
         registrarPunt(puntos, 1);
         const f = { gano: true };
         finRef.current = f;
@@ -71,7 +82,10 @@ export default function Palabra5() {
         const f = { gano: false };
         finRef.current = f;
         setFin(f);
+        sfx.mal();
         registrarPunt(0, 0);
+      } else {
+        sfx.clic();
       }
       return nuevo;
     });
@@ -79,11 +93,19 @@ export default function Palabra5() {
 
   const enviarRef = useRef(enviar);
   enviarRef.current = enviar;
+  const empezarRef = useRef(empezar);
+  empezarRef.current = empezar;
 
   // Teclado físico: letras, ENTER y RETROCESO (cuando el foco no está en el input)
   useEffect(() => {
     const fn = e => {
-      if (!secreto || finRef.current) return;
+      if (!secreto || finRef.current) {
+        if (!secreto && (e.key === "Enter" || e.key === " ") && !escribiendo()) {
+          e.preventDefault();
+          empezarRef.current();
+        }
+        return;
+      }
       if (escribiendo()) return; // el input ya gestiona sus teclas
       if (e.key === "Enter") { enviarRef.current(entradaRef.current); }
       else if (e.key === "Backspace") {
@@ -102,6 +124,7 @@ export default function Palabra5() {
 
   function tecla(l) {
     if (finRef.current) return;
+    sfx.clic();
     if (entradaRef.current.length < LARGO) {
       const n = (entradaRef.current + l).slice(0, LARGO);
       entradaRef.current = n;
@@ -110,6 +133,7 @@ export default function Palabra5() {
   }
 
   function borrar() {
+    sfx.clic();
     const n = entradaRef.current.slice(0, -1);
     entradaRef.current = n;
     setEntrada(n);
@@ -123,13 +147,32 @@ export default function Palabra5() {
   // Fila actual: solo la primera fila vacía muestra lo tecleado
   const filasVacias = FILAS - intentos.length;
   const letrasActuales = entrada.split("");
+  const pct = Math.round((intentos.length / FILAS) * 100);
 
   return (
     <GameShell titulo="Palabra 5" emoji="🟩"
-      descripcion="Teclado físico o en pantalla · 5 letras en 6 intentos.">
-      <div className="fila-botones">
-        <button className="btn-exito" onClick={empezar}>{secreto ? "Reiniciar" : "Empezar"}</button>
-      </div>
+      descripcion={`Teclado físico o en pantalla · 5 letras en ${FILAS} intentos.`}
+      stats={[
+        { icono: "📝", etiqueta: "Intento", valor: `${Math.min(intentos.length + 1, FILAS)}/${FILAS}` },
+        { icono: "🟩", etiqueta: "Pistas", valor: intentos.length },
+        { icono: "🎯", etiqueta: "Dificultad", valor: NOMBRE_DIF[dif] },
+      ]}
+      acciones={<button className="btn-exito" onClick={empezar}>{secreto ? "↻ Reiniciar" : "▶ Empezar"}</button>}
+      resultado={fin ? { mensaje: fin.gano ? mensaje : `No acertaste. Era ${secreto ? secreto.toUpperCase() : ""}.`, tipo } : null}
+      ayuda={<>
+        <span>Adivina la palabra de <b>5 letras</b> en <b>{FILAS} intentos</b>: 🟩 letra correcta, 🟨 en otro sitio, ⬜ no está.</span>
+        <span>Controles: teclado físico (<kbd>A</kbd>–<kbd>Z</kbd>, <kbd>ENTER</kbd>, <kbd>⌫</kbd>) o teclado en pantalla. <kbd>ENTER</kbd> empieza.</span>
+        <span>Puntuación: acertar pronto da hasta <b>60 puntos</b> y victoria; agotar intentos da 0. Dificultad: <b>Fácil 8 intentos</b>, <b>Normal 6</b>, <b>Difícil 5</b>.</span>
+        <span>Consejo: abre con una palabra con 5 letras distintas para cazar pistas rápido.</span>
+      </>}>
+      {!secreto && (
+        <div className="fila-botones" role="group" aria-label="Dificultad">
+          {[1, 2, 3].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} onClick={() => { setDif(d); sfx.clic(); }}>{d === 1 ? "🟢 Fácil 8" : d === 2 ? "🟡 Normal 6" : "🔴 Difícil 5"}</button>
+          ))}
+        </div>
+      )}
+      <div className="xp-bar fina" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Intentos usados"><div style={{ width: `${pct}%` }} /></div>
       {secreto && (
         <div>
           <p className="aviso info" style={{ marginTop: 8 }}>🟩 correcta · 🟨 en otro sitio · ⬜ no está</p>
@@ -147,8 +190,8 @@ export default function Palabra5() {
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 14 }}>
               <input type="text" value={entrada} onChange={e => { const v = e.target.value.toLowerCase().replace(/[^a-zñ]/g, "").slice(0, 5); entradaRef.current = v; setEntrada(v); }}
                 onKeyDown={e => e.key === "Enter" && enviar()} placeholder="palabra" style={{ width: 140, textTransform: "uppercase" }} maxLength={5} />
-              <button className="btn-principal" onClick={() => enviar()}>Intentar</button>
-              <span className="chip">Intento <b>{intentos.length + 1}/6</b></span>
+              <button className="btn-principal" onClick={() => enviar()}>Intentar ⏎</button>
+              <span className="chip">Intento <b>{intentos.length + 1}/{FILAS}</b></span>
             </div>
           )}
           {aviso && <p className="aviso info">{aviso}</p>}
@@ -163,9 +206,7 @@ export default function Palabra5() {
               </div>
             ))}
           </div>
-          {fin && <div className={`mensaje-final ${tipo}`}>
-            {fin.gano ? mensaje : `Fin: no acertaste. La palabra era ${secreto.toUpperCase()}.`}
-          </div>}
+          {fin && <Resultado mensaje={fin.gano ? mensaje : `Fin: no acertaste. La palabra era ${secreto.toUpperCase()}.`} tipo={tipo} />}
         </div>
       )}
     </GameShell>

@@ -64,6 +64,17 @@ export default function OidoFino() {
   return (
     <GameShell titulo="Oído Fino" emoji="👂"
       descripcion="Escucha el tono: ¿grave, medio o agudo? · 12 rondas · 3 vidas."
+      stats={[
+        { etiqueta: "Ronda", valor: `${ronda}/${RONDAS}` },
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> adivina si el tono es grave, medio o agudo en 12 rondas.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd> en 🔊 Escuchar para repetir y en cada botón de tono para responder.</span>
+        <span><b>Puntos:</b> +100 por acierto; 3 fallos terminan la partida.</span>
+        <span><b>Consejo:</b> el grave vibra bajo (220Hz) y el agudo pica (660Hz).</span>
+      </>}
       tira="linear-gradient(90deg,#38bdf8,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#a855f7)">
       <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>

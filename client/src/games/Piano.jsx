@@ -17,6 +17,7 @@ export default function Piano() {
   st.current.puntos = puntos; st.current.jugando = jugando;
 
   function empezar() {
+    sfx.clic();
     setNotas([]); setPuntos(0); st.current.puntos = 0;
     setFallos(0); setTiempo(30); setJugando(true); st.current.jugando = true;
   }
@@ -85,7 +86,18 @@ export default function Piano() {
   }, []);
 
   return (
-    <GameShell titulo="Teclas Ritmo" emoji="🎹" descripcion="D F J K (o 1-4 / flechas) · toca las fichas al llegar abajo · 30s.">
+    <GameShell titulo="Teclas Ritmo" emoji="🎹" descripcion="D F J K (o 1-4 / flechas) · toca las fichas al llegar abajo · 30s."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "⏱️ Tiempo", valor: `${tiempo}s` },
+        { etiqueta: "❌ Fallos", valor: fallos },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> toca cada ficha cuando llegue a la fila de letras.</span>
+        <span><b>Controles:</b> <kbd>D</kbd><kbd>F</kbd><kbd>J</kbd><kbd>K</kbd> o <kbd>1</kbd>–<kbd>4</kbd> o <kbd>←</kbd><kbd>↓</kbd><kbd>↑</kbd><kbd>→</kbd>, <kbd>Enter</kbd> empezar o <kbd>clic</kbd>.</span>
+        <span><b>Puntos:</b> +10 por acierto, −5 si se escapa, −3 si fallas; 300+ es victoria.</span>
+        <span><b>Consejo:</b> coloca un dedo por carril y no mires las manos.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

@@ -91,6 +91,17 @@ export default function OidoVeloz() {
   return (
     <GameShell titulo="Oído Veloz" emoji="👂"
       descripcion="Sube el volumen · toca al oír el pitido, no antes · media de 5."
+      stats={[
+        { etiqueta: "Intentos", valor: `${tiempos.length}/${rondas}` },
+        ...(media > 0 ? [{ etiqueta: "📊 Media", valor: `${media}ms` }] : []),
+        { etiqueta: "Meta", valor: "<400ms" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> toca justo al oír el pitido, 5 rondas; vale la media.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> en la zona; pulsa Empezar con sonido <kbd>🔊</kbd> activado.</span>
+        <span><b>Puntos:</b> máx(10, 350 − media/2); media &lt;400ms es victoria.</span>
+        <span><b>Consejo:</b> no anticipes: tocar antes es trampa y reinicia la espera.</span>
+      </>}
       tira="linear-gradient(90deg,#38bdf8,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#a855f7)">
       <div className="fila-botones">
         <span className="chip">Intentos: <b>{tiempos.length}/{rondas}</b></span>

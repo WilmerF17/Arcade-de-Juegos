@@ -16,6 +16,7 @@ export default function ChuckSuerte() {
   const [aviso, setAviso] = useState("");
 
   function lanzar() {
+    sfx.clic();
     setAviso("");
     const r = apostar(apuesta);
     if (!r.ok) { setAviso(`⛔ ${r.motivo}. Reclama el 🎁 bonus diario.`); sfx.mal(); return; }
@@ -38,7 +39,9 @@ export default function ChuckSuerte() {
   return (
     <GameShell titulo="Chuck de la Suerte" emoji="🍀"
       descripcion="Elige número del 1 al 6 · 3 dados · 1×2, 2×3, 3×5."
-      tira="linear-gradient(90deg,#16a34a,#22c55e)" iconoFondo="linear-gradient(135deg,#16a34a,#22c55e)">
+      tira="linear-gradient(90deg,#16a34a,#22c55e)" iconoFondo="linear-gradient(135deg,#16a34a,#22c55e)"
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Número", valor: numero }, ...(dados.length ? [{ etiqueta: "Dados", valor: dados.join("-") }] : [{ etiqueta: "Dados", valor: "—" }])]}
+      ayuda={<div><p><b>Objetivo:</b> que tu número salga en los 3 dados.</p><p><b>Apuesta:</b> se descuenta al lanzar. Premio = apuesta×mult según aciertos.</p><ul><li>1 acierto = ×2 · 2 = ×3 · 3 = ×5 · 0 = pierdes</li></ul><p><b>Controles:</b> elige número y apuesta · botón Lanzar.</p><p><b>Consejo:</b> lo normal es 0-1 aciertos: apuesta pequeño.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
       </div>

@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
-/* Palabra Flash (tendencia sprint de palabras): 60 segundos, resuelve
+/* Palabra Flash (tendencia sprint de palabras): resuelve
    anagramas escribiendo. 3 longitudes. Teclado físico + móvil (input). */
 const BOLSAS = {
   4: ["gato", "mesa", "luna", "flor", "tren", "nube", "pato", "vino", "roca", "hoja", "casa", "pala", "sopa", "dijo"],
   5: ["papel", "verde", "fuego", "nieve", "queso", "jarra", "playa", "tigre", "fruta", "campo", "brazo", "nuevo"],
   6: ["verano", "camino", "puerta", "espejo", "ciudad", "viento", "dedo", "tierra", "naranja", "planeta"],
 };
+const DIFS = { "Fácil": { t: 90 }, "Normal": { t: 60 }, "Difícil": { t: 40 } };
 function mezcla(p) {
   const a = p.split("");
   for (let i = a.length - 1; i > 0; i--) {
@@ -21,13 +22,15 @@ function mezcla(p) {
 
 function FlashMotor({ nombre, emoji, descripcion, largo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(nombre);
+  const [dif, setDif] = useState("Normal");
+  const totalT = DIFS[dif].t;
   const bolsa = BOLSAS[largo].filter(w => w.length === largo && /^[a-zñ]+$/.test(w));
   const [objetivo, setObjetivo] = useState(() => bolsa[Math.floor(Math.random() * bolsa.length)]);
   const [revuelto, setRevuelto] = useState(() => mezcla(objetivo));
   const [txt, setTxt] = useState("");
   const [puntos, setPuntos] = useState(0);
   const [racha, setRacha] = useState(0);
-  const [quedan, setQuedan] = useState(60);
+  const [quedan, setQuedan] = useState(totalT);
   const [jugando, setJugando] = useState(false);
   const [fin, setFin] = useState(false);
   const timer = useRef(null);
@@ -40,7 +43,7 @@ function FlashMotor({ nombre, emoji, descripcion, largo }) {
   }
   function empezar() {
     if (timer.current) clearInterval(timer.current);
-    setPuntos(0); setRacha(0); setQuedan(60); setFin(false); setJugando(true);
+    setPuntos(0); setRacha(0); setQuedan(DIFS[dif].t); setFin(false); setJugando(true);
     nueva(); sfx.clic();
     timer.current = setInterval(() => {
       setQuedan(q => {
@@ -48,6 +51,11 @@ function FlashMotor({ nombre, emoji, descripcion, largo }) {
         return q - 1;
       });
     }, 1000);
+  }
+  function cambiarDif(d) {
+    setDif(d);
+    if (!jugando) setQuedan(DIFS[d].t);
+    sfx.clic();
   }
   useEffect(() => {
     if (jugando && quedan === 0 && !fin) {
@@ -57,6 +65,19 @@ function FlashMotor({ nombre, emoji, descripcion, largo }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quedan]);
+
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === "Enter" || e.key === " ") && !jugando) {
+        e.preventDefault();
+        empezar();
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
 
   function probar(e) {
     e?.preventDefault();
@@ -74,26 +95,47 @@ function FlashMotor({ nombre, emoji, descripcion, largo }) {
   }
   function saltar() { if (jugando) { setRacha(0); nueva(); sfx.clic(); } }
 
+  const pct = Math.max(0, Math.round((quedan / totalT) * 100));
   return (
     <GameShell titulo={nombre} emoji={emoji}
-      descripcion={descripcion}
-      stats={[{ etiqueta: "Puntos", valor: puntos }, { etiqueta: "Tiempo", valor: `${quedan}s` }, ...(racha > 1 ? [{ etiqueta: "Racha", valor: `🔥${racha}` }] : [])]}
+      descripcion={`${descripcion} · ${totalT}s (${dif}).`}
+      stats={[
+        { icono: "⭐", etiqueta: "Puntos", valor: puntos },
+        { icono: "⏱️", etiqueta: "Tiempo", valor: `${quedan}s` },
+        { icono: "🔥", etiqueta: "Racha", valor: racha },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: dif },
+      ]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Ordena las letras y <b>escribe la palabra</b> antes de que acabe el minuto. Cada acierto seguido suma más (racha). <b>Saltar</b> rompe la racha.</span>}>
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> ordena las letras y escribe la palabra de {largo} letras antes de que acabe el tiempo ({totalT}s).</p>
+          <p><b>Controles:</b> escribe con el teclado físico o móvil y pulsa <kbd>Enter</kbd> para probar · <kbd>Enter</kbd>/<kbd>Espacio</kbd> para empezar fuera de partida.</p>
+          <p><b>Puntuación:</b> cada acierto suma 10 más bonus de racha; saltar rompe la racha. Victoria con 30+ puntos.</p>
+          <p><b>Consejo:</b> busca primero los grupos típicos (que, tra, bra) y salta sin miedo si te atascas.</p>
+        </div>
+      )}
+      acciones={(
+        <>
+          {["Fácil", "Normal", "Difícil"].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} disabled={jugando} onClick={() => cambiarDif(d)}>{d}</button>
+          ))}
+          {!jugando && <button className="btn-principal" onClick={empezar}>{fin ? `🔁 Otra vez (${totalT}s)` : `▶️ Jugar ${totalT}s`}</button>}
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pct}%` }} /></div>
       <p className="revuelto" style={{ textAlign: "center", fontSize: "2rem", letterSpacing: ".35em" }} aria-label="Letras desordenadas">{revuelto.toUpperCase()}</p>
       <form onSubmit={probar} className="fila-botones" style={{ justifyContent: "center" }}>
         <input value={txt} onChange={e => setTxt(e.target.value)} maxLength={largo}
           placeholder={`${largo} letras`} disabled={!jugando}
           style={{ fontSize: "1.2rem", padding: "10px 12px", borderRadius: 10, width: 150, textAlign: "center" }}
           aria-label="Tu palabra" autoCapitalize="none" autoCorrect="off" />
-        <button className="btn-principal" type="submit" disabled={!jugando}>Probar</button>
+        <button className="btn-principal" type="submit" disabled={!jugando} onClick={() => sfx.clic()}>Probar</button>
         <button className="btn-suave" type="button" onClick={saltar} disabled={!jugando}>Saltar</button>
       </form>
       <div className="fila-botones">
-        {!jugando && <button className="btn-principal" onClick={empezar}>{fin ? "🔁 Otra vez (60s)" : "▶️ Jugar 60s"}</button>}
         {fin && <span className={`chip${puntos >= 30 ? " victoria" : ""}`}>{puntos} pts</span>}
       </div>
-      <Resultado mensaje={mensaje} tipo={tipo} />
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

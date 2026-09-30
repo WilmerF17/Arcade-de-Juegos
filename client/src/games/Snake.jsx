@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo, OPUESTA } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const FILAS = 20, COLS = 20;
 const PASO_BASE = 160, PASO_MIN = 85, PASO_POR_NIVEL = 12;
@@ -48,6 +49,7 @@ export default function Snake() {
   }
 
   function preparar() {
+    sfx.clic();
     const s = [{ x: 10, y: 10 }];
     setSnake(s);
     setHuevo(nuevoHuevo(s));
@@ -61,6 +63,7 @@ export default function Snake() {
   }
 
   function iniciar() {
+    sfx.clic();
     if (finalRef.current) preparar();
     finalRef.current = false;
     setPausa(false); pausaRef.current = false;
@@ -79,6 +82,7 @@ export default function Snake() {
     finalRef.current = true;
     corriendoRef.current = false;
     setCorriendo(false);
+    if (gano) sfx.bien(); else sfx.mal();
     if (pts > leerMejor()) {
       try { localStorage.setItem(CLAVE_MEJOR, String(pts)); } catch { /* noop */ }
       setMejor(pts);
@@ -184,9 +188,10 @@ export default function Snake() {
         {corriendo && <button className="btn-suave" onClick={alternarPausa}>{pausa ? "▶ Seguir" : "⏸ Pausa"}</button>}
       </>}
       ayuda={<>
-        <span>Come los huevos dorados <b>(+10)</b> sin chocar con los bordes ni contigo.</span>
-        <span>Cada <b>50 puntos</b> la serpiente acelera un nivel. Ganas al llegar a <b>200</b>.</span>
-        <span>En móvil también puedes <b>deslizar el dedo</b> sobre el tablero para girar.</span>
+        <span><b>Objetivo:</b> come huevos <b>(+10)</b> sin chocar con bordes ni contigo; gana con <b>200</b>.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> girar, <kbd>Espacio</kbd>/<kbd>P</kbd> pausa, <kbd>Enter</kbd> empezar, desliza el dedo o botones táctiles.</span>
+        <span><b>Puntos:</b> +10 por huevo; cada 50 puntos subes de nivel y vas más rápido.</span>
+        <span><b>Consejo:</b> gira con antelación junto a los bordes para no encerrarte.</span>
       </>}>
       <div className="tablero sn-tablero" style={{ gridTemplateColumns: `repeat(${COLS}, 16px)` }}
         onTouchStart={toqueInicio} onTouchEnd={toqueFin}>

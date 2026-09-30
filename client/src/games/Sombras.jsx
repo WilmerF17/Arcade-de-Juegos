@@ -66,6 +66,17 @@ export default function Sombras() {
   return (
     <GameShell titulo="Sombras Gemelas" emoji="👯"
       descripcion="Un emoji cambió en el segundo tablero · tócalo · 10 rondas."
+      stats={[
+        { etiqueta: "Ronda", valor: `${ronda}/${RONDAS}` },
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "❌ Fallos", valor: errores },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> encuentra el emoji distinto en el segundo tablero, 10 rondas.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> en la casilla cambiada del tablero derecho.</span>
+        <span><b>Puntos:</b> +100 (+150 desde ronda 7); 0 fallos es victoria perfecta.</span>
+        <span><b>Consejo:</b> compara por filas de 4 en 4, no uno por uno.</span>
+      </>}
       tira="linear-gradient(90deg,#a855f7,#22d3ee)" iconoFondo="linear-gradient(135deg,#a855f7,#22d3ee)">
       <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import GameShell, { useRegistro } from "../ui/GameShell";
+import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
+import { escribiendo } from "../suite/teclado";
 
 function nuevaOp(dif) {
   const max = dif === 1 ? 10 : dif === 2 ? 25 : 60;
@@ -14,6 +15,7 @@ function nuevaOp(dif) {
   return { a, b, op, res };
 }
 
+const NOMBRE_DIF = { 1: "Fácil", 2: "Normal", 3: "Difícil" };
 export default function MathBlitz() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Math Blitz");
   const [dif, setDif] = useState(2);
@@ -29,8 +31,11 @@ export default function MathBlitz() {
   const [feedback, setFeedback] = useState("");
   const inputRef = useRef(null);
   const finRef = useRef(false);
+  const jugandoRef = useRef(false);
+  jugandoRef.current = jugando;
 
   function empezar(d = dif) {
+    sfx.clic();
     setDif(d);
     setOp(nuevaOp(d));
     setResp(""); setPuntos(0); setAciertos(0); setFallos(0);
@@ -53,7 +58,20 @@ export default function MathBlitz() {
     }
     const id = setTimeout(() => setTiempo(t => t - 1), 1000);
     return () => clearTimeout(id);
-  }, [jugando, tiempo]);
+  }, [jugando, tiempo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if ((e.key === "Enter" || e.key === " ") && !jugandoRef.current) {
+        e.preventDefault();
+        empezar();
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dif]);
 
   function responder(e) {
     e?.preventDefault();
@@ -86,24 +104,35 @@ export default function MathBlitz() {
   return (
     <GameShell titulo="Math Blitz" emoji="🔢"
       descripcion="60 segundos de cálculo mental. Racha de aciertos = bonus. ¡Sin calculadora!"
-      tira="linear-gradient(90deg,#38bdf8,#6366f1,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#6366f1)">
-      <div className="fila-botones">
+      tira="linear-gradient(90deg,#38bdf8,#6366f1,#a855f7)" iconoFondo="linear-gradient(135deg,#38bdf8,#6366f1)"
+      stats={[
+        { icono: "⏱", etiqueta: "Tiempo", valor: `${tiempo}s` },
+        { icono: "⭐", etiqueta: "Puntos", valor: puntos },
+        { icono: "🔥", etiqueta: "Combo", valor: `×${combo}` },
+        { icono: "🎯", etiqueta: "Dificultad", valor: NOMBRE_DIF[dif] },
+      ]}
+      acciones={!jugando ? <button className="btn-principal" onClick={() => empezar()}>▶ Jugar 60s</button> : null}
+      resultado={mensaje ? { mensaje: `${mensaje} (aciertos: ${aciertos})`, tipo } : null}
+      ayuda={<>
+        <span>Resuelve operaciones sin parar durante <b>60 segundos</b>: cada acierto suma <b>10 + bonus de combo</b> (×3 o más), cada fallo resta <b>3</b>.</span>
+        <span>Controles: escribe el resultado y pulsa <kbd>ENTER</kbd> u OK. <kbd>ENTER</kbd> o <kbd>ESPACIO</kbd> empieza cuando no juegas.</span>
+        <span>Puntuación: puntos + <b>5 por mejor combo</b>; con <b>15+ aciertos</b> cuenta como victoria. Dificultad: <b>Fácil hasta 10</b>, <b>Normal hasta 25</b>, <b>Difícil hasta 60</b>.</span>
+        <span>Consejo: mantén el combo vivo aunque dudes un segundo: fallar lo reinicia.</span>
+      </>}>
+      <div className="fila-botones" role="group" aria-label="Dificultad">
         {[1, 2, 3].map(d => (
-          <button key={d} disabled={jugando} className={dif === d && !jugando ? "btn-principal" : ""}
-            onClick={() => empezar(d)}>{d === 1 ? "🟢 Fácil" : d === 2 ? "🟡 Normal" : "🔴 Difícil"}</button>
+          <button key={d} disabled={jugando} className={dif === d && !jugando ? "btn-principal" : "btn-suave"}
+            onClick={() => { setDif(d); sfx.clic(); setOp(nuevaOp(d)); }}>{d === 1 ? "🟢 Fácil" : d === 2 ? "🟡 Normal" : "🔴 Difícil"}</button>
         ))}
-        {!jugando && (puntos > 0 || aciertos > 0) ? null : !jugando && <button className="btn-principal" onClick={() => empezar()}>▶ Jugar 60s</button>}
-        <span className="chip">⏱️ <b>{tiempo}s</b></span>
-        <span className="chip">⭐ <b>{puntos}</b></span>
-        <span className="chip">🔥 Combo <b>×{combo}</b></span>
       </div>
+      <div className="xp-bar fina" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Tiempo restante"><div style={{ width: `${pct}%` }} /></div>
       <div className="barra-tiempo"><div style={{ width: `${pct}%` }} className={tiempo <= 10 ? "critico" : ""} /></div>
       {jugando && (
         <form className="math-zona" onSubmit={responder}>
           <div className="math-op">{op.a} {op.op} {op.b} = ?</div>
           <input ref={inputRef} type="number" value={resp} onChange={e => setResp(e.target.value)}
             placeholder="?" autoFocus inputMode="numeric" />
-          <button className="btn-principal" type="submit">OK</button>
+          <button className="btn-principal" type="submit">OK ⏎</button>
         </form>
       )}
       {feedback && jugando && <div className="math-feedback">{feedback}</div>}
@@ -112,7 +141,7 @@ export default function MathBlitz() {
         <span className="chip">❌ <b>{fallos}</b></span>
         <span className="chip">🏆 Mejor combo <b>×{mejorCombo}</b></span>
       </div>
-      {mensaje && <div className={`mensaje-final ${tipo}`}>{mensaje} (aciertos: {aciertos})</div>}
+      {!mensaje && jugando === false && aciertos === 0 && fallos === 0 && <Resultado mensaje="" tipo="" />}
     </GameShell>
   );
 }

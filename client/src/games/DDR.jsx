@@ -17,6 +17,7 @@ export default function DDR() {
   st.current = { puntos, combo };
 
   function empezar() {
+    sfx.clic();
     setNotas([]); setPuntos(0); st.current.puntos = 0;
     setCombo(0); st.current.combo = 0;
     setTiempo(45); setJugando(true);
@@ -66,6 +67,7 @@ export default function DDR() {
       } else {
         st.current.combo = 0; setCombo(0);
         st.current.puntos = Math.max(0, st.current.puntos - 3); setPuntos(st.current.puntos);
+        sfx.mal();
       }
     }, 0);
   }
@@ -82,7 +84,18 @@ export default function DDR() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jugando]);
   return (
-    <GameShell titulo="Dance Flechas" emoji="💃" descripcion="Flechas o WASD cuando lleguen a la zona · 45s.">
+    <GameShell titulo="Dance Flechas" emoji="💃" descripcion="Flechas o WASD cuando lleguen a la zona · 45s."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "🔥 Combo", valor: `×${combo}` },
+        { etiqueta: "⏱️ Tiempo", valor: `${tiempo}s` },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> golpea cada flecha cuando entre en la zona verde.</span>
+        <span><b>Controles:</b> <kbd>←</kbd><kbd>↓</kbd><kbd>↑</kbd><kbd>→</kbd> o <kbd>A</kbd><kbd>S</kbd><kbd>W</kbd><kbd>D</kbd>, <kbd>Enter</kbd> empezar o botones táctiles.</span>
+        <span><b>Puntos:</b> 10 + 2 por combo; fallar resta 3 y rompe combo; 400+ es victoria.</span>
+        <span><b>Consejo:</b> mira la zona verde, no las flechas que caen.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

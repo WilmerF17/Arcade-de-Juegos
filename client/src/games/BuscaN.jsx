@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
+import { escribiendo } from "../suite/teclado";
 import { sfx } from "../suite/sonido";
 
 /* Buscaminas con tamaño configurable. */
@@ -10,6 +11,7 @@ function BuscaBase({ titulo, emoji, n, minas, tira, iconoFondo }) {
   const [marcas, setMarcas] = useState(new Set());
   const [jugando, setJugando] = useState(false);
   const [fin, setFin] = useState("");
+  const [mejor, setMejor] = useState(null);
 
   function vecinos(i) {
     const r = Math.floor(i / n), c = i % n;
@@ -30,6 +32,20 @@ function BuscaBase({ titulo, emoji, n, minas, tira, iconoFondo }) {
     setJugando(true); setFin("");
     sfx.clic();
   }
+  const empezarRef = useRef(empezar);
+  empezarRef.current = empezar;
+
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if (e.key === "Enter" || e.key === " " || e.key === "n" || e.key === "N") {
+        e.preventDefault();
+        empezarRef.current();
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, []);
 
   function cuenta(i) {
     return vecinos(i).filter(x => minasSet.has(x)).length;
@@ -60,6 +76,7 @@ function BuscaBase({ titulo, emoji, n, minas, tira, iconoFondo }) {
       setJugando(false);
       setFin("🎉 ¡Tablero limpio!");
       sfx.bien();
+      setMejor(m => (m == null || ab.size > m ? ab.size : m));
       registrarPunt(minas * 20 + n * 10, 1);
     }
   }
@@ -67,22 +84,35 @@ function BuscaBase({ titulo, emoji, n, minas, tira, iconoFondo }) {
   function marcar(i, e) {
     e.preventDefault();
     if (!jugando || abiertas.has(i)) return;
+    sfx.clic();
     const m = new Set(marcas);
     if (m.has(i)) m.delete(i); else m.add(i);
     setMarcas(m);
   }
 
+  const seguras = n * n - minas;
+  const pct = seguras ? Math.round((abiertas.size / seguras) * 100) : 0;
+
   return (
     <GameShell titulo={titulo} emoji={emoji}
-      descripcion={`${n}×${n} con ${minas} minas · clic abre, clic derecho marca.`}
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <button className="btn-principal" onClick={empezar}>{abiertas.size ? "↻ Nuevo" : "▶ Empezar"}</button>
-        <span className="chip">💣 <b>{minas - marcas.size}</b></span>
-        <span className="chip">✅ <b>{abiertas.size}/{n * n - minas}</b></span>
-      </div>
+      descripcion={`${n}×${n} con ${minas} minas · clic abre, clic derecho marca · ENTER reinicia.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "📐", etiqueta: "Tablero", valor: `${n}×${n}` },
+        { icono: "💣", etiqueta: "Minas", valor: minas - marcas.size },
+        { icono: "✅", etiqueta: "Limpias", valor: `${abiertas.size}/${seguras}` },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : mejor },
+      ]}
+      acciones={<button className="btn-exito" onClick={empezar}>{abiertas.size ? "↻ Nuevo (ENTER)" : "▶ Empezar"}</button>}
+      ayuda={<>
+        <p><b>Objetivo:</b> abre las <b>{seguras} casillas seguras</b> del tablero de {n}×{n} sin tocar las {minas} minas. El número indica minas vecinas.</p>
+        <p><b>Controles:</b> clic o toque abre, clic derecho marca con 🚩. Tecla <kbd>Enter</kbd>/<kbd>Espacio</kbd>/<kbd>N</kbd> empieza una partida nueva.</p>
+        <p><b>Puntuación:</b> limpiar da <b>{minas * 20 + n * 10} pts</b> como victoria; explotar registra <b>5 pts por casilla abierta</b>.</p>
+        <p><b>Consejo:</b> abre primero el centro (más vecinos a cero) y marca solo cuando el número lo exija, no por intuición.</p>
+      </>}>
       {fin && <p style={{ textAlign: "center" }}>{fin}</p>}
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${n},34px)`, gap: 4, justifyContent: "center" }}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${n},34px)`, gap: 4, justifyContent: "center", marginTop: 10 }}>
         {Array.from({ length: n * n }, (_, i) => {
           const ab = abiertas.has(i);
           return (

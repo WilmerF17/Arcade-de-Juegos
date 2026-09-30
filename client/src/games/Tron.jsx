@@ -16,6 +16,7 @@ export default function Tron() {
   st.current = { jug, ia, puntos, jugando };
 
   function empezar() {
+    sfx.clic();
     dirJ.current = "der"; dirI.current = "izq";
     st.current = { jug: [[12, 4]], ia: [[3, 11]], puntos: 0, jugando: true };
     setJug([[12, 4]]); setIa([[3, 11]]); setPuntos(0); setJugando(true); setFin(null);
@@ -79,7 +80,18 @@ export default function Tron() {
 
   const setM = new Set([...jug.map(p => `${p}-j`), ...ia.map(p => `${p}-i`)]);
   return (
-    <GameShell titulo="Moto Neón" emoji="🏍️" descripcion="Flechas/WASD · no choques · la IA falla primero.">
+    <GameShell titulo="Moto Neón" emoji="🏍️" descripcion="Flechas/WASD · no choques · la IA falla primero."
+      stats={[
+        { etiqueta: "Supervivencia", valor: puntos },
+        { etiqueta: "Estado", valor: jugando ? "En pista" : fin ? "Fin" : "Listo" },
+        { etiqueta: "Meta", valor: 400 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> sobrevive más que la IA sin chocar con muros ni estelas.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> girar, <kbd>Enter</kbd> empezar o botones táctiles.</span>
+        <span><b>Puntos:</b> +1 por tick; +50 si la IA choca, +100 extra con 400+.</span>
+        <span><b>Consejo:</b> cierra espacios grandes y evita el centro al inicio.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Supervivencia <b>{puntos}</b></span>

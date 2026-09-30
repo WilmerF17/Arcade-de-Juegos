@@ -53,6 +53,17 @@ export default function Escalera() {
   return (
     <GameShell titulo="Escalera de Dados" emoji="🎲"
       descripcion="Supera tu tiro anterior para subir · 6 peldaños · 3 caídas te tumban."
+      stats={[
+        { etiqueta: "Peldaño", valor: `${peldano}/${META}` },
+        { etiqueta: "A superar", valor: ultimo === 0 ? "—" : `>${ultimo}` },
+        { etiqueta: "Caídas", valor: `${caidas}/3` },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> supera tu tiro anterior 6 veces seguidas sin 3 caídas.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd> en Lanzar/Empezar; cada tiro es un dado de 6.</span>
+        <span><b>Puntos:</b> racha perfecta ≈600+; fallar reinicia al peldaño 0.</span>
+        <span><b>Consejo:</b> con un 5 o 6 en mesa, el siguiente tiro es casi seguro fallo: aun así tira.</span>
+      </>}
       tira="linear-gradient(90deg,#a855f7,#ff9a3d)" iconoFondo="linear-gradient(135deg,#a855f7,#ff9a3d)">
       <div className="fila-botones">
         <span className="chip">Peldaño: <b>{peldano}/{META}</b></span>

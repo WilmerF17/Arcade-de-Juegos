@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
+import { escribiendo } from "../suite/teclado";
 
-/* Duelo de Trivia 2P: turnos alternos, 5 preguntas cada uno. */
+/* Duelo de Trivia 2P: turnos alternos. */
 function DueloTBase({ titulo, banco, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
   const [preg, setPreg] = useState(null);
   const [asks, setAsks] = useState([]);
   const [turno, setTurno] = useState(0);
   const [s, setS] = useState([0, 0]);
+  const [n1, setN1] = useState("J1");
+  const [n2, setN2] = useState("J2");
+  const [meta, setMeta] = useState(5);
+  const POR_JUGADOR = meta;
   const [jugando, setJugando] = useState(false);
-
-  const POR_JUGADOR = 5;
+  const jugandoRef = useRef(false);
+  jugandoRef.current = jugando;
+  const responderRef = useRef(null);
 
   function nueva(asksPrev) {
     const resto = asksPrev.length ? asksPrev : [...banco].sort(() => Math.random() - 0.5);
@@ -42,35 +48,82 @@ function DueloTBase({ titulo, banco, tira, iconoFondo }) {
       setJugando(false);
       setPreg(null);
       if (ns[0] !== ns[1]) sfx.record();
+      else sfx.moneda();
       registrarPunt(ns[0] * 100 + ns[1] * 100, 1);
     } else nueva(asks);
   }
+  responderRef.current = responder;
+
+  useEffect(() => {
+    const fn = e => {
+      if (escribiendo()) return;
+      if ((e.key === "Enter" || e.key === " ") && !jugandoRef.current) {
+        e.preventDefault();
+        empezar();
+        return;
+      }
+      if (!jugandoRef.current || !preg) return;
+      const m = { 1: 0, 2: 1, 3: 2, 4: 3, a: 0, b: 1, c: 2, d: 3 };
+      const k = e.key.toLowerCase();
+      if (m[k] != null) {
+        const orden = preg.opciones[m[k]];
+        if (orden != null) {
+          e.preventDefault();
+          responderRef.current(orden);
+        }
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jugando, preg, asks, turno, s, POR_JUGADOR, n1, n2]);
 
   const fin = !jugando && turno >= POR_JUGADOR * 2;
+  const pct = Math.round((turno / (POR_JUGADOR * 2)) * 100);
 
   return (
     <GameShell titulo={titulo} emoji="⚔️"
-      descripcion={`J1 y J2 se turnan · ${POR_JUGADOR} preguntas cada uno.`}
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <span className="chip">🔵 J1: <b>{s[0]}</b></span>
-        <span className="chip">🔴 J2: <b>{s[1]}</b></span>
-        {jugando && <span className="chip">Turno: <b>{turno % 2 === 0 ? "J1 🔵" : "J2 🔴"}</b></span>}
-      </div>
+      descripcion={`${n1} y ${n2} se turnan · ${POR_JUGADOR} preguntas cada uno.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "🔵", etiqueta: n1 || "J1", valor: s[0] },
+        { icono: "🏁", etiqueta: "Turno", valor: `${Math.min(turno + 1, POR_JUGADOR * 2)}/${POR_JUGADOR * 2}` },
+        { icono: "🔴", etiqueta: n2 || "J2", valor: s[1] },
+        { icono: "🎯", etiqueta: "Modo", valor: `${POR_JUGADOR} por jugador` },
+      ]}
+      acciones={!jugando ? <button className="btn-principal" onClick={empezar}>{fin ? "↻ Revancha" : "▶ Empezar duelo"}</button> : null}
+      ayuda={<>
+        <span>Duelo por turnos: cada jugador responde <b>{POR_JUGADOR} preguntas</b> alternándose. Cada acierto suma un punto a su marcador.</span>
+        <span>Controles: clic o dedo en la respuesta; teclado <kbd>1</kbd>–<kbd>4</kbd> o <kbd>A</kbd>–<kbd>D</kbd>. <kbd>ENTER</kbd> empieza.</span>
+        <span>Puntuación: al final se registra la suma de ambos. Modos: <b>3, 5 o 7 preguntas</b> por jugador.</span>
+        <span>Consejo: el turno se muestra arriba: no respondas la pregunta del rival.</span>
+      </>}>
       {!jugando && !fin && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar duelo</button></div>
+        <>
+          <div className="fila-botones">
+            <label className="chip">🔵 <input value={n1} onChange={e => setN1(e.target.value.slice(0, 10))} style={{ width: 70 }} aria-label="Nombre jugador 1" /></label>
+            <label className="chip">🔴 <input value={n2} onChange={e => setN2(e.target.value.slice(0, 10))} style={{ width: 70 }} aria-label="Nombre jugador 2" /></label>
+          </div>
+          <div className="fila-botones" role="group" aria-label="Preguntas por jugador">
+            {[3, 5, 7].map(m => (
+              <button key={m} className={POR_JUGADOR === m ? "btn-principal" : "btn-suave"} onClick={() => { setMeta(m); sfx.clic(); }}>{m} por jugador</button>
+            ))}
+          </div>
+        </>
       )}
+      <div className="xp-bar fina" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progreso del duelo"><div style={{ width: `${pct}%` }} /></div>
+      {jugando && <p style={{ textAlign: "center" }}>Turno: <b>{turno % 2 === 0 ? `${n1} 🔵` : `${n2} 🔴`}</b></p>}
       {fin && (
         <p style={{ textAlign: "center", fontSize: "1.3rem" }}>
-          {s[0] === s[1] ? "🤝 ¡Empate!" : s[0] > s[1] ? "🏆 ¡Gana J1!" : "🏆 ¡Gana J2!"}
+          {s[0] === s[1] ? "🤝 ¡Empate!" : s[0] > s[1] ? `🏆 ¡Gana ${n1}!` : `🏆 ¡Gana ${n2}!`}
         </p>
       )}
       {jugando && preg && (
         <>
           <p style={{ textAlign: "center", fontSize: "1.15rem" }}><b>{preg.p}</b></p>
           <div style={{ display: "grid", gap: 8 }}>
-            {preg.opciones.map(i => (
-              <button key={i} className="btn-suave" style={{ padding: "12px" }} onClick={() => responder(i)}>{preg.o[i]}</button>
+            {preg.opciones.map((i, pos) => (
+              <button key={i} className="btn-suave" style={{ padding: "12px" }} onClick={() => responder(i)}>{preg.o[i]} <kbd style={{ fontSize: ".75rem" }}>{pos + 1}</kbd></button>
             ))}
           </div>
         </>

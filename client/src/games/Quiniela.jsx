@@ -70,9 +70,9 @@ export default function Quiniela() {
   return (
     <GameShell titulo={NOMBRE} emoji="📋"
       descripcion="3 partidos con cuotas: pleno cobra el producto (tope ×20), 2/3 devuelve."
-      stats={[{ icono: "🪙", valor: saldo }]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(res ? [{ etiqueta: "Aciertos", valor: `${res.aciertos}/3` }, { etiqueta: "Mult", valor: `×${res.mult}` }] : [{ etiqueta: "Elegidos", valor: `${elec.filter(e => e != null).length}/3` }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>La cuota baja es favorita y sale más. El pleno multiplica las 3 cuotas de tus elegidos.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> acertar Local/Empate/Visita en 3 partidos.</p><p><b>Apuesta:</b> se descuenta al jugar. Pleno cobra floor(apuesta×producto de tus 3 cuotas, tope ×20); 2/3 te devuelve la apuesta.</p><ul><li>3/3 = producto cuotas (máx ×20) · 2/3 = devuelve apuesta · 0-1 = pierdes</li><li>La cuota baja es favorita y sale más</li></ul><p><b>Controles:</b> elige 1 resultado por partido · Jugar quiniela · Sortear partidos.</p><p><b>Consejo:</b> juega favoritas para aspirar al reembolso del 2/3.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={jugando} />
       <div className="fila-botones">
         <button className="btn-suave" onClick={() => { sortear(); sfx.clic(); }}>🎲 Sortear partidos</button>

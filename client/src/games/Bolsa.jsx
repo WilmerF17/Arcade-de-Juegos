@@ -51,9 +51,9 @@ export default function Bolsa() {
   return (
     <GameShell titulo="La Bolsa" emoji="📈"
       descripcion="Invierte y sigue 5 movimientos: vende en verde o aguanta. Si cae, pierdes parte."
-      stats={[{ icono: "🪙", valor: saldo }, ...(hist.length ? [{ etiqueta: "Índice", valor: precio }, { etiqueta: "Vale", valor: valorActual }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(hist.length ? [{ etiqueta: "Índice", valor: precio }, { etiqueta: "Vale", valor: valorActual }] : [{ etiqueta: "Índice", valor: 100 }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>Empiezas en <b>100</b>. Cada movimiento sube o baja al azar con leve tendencia al alza. Vender por encima de lo apostado <b>gana</b>; por debajo, <b>pierde</b>.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> vender tus fichas por encima de lo invertido tras 5 movimientos.</p><p><b>Apuesta:</b> se invierte al empezar (índice 100). Vale actual = floor(apuesta×índice/100). Vende cuando quieras.</p><ul><li>Vale &gt; apuesta = ganas · vale = apuesta = recuperas · vale &lt; apuesta = pierdes</li></ul><p><b>Controles:</b> Invertir · Mover (5 veces) · Vender.</p><p><b>Consejo:</b> vende en verde: aguantar hasta el final es todo o nada.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={enJuego} />
       <div className="fila-botones">
         {!enJuego && !vendido && <button className="btn-principal" onClick={invertir}>📈 Invertir ({apuesta})</button>}

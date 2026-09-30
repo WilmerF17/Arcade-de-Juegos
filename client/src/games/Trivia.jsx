@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const PREGUNTAS = [
   { p: "¿Cuál es la capital de Francia?", o: ["Londres", "París", "Madrid", "Roma"], r: 1, c: "Geografía" },
@@ -43,7 +44,8 @@ const PREGUNTAS = [
 ];
 
 const CATEGORIAS = ["Mezcla", "Ciencia", "Historia", "Geografía", "Tecnología", "Literatura", "Deporte", "Naturaleza", "Arte"];
-const TIEMPO_MS = 15000;
+const TIEMPOS_DIF = { 1: 20000, 2: 15000, 3: 10000 };
+const NOMBRE_DIF = { 1: "Fácil", 2: "Normal", 3: "Difícil" };
 const LETRAS = ["A", "B", "C", "D"];
 
 export default function Trivia() {
@@ -55,19 +57,23 @@ export default function Trivia() {
   const [fin, setFin] = useState(false);
   const [cursor, setCursor] = useState(0);
   const [racha, setRacha] = useState(0);
+  const [mejorRacha, setMejorRacha] = useState(0);
   const [historial, setHistorial] = useState([]);
+  const [dif, setDif] = useState(2);
+  const TIEMPO_MS = TIEMPOS_DIF[dif];
   const [restante, setRestante] = useState(TIEMPO_MS);
   const estadoRef = useRef({ lista: [], idx: 0, correctas: 0, elegida: null, racha: 0, historial: [] });
   estadoRef.current = { lista, idx, correctas, elegida, racha, historial };
 
   function empezar(cat) {
+    sfx.clic();
     let pool = [...PREGUNTAS];
     if (cat > 0) pool = pool.filter(q => q.c === CATEGORIAS[cat]);
     pool.sort(() => Math.random() - 0.5);
     const seleccion = pool.slice(0, Math.min(10, pool.length));
     setLista(seleccion);
     setIdx(0); setCorrectas(0); setElegida(null); setFin(false); setCursor(0);
-    setRacha(0); setHistorial([]); setRestante(TIEMPO_MS);
+    setRacha(0); setHistorial([]); setRestante(TIEMPOS_DIF[dif]);
   }
 
   function avanzar(nuevas, nuevaRacha, nuevoHist) {
@@ -75,20 +81,25 @@ export default function Trivia() {
     setTimeout(() => {
       if (k + 1 >= l.length) {
         const puntos = nuevas * 10;
+        if (nuevas >= 7) { sfx.record(); sfx.moneda(); }
+        else if (nuevas >= 4) sfx.bien();
+        else sfx.mal();
         registrarPunt(puntos, nuevas >= 7 ? 1 : 0);
         setCorrectas(nuevas);
         setRacha(nuevaRacha);
+        setMejorRacha(m => Math.max(m, nuevaRacha));
         setHistorial(nuevoHist);
         setFin(true);
       } else {
         setCorrectas(nuevas);
         setRacha(nuevaRacha);
+        setMejorRacha(m => Math.max(m, nuevaRacha));
         setHistorial(nuevoHist);
         setIdx(k + 1);
         setElegida(null);
         estadoRef.current.elegida = null;
         setCursor(0);
-        setRestante(TIEMPO_MS);
+        setRestante(TIEMPOS_DIF[dif]);
       }
     }, 750);
   }
@@ -99,13 +110,17 @@ export default function Trivia() {
     setElegida(i);
     estadoRef.current.elegida = i;
     const esCorrecta = i === l[k].r;
+    if (esCorrecta) sfx.bien();
+    else sfx.mal();
     avanzar(c + (esCorrecta ? 1 : 0), esCorrecta ? r + 1 : 0, [...h, esCorrecta]);
   }
 
   const responderRef = useRef(responder);
   responderRef.current = responder;
+  const empezarRef = useRef(empezar);
+  empezarRef.current = empezar;
 
-  // Crono por pregunta: 15 s, al agotarse cuenta como fallo
+  // Crono por pregunta: al agotarse cuenta como fallo
   useEffect(() => {
     if (!lista.length || fin || elegida != null) return;
     const id = setInterval(() => {
@@ -123,7 +138,15 @@ export default function Trivia() {
 
   useEffect(() => {
     const fn = e => {
-      if (escribiendo() || !estadoRef.current.lista.length || estadoRef.current.elegida != null) return;
+      if (escribiendo()) return;
+      if (!estadoRef.current.lista.length) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          empezarRef.current(0);
+        }
+        return;
+      }
+      if (estadoRef.current.elegida != null) return;
       const k = e.key.toLowerCase();
       const mapaLetra = { a: 0, b: 1, c: 2, d: 3, 1: 0, 2: 1, 3: 2, 4: 3 };
       if (mapaLetra[k] != null) {
@@ -146,12 +169,26 @@ export default function Trivia() {
   if (lista.length === 0) {
     return (
       <GameShell titulo="Trivia" emoji="❓"
-        descripcion="Responde 10 preguntas contra el crono (15 s cada una). Cada acierto vale 10 puntos."
+        descripcion={`Responde 10 preguntas contra el crono (${TIEMPOS_DIF[dif] / 1000}s cada una). Cada acierto vale 10 puntos.`}
+        stats={[
+          { icono: "❓", etiqueta: "Preguntas", valor: "10" },
+          { icono: "⏱", etiqueta: "Tiempo", valor: `${TIEMPOS_DIF[dif] / 1000}s` },
+          { icono: "🎯", etiqueta: "Dificultad", valor: NOMBRE_DIF[dif] },
+        ]}
+        acciones={<button className="btn-exito" onClick={() => empezar(0)}>🔀 Empezar mezcla <kbd>ENTER</kbd></button>}
         ayuda={<>
           <span>Elige una categoría y responde <b>10 preguntas</b>: cada acierto vale <b>10 puntos</b>.</span>
-          <span>Tienes <b>15 segundos</b> por pregunta: si se agota el tiempo, cuenta como fallo y se rompe tu racha.</span>
-          <span>Controles: teclas <kbd>A</kbd>–<kbd>D</kbd> o <kbd>1</kbd>–<kbd>4</kbd>, flechas + <kbd>ENTER</kbd>, o toca la opción.</span>
+          <span>Tienes <b>{TIEMPOS_DIF[dif] / 1000} segundos</b> por pregunta: si se agota el tiempo, cuenta como fallo y se rompe tu racha.</span>
+          <span>Controles: teclas <kbd>A</kbd>–<kbd>D</kbd> o <kbd>1</kbd>–<kbd>4</kbd>, flechas + <kbd>ENTER</kbd>, o toca la opción. <kbd>ENTER</kbd> empieza.</span>
+          <span>Puntuación: con <b>7+</b> la partida cuenta como victoria. Dificultad: <b>Fácil 20s</b>, <b>Normal 15s</b>, <b>Difícil 10s</b>.</span>
+          <span>Consejo: si dudas, descarta dos opciones y juega con la intuición antes de que el crono te coma.</span>
         </>}>
+        <div className="fila-botones" role="group" aria-label="Dificultad">
+          {[1, 2, 3].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} onClick={() => { setDif(d); sfx.clic(); }}>{d === 1 ? "🟢 Fácil 20s" : d === 2 ? "🟡 Normal 15s" : "🔴 Difícil 10s"}</button>
+          ))}
+        </div>
+        <div className="xp-bar fina" role="progressbar" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100} aria-label="Sin empezar"><div style={{ width: "0%" }} /></div>
         <p>Elige una categoría:</p>
         <div className="fila-botones">
           {CATEGORIAS.map((c, i) => (
@@ -164,6 +201,7 @@ export default function Trivia() {
 
   const pregunta = lista[idx];
   const pctTiempo = Math.max(0, Math.round((restante / TIEMPO_MS) * 100));
+  const pctProg = Math.round((historial.length / lista.length) * 100);
 
   return (
     <GameShell titulo="Trivia" emoji="❓"
@@ -171,14 +209,18 @@ export default function Trivia() {
       stats={[
         { etiqueta: "Pregunta", valor: `${idx + 1}/${lista.length}` },
         { icono: "✅", etiqueta: "Aciertos", valor: correctas + (elegida != null && elegida === pregunta.r ? 1 : 0) },
-        ...(racha >= 2 ? [{ icono: "🔥", etiqueta: "Racha", valor: `×${racha}` }] : []),
+        { icono: "🔥", etiqueta: "Racha", valor: `×${Math.max(racha, mejorRacha >= racha ? mejorRacha : racha)}` },
+        { icono: "🎯", etiqueta: "Dificultad", valor: NOMBRE_DIF[dif] },
       ]}
       resultado={fin ? { mensaje: `${mensaje} · Resultado: ${correctas}/${lista.length}`, tipo } : null}
       acciones={fin ? <button className="btn-exito" onClick={() => empezar(0)}>🔀 Otra ronda</button> : null}
       ayuda={<>
         <span>Cada acierto vale <b>10 puntos</b>. Con <b>7+</b> la partida cuenta como victoria.</span>
-        <span>El crono da <b>15 s</b> por pregunta; al agotarse, fallo automático.</span>
+        <span>El crono da <b>{TIEMPOS_DIF[dif] / 1000} s</b> por pregunta; al agotarse, fallo automático.</span>
+        <span>Controles: <kbd>A</kbd>–<kbd>D</kbd>, <kbd>1</kbd>–<kbd>4</kbd>, flechas + <kbd>ENTER</kbd> o tacto.</span>
+        <span>Consejo: responde rápido las fáciles para guardar segundos mentales en las difíciles.</span>
       </>}>
+      <div className="xp-bar fina" role="progressbar" aria-valuenow={pctProg} aria-valuemin={0} aria-valuemax={100} aria-label="Progreso"><div style={{ width: `${pctProg}%` }} /></div>
       {!fin && (
         <div className="trivia-card">
           <span className="trivia-cat">{pregunta.c}</span>

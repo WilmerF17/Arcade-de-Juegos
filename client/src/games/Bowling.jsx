@@ -16,6 +16,7 @@ export default function Bowling() {
   st.current = { fase, angulo, potencia, tiros };
 
   function empezar() {
+    sfx.clic();
     setTiros([]); st.current.tiros = [];
     setFase("angulo"); st.current.fase = "angulo";
     setJugando(true);
@@ -62,7 +63,9 @@ export default function Bowling() {
 
   const total = tiros.reduce((a, t) => a + t.pinos, 0);
   return (
-    <GameShell titulo="Bolos Neón" emoji="🎳" descripcion="ENTER/ESPACIO fija ángulo y potencia · 5 tiros.">
+    <GameShell titulo="Bolos Neón" emoji="🎳" descripcion="ENTER/ESPACIO fija ángulo y potencia · 5 tiros."
+      stats={[{ etiqueta: "Tiro", valor: `${Math.min(tiros.length + 1, 5)}/5` }, { etiqueta: "Pinos", valor: `${total}/50` }, { etiqueta: "Fase", valor: fase }]}
+      ayuda={<div><p><b>Objetivo:</b> derribar el máximo en 5 tiros (puntos = pinos×4, victoria con 30+).</p><p><b>Cómo jugar:</b> sin fichas: fija ángulo y luego potencia. Centro + potencia alta = pleno.</p><ul><li>Pinos totales ×4 = puntos · 30+ pinos = victoria</li></ul><p><b>Controles:</b> ENTER/ESPACIO o botón Fijar · Jugar/Reiniciar.</p><p><b>Consejo:</b> apunta al centro (50) con potencia 80-100 para plenos.</p></div>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{tiros.length && !jugando ? "↻ Otra vez" : jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Tiro <b>{Math.min(tiros.length + 1, 5)}/5</b></span>

@@ -71,6 +71,17 @@ export default function Destello() {
   return (
     <GameShell titulo="Destello" emoji="✨"
       descripcion="Toca la celda dorada antes de que se apague · 20 rondas · 3 vidas."
+      stats={[
+        { etiqueta: "Ronda", valor: `${ronda}/${RONDAS}` },
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> toca la celda ✨ antes de que se apague, 20 rondas.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> en la celda dorada; cada ronda va más rápido.</span>
+        <span><b>Puntos:</b> 25 + 3 por ronda; fallar o tardar quita 1 vida.</span>
+        <span><b>Consejo:</b> mantén el dedo flotando sobre la cuadrícula.</span>
+      </>}
       tira="linear-gradient(90deg,#facc15,#ff9a3d,#ff3d5a)" iconoFondo="linear-gradient(135deg,#facc15,#ff9a3d)">
       <div className="fila-botones">
         <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>

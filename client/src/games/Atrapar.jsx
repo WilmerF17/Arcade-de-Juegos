@@ -17,6 +17,7 @@ export default function Atrapar() {
   puntosRef.current = puntos; vidasRef.current = vidas; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     st.current = { x: W / 2, items: [], frame: 0 };
     puntosRef.current = 0; vidasRef.current = 3;
     setPuntos(0); setVidas(3); setJugando(true);
@@ -92,7 +93,18 @@ export default function Atrapar() {
   }, []);
 
   return (
-    <GameShell titulo="Atrapa la Fruta" emoji="🧺" descripcion="←/→ o A/D o ratón · evita 💣 · 3 vidas.">
+    <GameShell titulo="Atrapa la Fruta" emoji="🧺" descripcion="←/→ o A/D o ratón · evita 💣 · 3 vidas."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+        { etiqueta: "Estado", valor: jugando ? "Jugando" : "Parado" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> atrapa la fruta con la cesta y esquiva las bombas.</span>
+        <span><b>Controles:</b> <kbd>←</kbd>/<kbd>→</kbd> o <kbd>A</kbd>/<kbd>D</kbd> o ratón/dedo, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> +10 por fruta; la 💣 quita 1 vida; 150+ es victoria.</span>
+        <span><b>Consejo:</b> quédate en el centro para llegar a ambos lados.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

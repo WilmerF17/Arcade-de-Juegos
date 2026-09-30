@@ -39,9 +39,9 @@ export default function Rueda() {
   return (
     <GameShell titulo="Rueda Fortuna" emoji="🎡"
       descripcion="Gira la rueda: premios de ×0 a ×10. El ×10 solo sale en 1 de 8."
-      stats={[{ icono: "🪙", valor: saldo }, ...(ganador != null ? [{ etiqueta: "Premio", valor: `×${SEGMENTOS[ganador]}` }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, ...(ganador != null ? [{ etiqueta: "Premio", valor: `×${SEGMENTOS[ganador]}` }] : [{ etiqueta: "Premio", valor: "—" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>La rueda tiene dos ceros: si cae en <b>×0</b> pierdes la apuesta. El resto devuelve la apuesta multiplicada.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> que la ruleta pare en el mejor multiplicador (8 segmentos).</p><p><b>Apuesta:</b> se descuenta al girar; premio = apuesta×mult. Con ×0 pierdes.</p><ul><li>Segmentos: ×0 · ×1 · ×2 · ×5 · ×1 · ×3 · ×2 · ×10</li></ul><p><b>Controles:</b> botón Girar.</p><p><b>Consejo:</b> el ×10 es 1/8: gira por diversión, no para recuperarte.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} jugando={girando} />
       <div className="rueda-wrap" aria-hidden>
         <div className="rueda-flecha">🔻</div>

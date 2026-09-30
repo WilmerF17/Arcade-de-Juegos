@@ -24,6 +24,7 @@ export default function Flappy() {
   jugandoRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     st.current = {
       y: H / 2, vy: 0,
       tubos: [{ x: W + 40, hueco: 120 + Math.random() * 120, pasado: false }],
@@ -53,8 +54,8 @@ export default function Flappy() {
     const s = st.current;
     if (!s || s.muerto) return;
     s.muerto = true;
-    sfx.mal();
     const p = puntosRef.current;
+    if (p >= 5) sfx.bien(); else sfx.mal();
     const mejorGuardado = Number(localStorage.getItem("arcade-flappy-mejor") || 0);
     if (p > mejorGuardado) {
       setMejor(p);
@@ -186,7 +187,17 @@ export default function Flappy() {
   return (
     <GameShell titulo="Vuelo Neón" emoji="🐤"
       descripcion="ESPACIO, W, ↑, clic o toque para volar. Esquiva los tubos."
-      tira="linear-gradient(90deg,#22c55e,#facc15,#38bdf8)" iconoFondo="linear-gradient(135deg,#22c55e,#facc15)">
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { icono: "🏆", etiqueta: "Mejor", valor: Math.max(mejor, puntos) },
+        { etiqueta: "Estado", valor: jugando ? "Volando" : "Parado" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> pasa entre los tubos sin chocar; aguanta lo máximo posible.</span>
+        <span><b>Controles:</b> <kbd>Espacio</kbd>/<kbd>W</kbd>/<kbd>↑</kbd> o <kbd>clic</kbd>/<kbd>toque</kbd> para aletear, <kbd>Enter</kbd> empezar.</span>
+        <span><b>Puntos:</b> +1 por tubo (×10 en ranking); victoria con 5+ tubos.</span>
+        <span><b>Consejo:</b> toques cortos y rítmicos mantienen el vuelo estable.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{puntos > 0 && !jugando ? "↻ Reintentar" : "▶ Jugar"}</button>
         <span className="chip">Puntos: <b>{puntos}</b></span>

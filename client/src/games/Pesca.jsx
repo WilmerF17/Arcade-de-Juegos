@@ -18,6 +18,7 @@ export default function Pesca() {
 
   function lanzar() {
     if (fase === "picando") return;
+    sfx.clic();
     setFase("picando"); setPez(null);
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
@@ -66,7 +67,9 @@ export default function Pesca() {
   }, [fase, pez, barra]);
   const fin = lances >= 10;
   return (
-    <GameShell titulo="Pesca" emoji="🎣" descripcion="ENTER lanzar · ENTER recoger en verde · 10 lances.">
+    <GameShell titulo="Pesca" emoji="🎣" descripcion="ENTER lanzar · ENTER recoger en verde · 10 lances."
+      stats={[{ etiqueta: "Puntos", valor: puntos }, { etiqueta: "Lances", valor: `${lances}/10` }, { etiqueta: "Fase", valor: fase }]}
+      ayuda={<div><p><b>Objetivo:</b> sumar 120+ en 10 lances (puntos = valor pez + bonus precisión).</p><p><b>Cómo jugar:</b> sin fichas: lanza, espera el pique y recoge con la barra centrada.</p><ul><li>🐟10 · 🐠15 · 🐡20 · 🦈40 · 👢-10 · bonus hasta +10 por precisión</li></ul><p><b>Controles:</b> ENTER lanzar/recoger o botones · barra oscilante.</p><p><b>Consejo:</b> recoge solo con la barra en verde para el bonus.</p></div>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={() => { st.current = { puntos: 0, lances: 0 }; setPuntos(0); setLances(0); setFase("espera"); setPez(null); }}>{lances > 0 ? "↻ Otra vez" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

@@ -17,6 +17,7 @@ export default function Zombies() {
   st.current = { puntos, oleada, vidas, balas };
 
   function empezar() {
+    sfx.clic();
     setZombies([]); setPuntos(0); setOleada(1); setVidas(5); setBalas(12);
     st.current = { puntos: 0, oleada: 1, vidas: 5, balas: 12 };
     setJugando(true);
@@ -93,7 +94,18 @@ export default function Zombies() {
     return () => window.removeEventListener("keydown", fn);
   }, [jugando, balas]);
   return (
-    <GameShell titulo="Defensa Zombie" emoji="🧟" descripcion="Clic dispara · R recarga · no dejes que lleguen al centro.">
+    <GameShell titulo="Defensa Zombie" emoji="🧟" descripcion="Clic dispara · R recarga · no dejes que lleguen al centro."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "🌊 Oleada", valor: oleada },
+        { etiqueta: "❤️ Vidas", valor: vidas },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> defiende la casa 🏠 y sobrevive hasta la oleada 4.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> disparar, <kbd>R</kbd> recargar, <kbd>Enter</kbd> empezar.</span>
+        <span><b>Puntos:</b> +10 + 2 por oleada por zombie; cada oleada recarga a 12 balas.</span>
+        <span><b>Consejo:</b> deja un tiro para los blindados 🛡️ y no dispares sin balas.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <button className="btn-suave" onClick={recargar} disabled={balas > 0}>🔄 Recargar (R)</button>

@@ -15,6 +15,7 @@ export default function Dino() {
   ptsRef.current = puntos; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     st.current = { h: 0, v: 0, obs: [], frame: 0 };
     ptsRef.current = 0; setPuntos(0); setJugando(true);
   }
@@ -28,7 +29,7 @@ export default function Dino() {
     const p = ptsRef.current;
     if (p > mejor) { setMejor(p); localStorage.setItem("arcade-dino", String(p)); }
     registrarPunt(p, p >= 300 ? 1 : 0);
-    sfx.mal();
+    if (p >= 300) sfx.bien(); else sfx.mal();
   }
   const saltarRef = useRef(saltar); saltarRef.current = saltar;
 
@@ -91,7 +92,18 @@ export default function Dino() {
   }, []);
 
   return (
-    <GameShell titulo="Dino Salto" emoji="🦖" descripcion="ESPACIO / W / ↑ para saltar cactus · aguanta.">
+    <GameShell titulo="Dino Salto" emoji="🦖" descripcion="ESPACIO / W / ↑ para saltar cactus · aguanta."
+      stats={[
+        { etiqueta: "Puntos", valor: puntos },
+        { icono: "🏆", etiqueta: "Mejor", valor: Math.max(mejor, puntos) },
+        { etiqueta: "Estado", valor: jugando ? "Corriendo" : "Parado" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> salta los cactus y aguanta lo máximo posible.</span>
+        <span><b>Controles:</b> <kbd>Espacio</kbd>/<kbd>W</kbd>/<kbd>↑</kbd> o <kbd>clic</kbd>/<kbd>toque</kbd> saltar, <kbd>Enter</kbd> empezar.</span>
+        <span><b>Puntos:</b> +1 por frame; victoria con 300+ puntos.</span>
+        <span><b>Consejo:</b> salta tarde y corto: menos aire, menos riesgo.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Puntos <b>{puntos}</b></span>

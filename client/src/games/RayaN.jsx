@@ -80,7 +80,9 @@ function RayaBase({ titulo, emoji, n, meta, tira, iconoFondo }) {
   return (
     <GameShell titulo={titulo} emoji={emoji}
       descripcion={`Tablero ${n}×${n} · haz ${meta} en línea antes que la IA.`}
-      tira={tira} iconoFondo={iconoFondo}>
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[{ etiqueta: "Tablero", valor: `${n}×${n}` }, { etiqueta: "Meta", valor: `${meta} en línea` }, { etiqueta: "Estado", valor: fin || (jugando ? "En juego" : "Listo") }]}
+      ayuda={<div><p><b>Objetivo:</b> hacer {meta} en línea antes que la IA (eres X).</p><p><b>Cómo jugar:</b> sin fichas: coloca X por turnos contra O. La IA gana-bloquea-centra.</p><ul><li>Victoria = 300 pts · empate = 120 pts · derrota = 40 pts</li></ul><p><b>Controles:</b> clic en casilla · Empezar/Revancha.</p><p><b>Consejo:</b> ocupa el centro y bloquea la línea de 3 de la IA.</p></div>}>
       {!jugando && tab.every(x => !x) && (
         <div className="fila-botones"><button className="btn-principal" onClick={empezar}>▶ Empezar (eres X)</button></div>
       )}

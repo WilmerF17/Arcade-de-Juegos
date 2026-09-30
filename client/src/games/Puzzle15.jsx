@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 function mezclado() {
   const a = [...Array(15).keys()].map(n => n + 1).concat([0]);
@@ -25,6 +26,7 @@ export default function Puzzle15() {
   const [tab, setTab] = useState(mezclado);
   const [movs, setMovs] = useState(0);
   const [ganado, setGanado] = useState(false);
+  const [mejor, setMejor] = useState(null);
   const tabRef = useRef(tab);
   const movsRef = useRef(0);
   const ganadoRef = useRef(false);
@@ -33,6 +35,8 @@ export default function Puzzle15() {
   ganadoRef.current = ganado;
 
   const resuelto = tab.every((v, i) => v === (i + 1) % 16);
+  const bienPuestas = tab.filter((v, i) => v === (i + 1) % 16).length;
+  const pct = Math.round((bienPuestas / 16) * 100);
 
   function intentarMover(indiceFicha) {
     if (ganadoRef.current) return;
@@ -66,10 +70,13 @@ export default function Puzzle15() {
     tabRef.current = nt;
     setTab(nt);
     setMovs(m);
+    sfx.clic();
     if (nt.every((v, k) => v === (k + 1) % 16)) {
       ganadoRef.current = true;
       setGanado(true);
+      setMejor(prev => (prev == null || m < prev ? m : prev));
       registrarPunt(Math.max(200 - m, 20), 1);
+      sfx.bien();
     }
   }
 
@@ -79,6 +86,11 @@ export default function Puzzle15() {
   useEffect(() => {
     const fn = e => {
       if (escribiendo()) return;
+      if ((e.key === "Enter" || e.key === " ") && ganadoRef.current) {
+        e.preventDefault();
+        mezclar();
+        return;
+      }
       const d = dirDeTecla(e.key);
       if (d) { e.preventDefault(); moverRef.current(d); }
     };
@@ -88,6 +100,7 @@ export default function Puzzle15() {
   }, []);
 
   function mezclar() {
+    sfx.clic();
     const t = mezclado();
     tabRef.current = t; movsRef.current = 0; ganadoRef.current = false;
     setTab(t); setMovs(0); setGanado(false);
@@ -96,12 +109,22 @@ export default function Puzzle15() {
   return (
     <GameShell titulo="Puzzle 15" emoji="🧩"
       descripcion="Clic o flechas/WASD para deslizar fichas · ordena del 1 al 15."
-      tira="linear-gradient(90deg,#14b8a6,#6366f1,#22d3ee)" iconoFondo="linear-gradient(135deg,#14b8a6,#6366f1)">
-      <div className="fila-botones">
-        <button className="btn-exito" onClick={mezclar}>🔀 Mezclar</button>
-        <span className="chip">Movimientos: <b>{movs}</b></span>
-        <span className="chip">Progreso: <b>{tab.filter((v, i) => v === (i + 1) % 16).length}/16</b></span>
-      </div>
+      tira="linear-gradient(90deg,#14b8a6,#6366f1,#22d3ee)" iconoFondo="linear-gradient(135deg,#14b8a6,#6366f1)"
+      stats={[
+        { icono: "👣", etiqueta: "Movs", valor: movs },
+        { icono: "✅", etiqueta: "Bien", valor: `${bienPuestas}/16` },
+        { icono: "📐", etiqueta: "Tablero", valor: "4×4" },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : `${mejor} movs` },
+      ]}
+      acciones={<button className="btn-exito" onClick={mezclar}>🔀 Mezclar (ENTER al ganar)</button>}
+      resultado={ganado ? { mensaje: `🎉 ¡Puzzle resuelto en ${movs} movimientos! ${mensaje}`, tipo: "record" } : null}
+      ayuda={<>
+        <p><b>Objetivo:</b> ordena las fichas del <b>1 al 15</b> dejando el hueco abajo a la derecha. Solo se mueve la ficha vecina al hueco.</p>
+        <p><b>Controles:</b> clica una ficha vecina al hueco o usa <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>/<kbd>WASD</kbd> y los botones táctiles. <kbd>Enter</kbd>/<kbd>Espacio</kbd> mezcla de nuevo al ganar.</p>
+        <p><b>Puntuación:</b> resolver da <b>200 − movimientos</b> (mínimo 20) como victoria.</p>
+        <p><b>Consejo:</b> ordena por filas de arriba a abajo sin deshacer las ya colocadas; deja la última fila para el final.</p>
+      </>}>
+      <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
       <div className="puzzle-tab" style={{ gridTemplateColumns: "repeat(4,64px)", marginTop: 14 }}>
         {tab.map((v, i) => (
           v === 0
@@ -115,7 +138,6 @@ export default function Puzzle15() {
           <button key={d} className="btn-suave" onClick={() => moverPorTecla(d)}>{f}</button>
         ))}
       </div>
-      {ganado && <div className={`mensaje-final record`}>🎉 ¡Puzzle resuelto en {movs} movimientos! {mensaje}</div>}
       {!ganado && resuelto && movs === 0 && <p className="aviso info">Clica Mezclar para empezar.</p>}
       <p className="aviso-ia">💡 Teclado: <b>flechas o WASD</b> · las fichas con borde verde ya están en su sitio.</p>
     </GameShell>

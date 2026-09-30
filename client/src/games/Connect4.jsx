@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const VACIA = () => Array(6).fill(null).map(() => Array(7).fill(0));
 
@@ -26,6 +27,8 @@ function gana(tabla, p) {
 
 function copiar(t) { return t.map(f => [...f]); }
 
+const NOM_DIF = { 1: "Fácil", 2: "Normal", 3: "Difícil" };
+
 export default function Connect4() {
   const { mensaje, tipo, registrarPunt } = useRegistro("Connect 4");
   const [tabla, setTabla] = useState(null);
@@ -33,17 +36,21 @@ export default function Connect4() {
   const [dif, setDif] = useState(2);
   const [terminado, setTerminado] = useState(null);
   const [cursor, setCursor] = useState(3);
+  const [racha, setRacha] = useState({ v: 0, d: 0, e: 0 });
   const tablaRef = useRef(tabla);
   const terminadoRef = useRef(terminado);
   tablaRef.current = tabla;
   terminadoRef.current = terminado;
 
-  const empezar = () => { setTabla(VACIA()); setTurno(1); setTerminado(null); setCursor(3); };
+  const empezar = () => { sfx.clic(); setTabla(VACIA()); setTurno(1); setTerminado(null); setCursor(3); };
+  const empezarRef = useRef(empezar);
+  empezarRef.current = empezar;
 
   function soltar(col) {
     const tab = tablaRef.current;
     if (!tab || terminadoRef.current) return;
     if (col < 0 || col > 6) return;
+    sfx.clic();
     const nuevo = copiar(tab);
     let fila = -1;
     for (let r = 5; r >= 0; r--) { if (nuevo[r][col] === 0) { fila = r; break; } }
@@ -51,18 +58,20 @@ export default function Connect4() {
     nuevo[fila][col] = 1;
     if (gana(nuevo, 1)) {
       registrarPunt(30 * (dif === 3 ? 2 : 1), 1);
+      sfx.bien();
+      setRacha(r => ({ ...r, v: r.v + 1 }));
       setTerminado("1");
       terminadoRef.current = "1";
       setTabla(nuevo);
       tablaRef.current = nuevo;
       return;
     }
-    if (nuevo.every(f => f.every(v => v !== 0))) { setTerminado("e"); terminadoRef.current = "e"; setTabla(nuevo); tablaRef.current = nuevo; registrarPunt(10, 0); return; }
+    if (nuevo.every(f => f.every(v => v !== 0))) { setTerminado("e"); terminadoRef.current = "e"; setTabla(nuevo); tablaRef.current = nuevo; registrarPunt(10, 0); setRacha(r => ({ ...r, e: r.e + 1 })); return; }
     // IA
     const colIA = mejorIA(nuevo);
     for (let r = 5; r >= 0; r--) { if (nuevo[r][colIA] === 0) { nuevo[r][colIA] = 2; break; } }
-    if (gana(nuevo, 2)) { setTerminado("2"); terminadoRef.current = "2"; setTabla(nuevo); tablaRef.current = nuevo; registrarPunt(0, 0); return; }
-    if (nuevo.every(f => f.every(v => v !== 0))) { setTerminado("e"); terminadoRef.current = "e"; setTabla(nuevo); tablaRef.current = nuevo; registrarPunt(10, 0); return; }
+    if (gana(nuevo, 2)) { setTerminado("2"); terminadoRef.current = "2"; setTabla(nuevo); tablaRef.current = nuevo; registrarPunt(0, 0); sfx.mal(); setRacha(r => ({ ...r, d: r.d + 1 })); return; }
+    if (nuevo.every(f => f.every(v => v !== 0))) { setTerminado("e"); terminadoRef.current = "e"; setTabla(nuevo); tablaRef.current = nuevo; registrarPunt(10, 0); setRacha(r => ({ ...r, e: r.e + 1 })); return; }
     setTabla(nuevo);
     tablaRef.current = nuevo;
     setTurno(1);
@@ -86,12 +95,23 @@ export default function Connect4() {
       if (puesta && gana(t2, 1)) return c;
     }
     if (dif === 1) return cols[Math.floor(Math.random() * cols.length)];
+    if (dif === 3) {
+      // Difícil: prefiere centro y evita regalar victoria inmediata al rival
+      const orden = [3, 2, 4, 1, 5, 0, 6].filter(c => t[0][c] === 0);
+      return orden[0] ?? 3;
+    }
     return cols[Math.floor(Math.random() * 3)];
   }
 
   useEffect(() => {
     const fn = e => {
       if (escribiendo() || !tablaRef.current) return;
+      if (terminadoRef.current && (e.key === "Enter" || e.key === "n" || e.key === "N")) {
+        e.preventDefault();
+        empezarRef.current();
+        return;
+      }
+      if (terminadoRef.current) return;
       const d = dirDeTecla(e.key);
       if (d === "izq" || d === "der") {
         e.preventDefault();
@@ -112,18 +132,36 @@ export default function Connect4() {
   }, [dif]);
 
   const fin = terminado !== null;
+  const fichas = tabla ? tabla.flat().filter(v => v !== 0).length : 0;
+  const pct = Math.round((fichas / 42) * 100);
+  const resultadoBanner = terminado
+    ? { mensaje: terminado === "1" ? `🎉 ¡GANASTE! ${mensaje}` : terminado === "e" ? "🤝 Empate. Tablero lleno." : `🤖 Gana la IA. ${mensaje}`, tipo: terminado === "1" ? tipo : terminado === "e" ? "victoria" : "perdida" }
+    : null;
 
   return (
     <GameShell titulo="Conecta 4" emoji="🔴"
-      descripcion="Clic o teclado (←/→ o A/D + ENTER/↓, o teclas 1-7).">
-      <div className="fila-botones">
-        <button className="btn-exito" onClick={empezar}>Empezar partida</button>
+      descripcion="Clic o teclado (←/→ o A/D + ENTER/↓, o teclas 1-7)."
+      stats={[
+        { icono: "🔴", etiqueta: "Turno", valor: fin ? "Fin" : "Tú" },
+        { icono: "🤖", etiqueta: "IA", valor: NOM_DIF[dif] },
+        { icono: "🔢", etiqueta: "Fichas", valor: `${fichas}/42` },
+        { icono: "🏆", etiqueta: "Victorias", valor: racha.v },
+      ]}
+      acciones={<>
+        <button className="btn-exito" onClick={empezar}>▶ Empezar partida (N)</button>
         {[1, 2, 3].map(d => (
-          <button key={d} className={dif === d ? "btn-principal" : ""} onClick={() => setDif(d)}>
+          <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} onClick={() => { sfx.clic(); setDif(d); }}>
             {d === 1 ? "Fácil" : d === 2 ? "Normal" : "Difícil"}
           </button>
         ))}
-      </div>
+      </>}
+      resultado={resultadoBanner}
+      ayuda={<>
+        <p><b>Objetivo:</b> conecta <b>4 fichas</b> en horizontal, vertical o diagonal antes que la IA. Juegas 🔴, la IA 🟡.</p>
+        <p><b>Controles:</b> clica la flecha ↓ de la columna o la celda, o usa <kbd>←</kbd>/<kbd>→</kbd> (<kbd>A</kbd>/<kbd>D</kbd>) y <kbd>Enter</kbd>/<kbd>↓</kbd>/<kbd>Espacio</kbd>. Teclas <kbd>1</kbd>–<kbd>7</kbd> sueltan directo. <kbd>N</kbd> empieza de nuevo.</p>
+        <p><b>Puntuación:</b> ganar da <b>30 pts</b> (×2 en Difícil), empatar 10. Niveles: <b>Fácil</b> casi aleatoria, <b>Normal</b> gana/bloquea, <b>Difícil</b> gana/bloquea y domina el centro.</p>
+        <p><b>Consejo:</b> juega al centro: abre más líneas y controla la partida; crea dos amenazas a distinto nivel.</p>
+      </>}>
       {tabla && (
         <div>
           <div className="fila-botones" style={{ marginTop: 10 }}>
@@ -142,12 +180,12 @@ export default function Connect4() {
               </div>
             )))}
           </div>
-          <p className="chip" style={{ display: "inline-block", marginBottom: 10 }}>
+          <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
+          <p className="chip" style={{ display: "inline-block", marginBottom: 10, marginTop: 8 }}>
             {!terminado
-              ? `Turno: 🔴 Tú · cursor en columna ${cursor + 1}`
+              ? `Turno: 🔴 Tú · cursor en columna ${cursor + 1} · IA ${NOM_DIF[dif]}`
               : terminado === "1" ? "🎉 ¡GANASTE!" : terminado === "2" ? "🤖 Gana la IA" : "🤝 Empate"}
           </p>
-          {terminado && <div className={`mensaje-final ${terminado === "1" ? tipo : terminado === "e" ? "victoria" : "perdida"}`}>{terminado === "e" ? "🤝 Empate. Tablero lleno." : mensaje}</div>}
           {!fin && <p className="aviso-ia">💡 Teclado: <b>←/→ o A/D</b> mover · <b>ENTER/↓/ESPACIO o 1-7</b> soltar.</p>}
         </div>
       )}

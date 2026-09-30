@@ -36,9 +36,9 @@ export default function Suma7() {
   return (
     <GameShell titulo="Suma 7" emoji="🎲"
       descripcion="Dos dados: menor de 7 ×2.2, siete exacto ×4.5, mayor de 7 ×2.2."
-      stats={[{ icono: "🪙", valor: saldo }, ...(dados[0] ? [{ etiqueta: "Suma", valor: dados[0] + dados[1] }] : [])]}
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { etiqueta: "Juegas", valor: opcion }, ...(dados[0] ? [{ etiqueta: "Suma", valor: dados[0] + dados[1] }] : [{ etiqueta: "Suma", valor: "—" }])]}
       resultado={{ mensaje, tipo }}
-      ayuda={<span>El 7 sale con 6 de 36 combinaciones: por eso paga <b>×4.5</b>. Menor y mayor tienen la misma probabilidad.</span>}>
+      ayuda={<div><p><b>Objetivo:</b> acertar si la suma de 2 dados es menor, igual o mayor que 7.</p><p><b>Apuesta:</b> se descuenta al lanzar; premio = floor(apuesta×mult).</p><ul><li>Menor de 7 = ×2.2 · Siete exacto = ×4.5 · Mayor de 7 = ×2.2 · fallo = pierdes</li></ul><p><b>Controles:</b> elige pronóstico y pulsa Lanzar.</p><p><b>Consejo:</b> el 7 sale 6/36: paga más porque es difícil.</p></div>}>
       <SelectorApuesta apuesta={apuesta} setApuesta={setApuesta} />
       <div className="fila-botones" role="group" aria-label="Pronóstico">
         {OPCIONES.map(o => (

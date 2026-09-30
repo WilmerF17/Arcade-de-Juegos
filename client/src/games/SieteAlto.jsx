@@ -16,6 +16,7 @@ export default function SieteAlto() {
   const [racha, setRacha] = useState(0);
 
   function jugar(tipo) {
+    sfx.clic();
     setAviso("");
     const r = apostar(apuesta);
     if (!r.ok) { setAviso(`⛔ ${r.motivo}. Reclama el 🎁 bonus diario.`); sfx.mal(); return; }
@@ -44,7 +45,9 @@ export default function SieteAlto() {
   return (
     <GameShell titulo="Siete Alto" emoji="🎲"
       descripcion="Apuesta con fichas · Alto/Bajo ×2 · Siete exacto ×5."
-      tira="linear-gradient(90deg,#eab308,#dc2626)" iconoFondo="linear-gradient(135deg,#eab308,#dc2626)">
+      tira="linear-gradient(90deg,#eab308,#dc2626)" iconoFondo="linear-gradient(135deg,#eab308,#dc2626)"
+      stats={[{ icono: "🪙", etiqueta: "Saldo", valor: saldo }, { etiqueta: "Apuesta", valor: apuesta }, { icono: "🔥", etiqueta: "Racha", valor: racha }, ...(dados.length ? [{ etiqueta: "Suma", valor: dados[0] + dados[1] }] : [{ etiqueta: "Suma", valor: "—" }])]}
+      ayuda={<div><p><b>Objetivo:</b> acertar si la suma de 2 dados es alta, baja o siete.</p><p><b>Apuesta:</b> se descuenta al jugar. Premio = apuesta×mult.</p><ul><li>Alto (8-12) = ×2 · Bajo (2-6) = ×2 · Siete exacto = ×5 · fallo = pierdes</li></ul><p><b>Controles:</b> elige apuesta y pulsa Bajo / Siete / Alto.</p><p><b>Consejo:</b> Alto/Bajo salen 15/36 cada uno; el Siete paga más porque es 6/36.</p></div>}>
       <div className="fila-botones">
         <span className="chip">🪙 <b>{saldo}</b></span>
         <span className="chip">🔥 <b>{racha}</b></span>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const COLORES = ["s1", "s2", "s3", "s4"];
 
@@ -47,6 +48,7 @@ export default function Simon() {
   }
 
   function empezar() {
+    sfx.clic();
     apagar();
     const seq = [Math.floor(Math.random() * 4)];
     secRef.current = seq;
@@ -60,6 +62,7 @@ export default function Simon() {
 
   function pulsar(idx) {
     if (jugandoRef.current || !secRef.current.length || fin) return;
+    sfx.clic();
     setMostrando(idx);
     setTimeout(() => setMostrando(-1), 160);
     const esperado = secRef.current[pasoRef.current];
@@ -71,6 +74,7 @@ export default function Simon() {
         const nNivel = nivel + 1;
         setNivel(nNivel);
         if (nNivel >= 5) {
+          sfx.bien();
           registrarPunt(100 + nNivel * 10, 1);
           setMensajeAi("🏆 ¡GANASTE LA PARTIDA! Nivel 5 superado.");
           setSecuencia([]); secRef.current = [];
@@ -89,6 +93,7 @@ export default function Simon() {
         setTimeout(() => reproducir(nueva), 700);
       }
     } else {
+      sfx.mal();
       registrarPunt(nivel * 10, 0);
       setMensajeAi(`Fallaste (era ${["🔴", "🟢", "🔵", "🟣"][esperado]}). Empieza de nuevo.`);
       setSecuencia([]); secRef.current = [];
@@ -118,7 +123,18 @@ export default function Simon() {
 
   return (
     <GameShell titulo="Secuencia Neón" emoji="🔵"
-      descripcion="Clic o teclado (1-4, flechas o WASD). Supera el nivel 5.">
+      descripcion="Clic o teclado (1-4, flechas o WASD). Supera el nivel 5."
+      stats={[
+        { etiqueta: "Nivel", valor: `${nivel}/5` },
+        { etiqueta: "Paso", valor: secuencia.length ? `${paso}/${secuencia.length}` : "—" },
+        { etiqueta: "Estado", valor: fin ? "Fin" : secuencia.length ? (jugando ? "Mira…" : "Repite") : "Listo" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> repite la secuencia de colores y llega al nivel 5.</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> o <kbd>1</kbd>–<kbd>4</kbd>, <kbd>W</kbd>/<kbd>↑</kbd>=🔴 <kbd>A</kbd>/<kbd>←</kbd>=🟢 <kbd>S</kbd>/<kbd>↓</kbd>=🔵 <kbd>D</kbd>/<kbd>→</kbd>=🟣, <kbd>Enter</kbd> empezar.</span>
+        <span><b>Puntos:</b> 100 + 10 por nivel al ganar; fallar guarda nivel×10.</span>
+        <span><b>Consejo:</b> canta los colores en voz alta para memorizar.</span>
+      </>}>
       <div className="fila-botones">
         {(!secuencia.length) && (
           <button className="btn-exito" onClick={empezar}>{fin ? "↻ Jugar otra vez" : "Empezar"}</button>

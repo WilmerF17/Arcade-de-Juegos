@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import GameShell, { useRegistro } from "../ui/GameShell";
 import { dirDeTecla, escribiendo } from "../suite/teclado";
+import { sfx } from "../suite/sonido";
 
 const TAM = {
   "9x9": { f: 9, c: 9, minas: 10 },
@@ -19,6 +20,7 @@ export default function Minesweeper() {
   const [iniciado, setIniciado] = useState(false);
   const [cursor, setCursor] = useState(0);
   const [banderas, setBanderas] = useState(0);
+  const [mejor, setMejor] = useState(null);
 
   const t = TAM[tamaño];
   const campoRef = useRef(campo);
@@ -32,12 +34,15 @@ export default function Minesweeper() {
   }
 
   function reiniciar(nuevoTam = tamaño) {
+    sfx.clic();
     const tt = TAM[nuevoTam];
     const total = tt.f * tt.c;
     setCampo(Array.from({ length: total }, () => ({ mina: false, num: 0, revelada: false, bandera: false })));
     setPerdido(false); setGanado(false); setIniciado(false);
     setCursor(0); setBanderas(0);
   }
+  const reiniciarRef = useRef(reiniciar);
+  reiniciarRef.current = reiniciar;
 
   useEffect(() => { reiniciar(tamaño); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [tamaño]);
   useEffect(() => { reiniciar("9x9"); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
@@ -92,6 +97,7 @@ export default function Minesweeper() {
     if (i < 0 || i >= campoRef.current.length) return;
     let celdas = campoRef.current.map(c => ({ ...c }));
     if (celdas[i].revelada || celdas[i].bandera) return;
+    sfx.clic();
     if (!iniciado) {
       celdas = generar(i);
       revelarFlood(celdas, i);
@@ -101,6 +107,8 @@ export default function Minesweeper() {
       if (comprobarVictoria(celdas)) {
         setGanado(true);
         registrarPunt(50 + t.minas, 1);
+        sfx.bien();
+        setMejor(m => (m == null || t.minas > m ? t.minas : m));
       }
       return;
     }
@@ -110,6 +118,7 @@ export default function Minesweeper() {
       setCampo(celdas);
       campoRef.current = celdas;
       registrarPunt(0, 0);
+      sfx.mal();
       return;
     }
     revelarFlood(celdas, i);
@@ -118,6 +127,8 @@ export default function Minesweeper() {
     if (comprobarVictoria(celdas)) {
       setGanado(true);
       registrarPunt(50 + t.minas, 1);
+      sfx.bien();
+      setMejor(m => (m == null || t.minas > m ? t.minas : m));
     }
   }
 
@@ -126,6 +137,7 @@ export default function Minesweeper() {
     const celdas = campoRef.current.map(c => ({ ...c }));
     if (celdas[i].revelada) return;
     celdas[i].bandera = !celdas[i].bandera;
+    sfx.clic();
     setCampo(celdas);
     campoRef.current = celdas;
     setBanderas(celdas.filter(c => c.bandera).length);
@@ -136,10 +148,13 @@ export default function Minesweeper() {
   const banderaRef = useRef(bandera);
   banderaRef.current = bandera;
 
-  // Teclado: flechas/WASD mueven cursor · ENTER/ESPACIO revela · F bandera
+  // Teclado: flechas/WASD mueven cursor · ENTER/ESPACIO revela · F bandera · N reinicia
   useEffect(() => {
     const fn = e => {
       if (escribiendo() || !campoRef.current) return;
+      if ((e.key === "n" || e.key === "N") || ((e.key === "Enter" || e.key === " ") && finRef.current)) {
+        if (finRef.current || e.key === "n" || e.key === "N") { e.preventDefault(); reiniciarRef.current(); return; }
+      }
       const d = dirDeTecla(e.key);
       if (d) {
         e.preventDefault();
@@ -167,22 +182,39 @@ export default function Minesweeper() {
   }, [tamaño, iniciado]);
 
   const nMinas = t.minas;
+  const reveladas = campo ? campo.filter(c => c.revelada && !c.mina).length : 0;
+  const seguras = t.f * t.c - nMinas;
+  const pct = seguras ? Math.round((reveladas / seguras) * 100) : 0;
+  const resultadoBanner = perdido ? { mensaje: `💥 ¡Boom! Pisaste una mina. ${mensaje}`, tipo } : ganado ? { mensaje: `🎉 ¡Tablero limpio! ${mensaje}`, tipo: "record" } : null;
 
   return (
     <GameShell titulo="Buscaminas" emoji="💣"
-      descripcion="Clic o ENTER/ESPACIO revela · clic derecho o F bandera · flechas/WASD mueven cursor.">
-      <div className="fila-botones">
+      descripcion="Clic o ENTER/ESPACIO revela · clic derecho o F bandera · flechas/WASD mueven cursor."
+      stats={[
+        { icono: "📐", etiqueta: "Tablero", valor: tamaño },
+        { icono: "💣", etiqueta: "Minas", valor: nMinas - (campo ? campo.filter(c => c.bandera).length : 0) },
+        { icono: "✅", etiqueta: "Limpias", valor: `${reveladas}/${seguras}` },
+        { icono: "🏆", etiqueta: "Mejor", valor: mejor == null ? "—" : `${mejor} minas` },
+      ]}
+      acciones={<>
         {Object.keys(TAM).map(k => (
-          <button key={k} className={tamaño === k ? "btn-principal" : ""} onClick={() => { setTamaño(k); }}>{k}</button>
+          <button key={k} className={tamaño === k ? "btn-principal" : "btn-suave"} onClick={() => { setTamaño(k); }}>{k}</button>
         ))}
-        <button className="btn-exito" onClick={() => reiniciar()}>Reiniciar</button>
-      </div>
+        <button className="btn-exito" onClick={() => reiniciar()}>↻ Reiniciar (N)</button>
+      </>}
+      resultado={resultadoBanner}
+      ayuda={<>
+        <p><b>Objetivo:</b> revela todas las casillas sin mina. Los números indican cuántas minas hay alrededor. La primera revelada nunca es mina.</p>
+        <p><b>Controles:</b> clic o <kbd>Enter</kbd>/<kbd>Espacio</kbd> revela, clic derecho o <kbd>F</kbd> pone bandera, <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>/<kbd>WASD</kbd> mueven el cursor, <kbd>N</kbd> reinicia.</p>
+        <p><b>Puntuación:</b> limpiar el tablero da <b>50 + nº de minas</b> como victoria; pisar mina registra 0.</p>
+        <p><b>Consejo:</b> marca primero las esquinas obvias (un “1” en esquina solo tiene 3 vecinos) y abre desde los ceros para expandir zonas seguras.</p>
+      </>}>
       {!campo && <p style={{ marginTop: 30, textAlign: "center", color: "var(--texto-suave)" }}>Cargando...</p>}
       {campo && (
         <div>
-          <div className="chip" style={{ display: "inline-block", marginBottom: 10 }}>Minas restantes: <b>{nMinas - campo.filter(c => c.bandera).length}</b></div>
+          <div className="xp-bar fina"><div style={{ width: `${pct}%` }} /></div>
           <div className="tablero" onContextMenu={e => e.preventDefault()}
-            style={{ gridTemplateColumns: `repeat(${t.c}, 34px)` }}>
+            style={{ gridTemplateColumns: `repeat(${t.c}, 34px)`, marginTop: 10 }}>
             {campo.map((cel, i) => (
               <div key={i} className={cel.revelada ? (cel.mina ? "celda-mina revelada" : numCls(cel.num)) : "celda-mina"}
                 style={i === cursor && !cel.revelada ? { outline: "2px solid var(--info)", outlineOffset: -2 } : undefined}
@@ -195,9 +227,7 @@ export default function Minesweeper() {
               </div>
             ))}
           </div>
-          {perdido && <div className={`mensaje-final ${tipo}`}>💥 ¡Boom! Pisaste una mina. {mensaje}</div>}
-          {ganado && <div className="mensaje-final record">🎉 ¡Tablero limpio! {mensaje}</div>}
-          {!perdido && !ganado && <p className="aviso-ia">💡 Teclado: <b>flechas/WASD</b> cursor · <b>ENTER</b> revelar · <b>F</b> bandera.</p>}
+          {!perdido && !ganado && <p className="aviso-ia">💡 Teclado: <b>flechas/WASD</b> cursor · <b>ENTER</b> revelar · <b>F</b> bandera. 🚩 {banderas} puestas.</p>}
         </div>
       )}
     </GameShell>

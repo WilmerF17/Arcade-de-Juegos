@@ -44,7 +44,7 @@ export default function Luces() {
   }
   const pulsarRef = useRef(pulsar); pulsarRef.current = pulsar;
 
-  function nuevo() { const g = scramble(); st.current = { grid: g, movs: 0 }; setGrid(g); setMovs(0); setFin(false); setCursor([2, 2]); }
+  function nuevo() { sfx.clic(); const g = scramble(); st.current = { grid: g, movs: 0 }; setGrid(g); setMovs(0); setFin(false); setCursor([2, 2]); }
 
   useEffect(() => {
     const fn = e => {
@@ -68,7 +68,18 @@ export default function Luces() {
 
   const encendidas = grid.flat().filter(Boolean).length;
   return (
-    <GameShell titulo="Lights Out" emoji="💡" descripcion="Flechas/WASD + ENTER · apaga todas las luces.">
+    <GameShell titulo="Lights Out" emoji="💡" descripcion="Flechas/WASD + ENTER · apaga todas las luces."
+      stats={[
+        { etiqueta: "Movs", valor: movs },
+        { etiqueta: "Encendidas", valor: encendidas },
+        { etiqueta: "Estado", valor: fin ? "¡Listo!" : "En juego" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> apaga las 25 luces; cada toque cambia la cruz vecina.</span>
+        <span><b>Controles:</b> <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>/<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> mover cursor, <kbd>Enter</kbd>/<kbd>Espacio</kbd> pulsar, <kbd>R</kbd> nuevo o <kbd>clic</kbd>.</span>
+        <span><b>Puntos:</b> máx(150 − movs×2, 30); apagar todo es victoria.</span>
+        <span><b>Consejo:</b> resuelve por filas de arriba abajo sin volver atrás.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-exito" onClick={nuevo}>🔀 Nuevo</button>
         <span className="chip">Movs <b>{movs}</b></span>

@@ -45,6 +45,17 @@ export default function Sprint() {
   return (
     <GameShell titulo="Sprint de Clics" emoji="👆"
       descripcion="Toca el botón sin parar durante 10 segundos · 60+ es victoria."
+      stats={[
+        { etiqueta: "⏱ Tiempo", valor: `${tiempo}s` },
+        { etiqueta: "Clics", valor: clics },
+        { icono: "🏆", etiqueta: "Mejor", valor: Math.max(mejor, clics) },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> haz los máximos toques en 10 segundos (60+ es victoria).</span>
+        <span><b>Controles:</b> <kbd>clic</kbd>/<kbd>toque</kbd> repetido en el botón grande.</span>
+        <span><b>Puntos:</b> 1 por clic; el ranking guarda tu total.</span>
+        <span><b>Consejo:</b> alterna dos dedos para subir los toques/segundo.</span>
+      </>}
       tira="linear-gradient(90deg,#22d3ee,#ff3d5a)" iconoFondo="linear-gradient(135deg,#22d3ee,#ff3d5a)">
       <div className="fila-botones">
         <span className="chip">⏱ <b>{tiempo}s</b></span>

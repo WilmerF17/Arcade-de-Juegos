@@ -1,19 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameShell, { useRegistro, Resultado } from "../ui/GameShell";
 import { sfx } from "../suite/sonido";
 
-/* Motor "ordena la frase": toca las palabras en orden. 6 rondas. */
+/* Motor "ordena la frase": toca las palabras en orden. */
 /* frase: string con palabras separadas por espacios */
+const DIFS = { "Fácil": { n: 4 }, "Normal": { n: 6 }, "Difícil": { n: 8 } };
 function FraseBase({ titulo, emoji, banco, tira, iconoFondo }) {
   const { mensaje, tipo, registrarPunt } = useRegistro(titulo);
+  const [dif, setDif] = useState("Normal");
+  const RONDAS = DIFS[dif].n;
   const [palabras, setPalabras] = useState([]);
   const [orden, setOrden] = useState([]);
   const [pos, setPos] = useState(0);
   const [ronda, setRonda] = useState(0);
   const [errores, setErrores] = useState(0);
   const [jugando, setJugando] = useState(false);
-
-  const RONDAS = 6;
+  const [marcadas, setMarcadas] = useState([]);
 
   function nuevaRonda(nr) {
     const f = banco[Math.floor(Math.random() * banco.length)].split(" ");
@@ -24,14 +26,21 @@ function FraseBase({ titulo, emoji, banco, tira, iconoFondo }) {
   }
 
   function empezar() {
-    setErrores(0); setJugando(true);
+    setErrores(0); setJugando(true); setMarcadas([]);
     nuevaRonda(1);
     sfx.clic();
   }
 
+  function empezar2() {
+    setMarcadas([]);
+    empezar();
+  }
+
+  function usadaAntes(i) {
+    return marcadas.includes(i);
+  }
   function tocar(w, i) {
     if (!jugando) return;
-    // Si la palabra se repite, hay que distinguir por posición: usamos índice en orden restante
     const restantes = orden.slice(pos);
     if (w === restantes[0] && !usadaAntes(w, i)) {
       marcar(w, i);
@@ -42,13 +51,7 @@ function FraseBase({ titulo, emoji, banco, tira, iconoFondo }) {
       sfx.mal();
     }
   }
-
-  const [marcadas, setMarcadas] = useState([]);
-  function usadaAntes(w, i) {
-    return marcadas.includes(i);
-  }
   function marcar(w, i) {
-    // verifica que sea la siguiente palabra pendiente contando duplicadas ya marcadas
     const pendientes = orden.filter((_, oi) => {
       const ocurrenciasPrevias = orden.slice(0, oi).filter(x => x === orden[oi]).length;
       const marcadasIguales = marcadas.filter(mi => palabras[mi] === orden[oi]).length;
@@ -78,23 +81,55 @@ function FraseBase({ titulo, emoji, banco, tira, iconoFondo }) {
     }
   }
 
-  function empezar2() {
-    setMarcadas([]);
-    empezar();
-  }
+  useEffect(() => {
+    const fn = (e) => {
+      const tag = (e.target?.tagName || "").toUpperCase();
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === "Enter" || e.key === " ") && !jugando) {
+        e.preventDefault();
+        empezar2();
+        return;
+      }
+      if (!jugando) return;
+      const n = parseInt(e.key, 10);
+      if (n >= 1 && n <= palabras.length) {
+        const i = n - 1;
+        if (!marcadas.includes(i)) tocar(palabras[i], i);
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const pct = RONDAS ? Math.round(((ronda - (jugando ? 1 : 0)) / RONDAS) * 100) : 0;
   return (
     <GameShell titulo={titulo} emoji={emoji}
-      descripcion="Toca las palabras en orden · 6 rondas."
-      tira={tira} iconoFondo={iconoFondo}>
-      <div className="fila-botones">
-        <span className="chip">Ronda: <b>{ronda}/{RONDAS}</b></span>
-        <span className="chip">Van: <b>{pos}/{orden.length}</b></span>
-        <span className="chip">❌ <b>{errores}</b></span>
-      </div>
-      {!jugando && ronda === 0 && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar2}>▶ Empezar</button></div>
+      descripcion={`Toca las palabras en orden · ${RONDAS} rondas.`}
+      tira={tira} iconoFondo={iconoFondo}
+      stats={[
+        { icono: "📖", etiqueta: "Ronda", valor: `${ronda}/${RONDAS}` },
+        { icono: "➡️", etiqueta: "Van", valor: `${pos}/${orden.length || "—"}` },
+        { icono: "❌", etiqueta: "Fallos", valor: errores },
+        { icono: "🎚️", etiqueta: "Dificultad", valor: dif },
+      ]}
+      resultado={{ mensaje, tipo }}
+      ayuda={(
+        <div>
+          <p><b>Reglas:</b> toca las palabras desordenadas en su orden correcto durante {RONDAS} rondas.</p>
+          <p><b>Controles:</b> ratón o táctil tocando cada palabra · teclado <kbd>1</kbd>–<kbd>9</kbd> para elegir la palabra visible, <kbd>Enter</kbd>/<kbd>Espacio</kbd> para empezar.</p>
+          <p><b>Puntuación:</b> empiezas con 800 y pierdes 40 por fallo (mínimo 60). Victoria con 2 o menos fallos.</p>
+          <p><b>Consejo:</b> lee la frase en voz baja: el oído detecta el orden antes que la vista.</p>
+        </div>
       )}
+      acciones={(
+        <>
+          {["Fácil", "Normal", "Difícil"].map(d => (
+            <button key={d} className={dif === d ? "btn-principal" : "btn-suave"} disabled={jugando} onClick={() => { setDif(d); sfx.clic(); }}>{d}</button>
+          ))}
+          {!jugando && <button className="btn-principal" onClick={empezar2}>{ronda > 0 ? "↻ Otra vez" : "▶ Empezar"}</button>}
+        </>
+      )}>
+      <div className="xp-bar fina" aria-hidden><div style={{ width: `${pct}%` }} /></div>
       {jugando && (
         <>
           <p style={{ textAlign: "center", fontSize: "1.15rem", minHeight: 30 }}>
@@ -104,16 +139,13 @@ function FraseBase({ titulo, emoji, banco, tira, iconoFondo }) {
             {palabras.map((w, i) => (
               <button key={i} onClick={() => tocar(w, i)} disabled={marcadas.includes(i)}
                 className="btn-suave" style={{ fontSize: "1.15rem", padding: "12px 14px", opacity: marcadas.includes(i) ? 0.3 : 1 }}>
-                {w}
+                <kbd style={{ opacity: 0.6 }}>{i + 1}</kbd> {w}
               </button>
             ))}
           </div>
         </>
       )}
-      <Resultado mensaje={mensaje} tipo={tipo} />
-      {!jugando && ronda > 0 && !mensaje && (
-        <div className="fila-botones"><button className="btn-principal" onClick={empezar2}>↻ Otra vez</button></div>
-      )}
+      <Resultado mensaje="" tipo="" />
     </GameShell>
   );
 }

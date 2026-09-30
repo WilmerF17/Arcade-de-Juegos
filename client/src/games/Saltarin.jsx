@@ -16,6 +16,7 @@ export default function Saltarin() {
   ptsRef.current = puntos; jugRef.current = jugando;
 
   function empezar() {
+    sfx.clic();
     const plats = [];
     for (let i = 0; i < 9; i++) plats.push({ x: Math.random() * (W - 70), y: H - 40 - i * 62, w: 70 });
     st.current = { x: W / 2, y: H - 100, vy: 0, plats, maxY: H - 100 };
@@ -26,7 +27,7 @@ export default function Saltarin() {
     const p = ptsRef.current;
     if (p > mejor) { setMejor(p); localStorage.setItem("arcade-saltarin", String(p)); }
     registrarPunt(p, p >= 500 ? 1 : 0);
-    sfx.mal();
+    if (p >= 500) sfx.bien(); else sfx.mal();
   }
   useEffect(() => {
     const dn = e => {
@@ -96,7 +97,18 @@ export default function Saltarin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <GameShell titulo="Saltarín Vertical" emoji="🐤" descripcion="←/→ o A/D · sube sin caer al vacío.">
+    <GameShell titulo="Saltarín Vertical" emoji="🐤" descripcion="←/→ o A/D · sube sin caer al vacío."
+      stats={[
+        { etiqueta: "Altura", valor: `${puntos}m` },
+        { icono: "🏆", etiqueta: "Mejor", valor: `${Math.max(mejor, puntos)}m` },
+        { etiqueta: "Estado", valor: jugando ? "Subiendo" : "Parado" },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> rebota en plataformas y sube lo más alto posible sin caer.</span>
+        <span><b>Controles:</b> <kbd>←</kbd>/<kbd>→</kbd> o <kbd>A</kbd>/<kbd>D</kbd> moverse en el aire, <kbd>Enter</kbd>/<kbd>Espacio</kbd> empezar.</span>
+        <span><b>Puntos:</b> metros subidos; 500m+ es victoria.</span>
+        <span><b>Consejo:</b> cae siempre hacia el centro para encadenar rebotes.</span>
+      </>}>
       <div className="fila-botones">
         <button className="btn-principal" onClick={empezar}>{jugando ? "Reiniciar" : "▶ Jugar"}</button>
         <span className="chip">Altura <b>{puntos}m</b></span>

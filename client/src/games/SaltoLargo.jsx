@@ -65,6 +65,17 @@ export default function SaltoLargo() {
   return (
     <GameShell titulo="Salto Largo" emoji="🦘"
       descripcion="Mantén para cargar y suelta en verde · 5 saltos."
+      stats={[
+        { etiqueta: "Salto", valor: `${salto}/5` },
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "Meta", valor: 600 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> clava 5 saltos soltando la potencia en la zona verde.</span>
+        <span><b>Controles:</b> mantén y suelta con <kbd>clic</kbd>/<kbd>toque</kbd> (ratón o dedo) en el botón.</span>
+        <span><b>Puntos:</b> 200 perfecto (±6), 100 cerca (±15); 600+ es victoria.</span>
+        <span><b>Consejo:</b> suelta un pelín antes: la barra sigue subiendo.</span>
+      </>}
       tira="linear-gradient(90deg,#84cc16,#22c55e)" iconoFondo="linear-gradient(135deg,#84cc16,#22c55e)">
       <div className="fila-botones">
         <span className="chip">Salto: <b>{salto}/5</b></span>

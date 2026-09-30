@@ -70,6 +70,17 @@ export default function Pulso() {
   return (
     <GameShell titulo="Pulso Neón" emoji="💓"
       descripcion="ESPACIO/clic cuando la barra pase por la ventana dorada · 15 pulsos."
+      stats={[
+        { etiqueta: "Pulso", valor: `${turno}/15` },
+        { etiqueta: "Puntos", valor: puntos },
+        { etiqueta: "Meta", valor: 1200 },
+      ]}
+      ayuda={<>
+        <span><b>Objetivo:</b> toca 15 veces justo cuando la barra entre en el dorado.</span>
+        <span><b>Controles:</b> <kbd>Espacio</kbd>/<kbd>Enter</kbd> o <kbd>clic</kbd>/<kbd>toque</kbd> en ¡Ahora!.</span>
+        <span><b>Puntos:</b> 100 + precisión en ventana, mitad fuera; 1200+ es victoria.</span>
+        <span><b>Consejo:</b> pulsa un pelín antes: tu reacción tarda ~200ms.</span>
+      </>}
       tira="linear-gradient(90deg,#ff3d5a,#ff9a3d)" iconoFondo="linear-gradient(135deg,#ff3d5a,#7c3aed)">
       <div className="fila-botones">
         <span className="chip">Pulso: <b>{turno}/15</b></span>
